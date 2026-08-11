@@ -16,6 +16,7 @@ export interface OfficialSkill {
   compatibility: string | null;
   multiFile: boolean;
   files: string[];
+  hostedFiles?: string[];
   words: number;
   githubUrl: string;
   skillFileUrl: string;

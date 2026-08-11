@@ -7,7 +7,7 @@
  *
  * Set GITHUB_TOKEN to raise API rate limits (60/h anonymous → 5000/h).
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -157,6 +157,24 @@ for (const skill of registry.official) {
       .filter((p) => (skill.dir ? true : !/^(README|LICENSE|\.)/i.test(p)))
       .sort();
     skill.multiFile = skill.files.some((f) => !f.endsWith("/"));
+
+    // Mirror companion .md files so the whole skill is consumable from this
+    // domain: /s/<id>/SKILL.md + /s/<id>/<relpath> (relative links resolve).
+    const skillFilesDir = join(ROOT, "src/data/skill-files", skill.id);
+    rmSync(skillFilesDir, { recursive: true, force: true });
+    skill.hostedFiles = [];
+    const companions = skill.files.filter((f) => !f.endsWith("/") && f.endsWith(".md"));
+    for (const rel of companions) {
+      const body = await raw(skill.repo, skill.branch, `${prefix}${rel}`);
+      if (!body) {
+        console.warn(`⚠ ${skill.repo}: companion missing ${rel}`);
+        continue;
+      }
+      const dest = join(skillFilesDir, rel);
+      mkdirSync(dirname(dest), { recursive: true });
+      writeFileSync(dest, body);
+      skill.hostedFiles.push(rel);
+    }
   }
   const dirUrl = skill.dir ? `/${skill.dir}` : "";
   skill.githubUrl = `https://github.com/${skill.repo}/tree/${skill.branch}${dirUrl}`;

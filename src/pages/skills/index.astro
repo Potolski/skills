@@ -62,16 +62,25 @@ const usedCategories = new Set([
         <span class="result-count muted" id="result-count" aria-live="polite"></span>
       </div>
       <div class="chips" id="category-chips">
-        <button class="chip" data-cat="all" aria-pressed="true">All</button>
-        <button class="chip" data-cat="official" aria-pressed="false">Official</button>
+        <button class="chip" data-cat="all" aria-pressed="true">
+          All <span class="chip-count">{official.length + ecoSkills.length}</span>
+        </button>
+        <button class="chip" data-cat="official" aria-pressed="false">
+          Official <span class="chip-count">{official.length}</span>
+        </button>
         {
           categories
             .filter((c) => usedCategories.has(c))
-            .map((c) => (
-              <button class="chip" data-cat={c} aria-pressed="false">
-                {CATEGORY_LABELS[c]}
-              </button>
-            ))
+            .map((c) => {
+              const n =
+                official.filter((s) => s.category === c).length +
+                ecoSkills.filter((s) => s.category === c).length;
+              return (
+                <button class="chip" data-cat={c} aria-pressed="false">
+                  {CATEGORY_LABELS[c]} <span class="chip-count">{n}</span>
+                </button>
+              );
+            })
         }
       </div>
     </div>
@@ -187,14 +196,35 @@ const usedCategories = new Set([
     if (countEl) countEl.textContent = `${visible} skill${visible === 1 ? '' : 's'}`;
   }
 
-  search.addEventListener('input', apply);
+  // Keep the URL shareable: ?q=… and #category survive reload and copy-paste
+  function syncUrl() {
+    const url = new URL(location.href);
+    if (search.value.trim()) url.searchParams.set('q', search.value.trim());
+    else url.searchParams.delete('q');
+    url.hash = activeCat === 'all' ? '' : activeCat;
+    history.replaceState(null, '', url);
+  }
+
+  search.addEventListener('input', () => {
+    apply();
+    syncUrl();
+  });
   for (const chip of chips) {
     chip.addEventListener('click', () => {
       activeCat = chip.dataset.cat ?? 'all';
       chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
       apply();
+      syncUrl();
     });
   }
+
+  // "/" focuses search from anywhere on the page
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== search) {
+      e.preventDefault();
+      search.focus();
+    }
+  });
 
   // Support /skills#security style deep links + ?q= searches
   const params = new URLSearchParams(location.search);
@@ -232,6 +262,18 @@ const usedCategories = new Set([
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 16px;
+  }
+  .chip-count {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    padding: 1px 7px;
+    margin-left: 2px;
+  }
+  .chip[aria-pressed='true'] .chip-count {
+    color: var(--green);
+    background: rgba(20, 241, 149, 0.12);
   }
   .catalog-body {
     padding-block: 48px;

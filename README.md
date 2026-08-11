@@ -11,8 +11,10 @@ Built with [Astro](https://astro.build) as a fully static site. No client framew
 - **`/skills/<id>`** — official skill detail: rendered `SKILL.md`, install tabs (skills CLI / Claude Code / no-install / git), companion-file tree, metadata.
 - **`/s/<id>.md`** — **per-file hosting**: the official `SKILL.md` served verbatim with `text/markdown` + CORS, so any agent can consume a skill from a single URL — no install:
   ```
-  Read https://skills.solana.com/s/solana-dev.md and apply it to this task: …
+  Read https://skills.solana.com/s/solana-dev.md and follow it for this task: …
   ```
+- **`/s/<id>/SKILL.md` + `/s/<id>/<companion>.md`** — dir-style hosting of the whole skill, companion reference files included, so relative links resolve and an agent can walk the entire skill without leaving the domain. Detail pages surface these as a **Reference library** (title + description parsed from each file's frontmatter).
+- **Commit-SHA pinning** — every ecosystem skill link and repo badge points at the exact commit the registry indexed: what you audit is what you install.
 - **`/ecosystem`** — ecosystem repo explorer grouped by aggregators/toolkits, teams & protocols, community; expandable per-repo skill lists that deep-link to GitHub.
 - **`/api/skills.json`** — machine-readable index of everything (CORS-enabled).
 - **`/llms.txt`** — plain-text site map for AI agents.
@@ -23,8 +25,9 @@ Built with [Astro](https://astro.build) as a fully static site. No client framew
 Everything renders from one committed snapshot:
 
 ```
-src/data/registry.json     # official skills + ecosystem repos/skills, stars, metadata
-src/data/skills/*.md       # verbatim mirrors of official SKILL.md files (feeds /s/*.md + rendered pages)
+src/data/registry.json       # official skills + ecosystem repos/skills, stars, commit SHAs
+src/data/skills/*.md         # verbatim mirrors of official SKILL.md files
+src/data/skill-files/<id>/…  # verbatim mirrors of companion .md files (reference library)
 ```
 
 The snapshot keeps builds deterministic and the site immune to GitHub hiccups. It is refreshed by:

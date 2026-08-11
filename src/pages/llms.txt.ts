@@ -1,13 +1,26 @@
 import type { APIRoute } from "astro";
 import { registry, SITE_URL } from "../lib/registry";
+import { refsFor } from "../lib/skill-refs";
 
 // llms.txt — written to the agent reading it, not as a link dump.
 export const GET: APIRoute = () => {
-  const officialLines = registry.official.flatMap((s) => [
-    `- [${s.title}](${SITE_URL}${s.hostedPath}): ${s.description.slice(0, 240)}`,
-    `  - Human page: ${SITE_URL}/skills/${s.id}`,
-    `  - Source: https://github.com/${s.repo} (pinned @ ${s.commitSha?.slice(0, 7) ?? s.branch})`,
-  ]);
+  const officialLines = registry.official.flatMap((s) => {
+    const refs = refsFor(s.id);
+    return [
+      `- [${s.title}](${SITE_URL}${s.hostedPath}): ${s.description.slice(0, 240)}`,
+      `  - Human page: ${SITE_URL}/skills/${s.id}`,
+      `  - Source: https://github.com/${s.repo} (pinned @ ${s.commitSha?.slice(0, 7) ?? s.branch})`,
+      ...(refs.length > 0
+        ? [
+            `  - Focused reference files (fetch just the one you need to save context):`,
+            ...refs.map(
+              (r) =>
+                `    - [${r.title}](${SITE_URL}/s/${s.id}/${r.path})${r.description ? `: ${r.description.slice(0, 140)}` : ""}`,
+            ),
+          ]
+        : []),
+    ];
+  });
 
   const ecoLines = registry.ecosystem.map(
     (r) =>

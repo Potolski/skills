@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import CopyBlock from '../../components/CopyBlock.astro';
 import { registry, installCommands, CATEGORY_LABELS, SITE_URL } from '../../lib/registry';
+import { refsFor } from '../../lib/skill-refs';
 
 export async function getStaticPaths() {
   const entries = await getCollection('skills');
@@ -19,6 +20,7 @@ const { Content } = entry
 const install = installCommands(skill);
 const companionFiles = skill.files.filter((f) => !f.endsWith('/'));
 const readMinutes = Math.max(1, Math.round(skill.words / 220));
+const refs = refsFor(skill.id);
 ---
 
 <Base
@@ -119,8 +121,29 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
           </div>
         </div>
 
+        {
+          refs.length > 0 && (
+            <section class="ref-lib">
+              <h2 class="contents-title">Reference library</h2>
+              <p class="ref-sub muted">
+                {refs.length} focused files, hosted here — point your agent at just the one it
+                needs instead of the whole skill.
+              </p>
+              <div class="ref-grid">
+                {refs.map((ref) => (
+                  <a class="ref-card" href={`/s/${skill.id}/${ref.path}`}>
+                    <span class="ref-title">{ref.title}</span>
+                    {ref.description && <span class="ref-desc">{ref.description}</span>}
+                    <code class="mono ref-path">{ref.path}</code>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )
+        }
+
         <h2 class="contents-title">Skill contents</h2>
-        <div class="prose">{Content && <Content />}</div>
+        <div class="prose" id="skill-prose">{Content && <Content />}</div>
       </article>
 
       <aside>
@@ -169,6 +192,40 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
               <dd>{skill.words.toLocaleString('en-US')} words · ~{readMinutes} min</dd>
             </div>
             {
+              skill.pushedAt && (
+                <div>
+                  <dt>Repo updated</dt>
+                  <dd>
+                    <time datetime={skill.pushedAt}>
+                      {new Date(skill.pushedAt + 'T00:00:00Z').toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        timeZone: 'UTC',
+                      })}
+                    </time>
+                  </dd>
+                </div>
+              )
+            }
+            {
+              skill.commitSha && (
+                <div>
+                  <dt>Mirrored at</dt>
+                  <dd>
+                    <a
+                      class="mono sha-link"
+                      href={`https://github.com/${skill.repo}/tree/${skill.commitSha}`}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      {skill.commitSha.slice(0, 7)}
+                    </a>
+                  </dd>
+                </div>
+              )
+            }
+            {
               skill.compatibility && (
                 <div>
                   <dt>Requires</dt>
@@ -185,17 +242,25 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
                   <h3>Companion files ({companionFiles.length})</h3>
                 </summary>
                 <ul class="mono">
-                  {companionFiles.map((f) => (
-                    <li>
-                      <a
-                        href={`https://github.com/${skill.repo}/blob/${skill.branch}${skill.dir ? `/${skill.dir}` : ''}/${f}`}
-                        target="_blank"
-                        rel="noopener"
-                      >
-                        {f}
-                      </a>
-                    </li>
-                  ))}
+                  {companionFiles.map((f) => {
+                    const hostedHere = (skill.hostedFiles ?? []).includes(f);
+                    return (
+                      <li>
+                        <a
+                          href={
+                            hostedHere
+                              ? `/s/${skill.id}/${f}`
+                              : `https://github.com/${skill.repo}/blob/${skill.branch}${skill.dir ? `/${skill.dir}` : ''}/${f}`
+                          }
+                          target={hostedHere ? undefined : '_blank'}
+                          rel={hostedHere ? undefined : 'noopener'}
+                          title={hostedHere ? 'Hosted here — stable URL for agents' : 'On GitHub'}
+                        >
+                          {f}
+                        </a>
+                      </li>
+                    );
+                  })}
                 </ul>
               </details>
             )
@@ -217,6 +282,43 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
     </div>
   </section>
 </Base>
+
+<script>
+  // Copy buttons on every code block in the rendered skill.
+  for (const pre of document.querySelectorAll('#skill-prose pre')) {
+    const code = pre.textContent ?? '';
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn pre-copy';
+    btn.setAttribute('aria-label', 'Copy code block');
+    btn.setAttribute('data-copy', code.trimEnd());
+    btn.innerHTML =
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+    const wrap = document.createElement('div');
+    wrap.className = 'pre-wrap';
+    pre.replaceWith(wrap);
+    wrap.append(pre, btn);
+  }
+</script>
+
+<style is:global>
+  .pre-wrap {
+    position: relative;
+  }
+  .pre-wrap .pre-copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    background: rgba(0, 0, 0, 0.5);
+  }
+  .pre-wrap:hover .pre-copy,
+  .pre-wrap .pre-copy:focus-visible,
+  .pre-wrap .pre-copy.copied {
+    opacity: 1;
+  }
+</style>
 
 <style>
   .detail-head {
@@ -314,6 +416,52 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
     font-size: 1.3rem;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
+  }
+  .ref-sub {
+    font-size: 0.88rem;
+    margin: 10px 0 18px;
+  }
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+  }
+  .ref-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    transition: border-color 0.15s ease, background 0.15s ease;
+    min-width: 0;
+  }
+  .ref-card:hover {
+    border-color: rgba(20, 241, 149, 0.45);
+    background: #12121a;
+  }
+  .ref-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: -0.01em;
+  }
+  .ref-desc {
+    font-size: 0.78rem;
+    color: var(--text-3);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .ref-path {
+    font-size: 0.68rem;
+    color: var(--green);
+    opacity: 0.75;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   aside {
     position: sticky;
@@ -418,6 +566,13 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
     display: flex;
     gap: 10px;
     margin-top: 10px;
+  }
+  .sha-link {
+    color: var(--text-2);
+    border-bottom: 1px dashed var(--border-strong);
+  }
+  .sha-link:hover {
+    color: var(--green);
   }
   @media (max-width: 980px) {
     .detail-grid {

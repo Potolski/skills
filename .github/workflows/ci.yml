@@ -21,4 +21,11 @@ jobs:
           for f in src/data/skills/*.md; do
             id=$(basename "$f")
             cmp "$f" "dist/s/$id" || { echo "::error::dist/s/$id is not a verbatim mirror"; exit 1; }
+            cmp "$f" "dist/s/${id%.md}/SKILL.md" || { echo "::error::dist/s/${id%.md}/SKILL.md is not a verbatim mirror"; exit 1; }
           done
+          if [ -d src/data/skill-files ]; then
+            find src/data/skill-files -name '*.md' | while read -r f; do
+              rel=${f#src/data/skill-files/}
+              cmp "$f" "dist/s/$rel" || { echo "::error::dist/s/$rel is not a verbatim mirror"; exit 1; }
+            done
+          fi
