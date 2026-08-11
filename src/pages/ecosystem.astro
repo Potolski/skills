@@ -1,0 +1,185 @@
+---
+import Base from '../layouts/Base.astro';
+import RepoCard from '../components/RepoCard.astro';
+import { registry } from '../lib/registry';
+
+const groups: { title: string; sub: string; types: string[] }[] = [
+  {
+    title: 'Aggregators & toolkits',
+    sub: 'Many skills per repo — protocol collections and full agent workspaces.',
+    types: ['aggregator', 'toolkit'],
+  },
+  {
+    title: 'Teams & protocols',
+    sub: 'Skills maintained by the teams behind the protocols and infra they cover.',
+    types: ['vendor'],
+  },
+  {
+    title: 'Community',
+    sub: 'Independent builders filling the gaps.',
+    types: ['community'],
+  },
+];
+
+const byTypes = (types: string[]) => registry.ecosystem.filter((r) => types.includes(r.type));
+const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
+---
+
+<Base
+  title="Ecosystem — Solana Skills"
+  description={`Explore ${registry.ecosystem.length} Solana ecosystem skill repositories — ${skillSum}+ skills from Jupiter, Helius, Metaplex, SendAI, Solana Mobile, Trail of Bits, and more.`}
+>
+  <section class="section eco-head">
+    <div class="container">
+      <h1 class="section-title">Ecosystem skill repositories</h1>
+      <p class="section-sub">
+        Beyond the official skills: {registry.ecosystem.length} repositories and {skillSum}+ skills
+        maintained by Solana teams and the community. Sourced from
+        <a
+          class="inline-link"
+          href="https://github.com/solana-foundation/awesome-solana-ai"
+          target="_blank"
+          rel="noopener">awesome-solana-ai</a
+        > and the repos themselves — each entry links to its home on GitHub.
+      </p>
+    </div>
+  </section>
+
+  <section class="eco-group">
+    <div class="container">
+      <h2 class="group-title">More from the Foundation</h2>
+      <p class="group-sub muted">
+        Beyond installable skills — official AI infrastructure that pairs with everything here.
+      </p>
+      <div class="grid resources">
+        {
+          registry.foundationResources.map((res) => (
+            <a class="card" href={res.url} target="_blank" rel="noopener">
+              <svg
+                class="card-arrow"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M7 17 17 7M7 7h10v10" />
+              </svg>
+              <div class="res-head">
+                <span class="badge badge-official">Official</span>
+                <span class="badge">{res.kind}</span>
+              </div>
+              <h3>{res.name}</h3>
+              <code class="mono res-repo">{res.repo}</code>
+              <p>{res.description}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    groups.map((group) => {
+      const repos = byTypes(group.types);
+      return (
+        repos.length > 0 && (
+          <section class="eco-group">
+            <div class="container">
+              <h2 class="group-title">{group.title}</h2>
+              <p class="group-sub muted">{group.sub}</p>
+              <div class="grid">
+                {repos.map((repo) => (
+                  <RepoCard repo={repo} />
+                ))}
+              </div>
+            </div>
+          </section>
+        )
+      );
+    })
+  }
+
+  <section class="section">
+    <div class="container">
+      <div class="card add-repo">
+        <div>
+          <h2>Maintain a Solana skill repo?</h2>
+          <p class="muted">
+            Get it listed here by opening a PR to the Foundation&rsquo;s
+            <code class="mono">awesome-solana-ai</code> — that list feeds this page.
+          </p>
+        </div>
+        <a
+          class="btn btn-primary"
+          href="https://github.com/solana-foundation/awesome-solana-ai"
+          target="_blank"
+          rel="noopener">Open a PR</a
+        >
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .eco-head {
+    padding-bottom: 24px;
+    background:
+      radial-gradient(50% 90% at 85% 0%, rgba(20, 241, 149, 0.08), transparent 60%),
+      radial-gradient(40% 80% at 10% 0%, rgba(153, 69, 255, 0.12), transparent 60%),
+      var(--bg);
+  }
+  .inline-link {
+    color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(20, 241, 149, 0.4);
+  }
+  .eco-group {
+    padding-block: 28px;
+  }
+  .res-head {
+    display: flex;
+    gap: 8px;
+  }
+  .res-repo {
+    font-size: 0.76rem;
+    color: var(--text-3);
+  }
+  .resources .card p {
+    -webkit-line-clamp: 4;
+  }
+  .group-title {
+    font-size: 1.25rem;
+  }
+  .group-sub {
+    margin: 6px 0 22px;
+    font-size: 0.92rem;
+  }
+  .add-repo {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 36px;
+  }
+  .add-repo h2 {
+    font-size: 1.3rem;
+    margin-bottom: 8px;
+  }
+  .add-repo p {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+  @media (max-width: 720px) {
+    .add-repo {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

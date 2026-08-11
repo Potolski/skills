@@ -1,0 +1,43 @@
+---
+interface Props {
+  command: string;
+  prompt?: boolean;
+  label?: string;
+}
+const { command, prompt = true, label } = Astro.props;
+---
+
+{label && <div class="copy-label-heading">{label}</div>}
+<div class="copyblock">
+  {prompt && <span class="prompt-char">$</span>}{command}
+  <button class="copy-btn" data-copy={command} aria-label="Copy to clipboard" title="Copy">
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+    </svg>
+  </button>
+</div>
+
+<style>
+  .copy-label-heading {
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-3);
+    margin-bottom: 8px;
+  }
+  .copy-label-heading:not(:first-child) {
+    margin-top: 16px;
+  }
+</style>

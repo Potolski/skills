@@ -1,0 +1,66 @@
+---
+import type { OfficialSkill } from '../lib/registry';
+import { CATEGORY_LABELS } from '../lib/registry';
+
+interface Props {
+  skill: OfficialSkill;
+  featured?: boolean;
+}
+const { skill, featured = false } = Astro.props;
+---
+
+<a href={`/skills/${skill.id}`} class:list={['card', { featured }]}>
+  <svg
+    class="card-arrow"
+    width="18"
+    height="18"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M7 17 17 7M7 7h10v10"></path>
+  </svg>
+  <div class="badges">
+    <span class="badge badge-official">Official</span>
+    <span class="badge">{CATEGORY_LABELS[skill.category] ?? skill.category}</span>
+  </div>
+  <h3>{skill.title}</h3>
+  <code class="skill-name mono">{skill.name}</code>
+  <p>{skill.tagline}. {skill.description}</p>
+  <div class="card-meta">
+    <span>{skill.repo.split('/')[0]}</span>
+    <span aria-hidden="true">·</span>
+    {skill.version && <span>v{skill.version}</span>}
+    {skill.version && <span aria-hidden="true">·</span>}
+    <span>{skill.multiFile ? `${skill.files.filter((f) => !f.endsWith('/')).length + 1} files` : 'single file'}</span>
+  </div>
+</a>
+
+<style>
+  .badges {
+    display: flex;
+    gap: 8px;
+  }
+  .skill-name {
+    align-self: flex-start;
+    font-size: 0.8rem;
+    color: var(--green);
+    background: rgba(20, 241, 149, 0.08);
+    border: 1px solid rgba(20, 241, 149, 0.25);
+    border-radius: 6px;
+    padding: 2px 8px;
+  }
+  .featured {
+    padding: 30px;
+  }
+  .featured h3 {
+    font-size: 1.35rem;
+  }
+  .featured p {
+    -webkit-line-clamp: 4;
+  }
+</style>

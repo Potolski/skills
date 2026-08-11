@@ -1,0 +1,406 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CopyBlock from '../../components/CopyBlock.astro';
+import { registry, installCommands, CATEGORY_LABELS, SITE_URL } from '../../lib/registry';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('skills');
+  return registry.official.map((skill) => ({
+    params: { id: skill.id },
+    props: { skill, entry: entries.find((e) => e.id === skill.id) },
+  }));
+}
+
+const { skill, entry } = Astro.props;
+const { Content } = entry
+  ? await render(entry)
+  : { Content: null };
+const install = installCommands(skill);
+const companionFiles = skill.files.filter((f) => !f.endsWith('/'));
+const readMinutes = Math.max(1, Math.round(skill.words / 220));
+---
+
+<Base
+  title={`${skill.title} — Solana Skills`}
+  description={skill.description.slice(0, 300)}
+>
+  <section class="detail-head">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/skills">Skills</a>
+        <span aria-hidden="true">/</span>
+        <span>{skill.title}</span>
+      </nav>
+      <div class="badges">
+        <span class="badge badge-official">Official</span>
+        <span class="badge">{CATEGORY_LABELS[skill.category] ?? skill.category}</span>
+        {skill.multiFile && <span class="badge">Multi-file</span>}
+      </div>
+      <h1>{skill.title}</h1>
+      <div class="name-row">
+        <code class="mono name-chip">{skill.name}</code>
+        {skill.version && <span class="muted">v{skill.version}</span>}
+        <span class="muted">·</span>
+        <a class="muted repo-link" href={skill.githubUrl} target="_blank" rel="noopener"
+          >{skill.repo}</a
+        >
+      </div>
+      <p class="lead">{skill.description}</p>
+    </div>
+  </section>
+
+  <section class="detail-body">
+    <div class="container detail-grid">
+      <article>
+        <div class="install-panel" data-tabs>
+          <div class="tabs" role="tablist" aria-label="Install methods">
+            <button class="tab" role="tab" data-tab="cli" aria-selected="true">skills CLI</button>
+            <button class="tab" role="tab" data-tab="claude" aria-selected="false"
+              >Claude Code</button
+            >
+            <button class="tab" role="tab" data-tab="nono" aria-selected="false"
+              >No install</button
+            >
+            <button class="tab" role="tab" data-tab="git" aria-selected="false">Git</button>
+          </div>
+          <div class="tab-panel" role="tabpanel" data-panel="cli">
+            <p class="panel-note">
+              One command for Claude Code, Cursor, Codex, Windsurf and other agents — pulls the
+              full skill{skill.multiFile && ', companion files included'}.
+            </p>
+            <CopyBlock command={install.cli} />
+          </div>
+          <div class="tab-panel" role="tabpanel" data-panel="claude" hidden>
+            <p class="panel-note">
+              Drop the hosted file into your skills directory. Global (all projects):
+            </p>
+            <CopyBlock command={install.claudeGlobal} />
+            <p class="panel-note">Or scoped to the current project:</p>
+            <CopyBlock command={install.claudeProject} />
+            {
+              skill.multiFile && (
+                <p class="panel-hint">
+                  This skill references companion files ({companionFiles.length} of them) — links
+                  in the hosted copy resolve to GitHub, so it works standalone. For the full
+                  offline bundle use the CLI or Git tab.
+                </p>
+              )
+            }
+          </div>
+          <div class="tab-panel" role="tabpanel" data-panel="nono" hidden>
+            <p class="panel-note">
+              The skill is hosted as plain markdown — paste this into any agent chat, no setup:
+            </p>
+            <CopyBlock prompt={false} command={`Read ${install.hosted} and apply it to this task: `} />
+            <p class="panel-note">Or pull it into a terminal session:</p>
+            <CopyBlock command={`curl -fsSL ${install.hosted}`} />
+          </div>
+          <div class="tab-panel" role="tabpanel" data-panel="git" hidden>
+            <p class="panel-note">
+              Copy the skill directory{skill.multiFile && ' with all companion files'} straight
+              from GitHub:
+            </p>
+            <CopyBlock command={install.git} />
+          </div>
+        </div>
+
+        <h2 class="contents-title">Skill contents</h2>
+        <div class="prose">{Content && <Content />}</div>
+      </article>
+
+      <aside>
+        <div class="meta-card">
+          <h3>Hosted file</h3>
+          <div class="hosted-row">
+            <a class="mono hosted-url" href={skill.hostedPath}>{SITE_URL.replace('https://', '')}{skill.hostedPath}</a>
+            <button class="copy-btn static" data-copy={install.hosted} aria-label="Copy hosted URL" title="Copy URL">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+            </button>
+          </div>
+
+          <h3>Details</h3>
+          <dl class="meta-list">
+            <div>
+              <dt>Maintainer</dt>
+              <dd>Solana Foundation</dd>
+            </div>
+            <div>
+              <dt>License</dt>
+              <dd>{skill.license}</dd>
+            </div>
+            {
+              skill.version && (
+                <div>
+                  <dt>Version</dt>
+                  <dd>{skill.version}</dd>
+                </div>
+              )
+            }
+            <div>
+              <dt>Length</dt>
+              <dd>{skill.words.toLocaleString('en-US')} words · ~{readMinutes} min</dd>
+            </div>
+            {
+              skill.compatibility && (
+                <div>
+                  <dt>Requires</dt>
+                  <dd>{skill.compatibility.replace(/^Requires\s*/i, '')}</dd>
+                </div>
+              )
+            }
+          </dl>
+
+          {
+            companionFiles.length > 0 && (
+              <details class="files-tree">
+                <summary>
+                  <h3>Companion files ({companionFiles.length})</h3>
+                </summary>
+                <ul class="mono">
+                  {companionFiles.map((f) => (
+                    <li>
+                      <a
+                        href={`https://github.com/${skill.repo}/blob/${skill.branch}${skill.dir ? `/${skill.dir}` : ''}/${f}`}
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        {f}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )
+          }
+
+          <div class="meta-actions">
+            <a class="btn btn-ghost btn-sm" href={skill.skillFileUrl} target="_blank" rel="noopener"
+              >View on GitHub</a
+            >
+            <a
+              class="btn btn-ghost btn-sm"
+              href={`https://github.com/${skill.repo}/issues`}
+              target="_blank"
+              rel="noopener">Report issue</a
+            >
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .detail-head {
+    padding: 48px 0 40px;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(45% 100% at 80% 0%, rgba(20, 241, 149, 0.07), transparent 60%),
+      radial-gradient(45% 100% at 10% 0%, rgba(153, 69, 255, 0.12), transparent 60%),
+      var(--bg);
+  }
+  .breadcrumb {
+    display: flex;
+    gap: 10px;
+    font-size: 0.86rem;
+    color: var(--text-3);
+    margin-bottom: 22px;
+  }
+  .breadcrumb a:hover {
+    color: var(--green);
+  }
+  .badges {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  h1 {
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+  }
+  .name-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  .name-chip {
+    font-size: 0.85rem;
+    color: var(--green);
+    background: rgba(20, 241, 149, 0.08);
+    border: 1px solid rgba(20, 241, 149, 0.25);
+    border-radius: 6px;
+    padding: 3px 10px;
+  }
+  .repo-link:hover {
+    color: var(--green);
+  }
+  .lead {
+    margin-top: 18px;
+    color: var(--text-2);
+    max-width: 76ch;
+    font-size: 0.98rem;
+  }
+  .detail-body {
+    padding-block: 44px 72px;
+  }
+  .detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 320px;
+    gap: 48px;
+    align-items: start;
+  }
+  .install-panel {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-elev);
+    padding: 6px 22px 22px;
+  }
+  .panel-note {
+    color: var(--text-3);
+    font-size: 0.88rem;
+    margin: 16px 0 10px;
+  }
+  .panel-hint {
+    color: var(--text-3);
+    font-size: 0.82rem;
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--purple);
+    background: rgba(153, 69, 255, 0.06);
+    border-radius: 0 8px 8px 0;
+  }
+  .contents-title {
+    margin: 44px 0 8px;
+    font-size: 1.3rem;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  aside {
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+  }
+  .meta-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-card);
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .meta-card h3 {
+    font-size: 0.76rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-3);
+    font-weight: 620;
+    margin-top: 8px;
+  }
+  .meta-card h3:first-child {
+    margin-top: 0;
+  }
+  .hosted-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 12px;
+  }
+  .hosted-url {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.76rem;
+    color: var(--green);
+    word-break: break-all;
+  }
+  .copy-btn.static {
+    position: static;
+    transform: none;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+  .meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .meta-list > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 0.86rem;
+  }
+  .meta-list dt {
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+  .meta-list dd {
+    text-align: right;
+    color: var(--text-2);
+  }
+  .files-tree summary {
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+  }
+  .files-tree summary::-webkit-details-marker {
+    display: none;
+  }
+  .files-tree summary h3::after {
+    content: ' +';
+    color: var(--green);
+  }
+  .files-tree[open] summary h3::after {
+    content: ' –';
+  }
+  .files-tree ul {
+    list-style: none;
+    padding: 10px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 260px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .files-tree a {
+    font-size: 0.74rem;
+    color: var(--text-3);
+    transition: color 0.12s ease;
+  }
+  .files-tree a:hover {
+    color: var(--green);
+  }
+  .meta-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  @media (max-width: 980px) {
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+    aside {
+      position: static;
+      order: -1;
+    }
+  }
+</style>

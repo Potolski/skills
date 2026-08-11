@@ -1,0 +1,101 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#000000" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="Solana Skills" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <link rel="alternate" type="application/json" href="/api/skills.json" title="Skills index" />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+
+    <script>
+      // Copy-to-clipboard: any element with [data-copy]
+      document.addEventListener('click', async (e) => {
+        const target = e.target as HTMLElement;
+        const btn = target.closest<HTMLElement>('[data-copy]');
+        if (!btn) return;
+        const text = btn.getAttribute('data-copy') ?? '';
+        try {
+          await navigator.clipboard.writeText(text);
+          btn.classList.add('copied');
+          const label = btn.querySelector('.copy-label');
+          if (label) label.textContent = 'Copied';
+          setTimeout(() => {
+            btn.classList.remove('copied');
+            if (label) label.textContent = 'Copy';
+          }, 1600);
+        } catch {
+          /* clipboard unavailable */
+        }
+      });
+
+      // Tabs: [role=tab] toggling sibling [role=tabpanel]s within a [data-tabs] scope
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        const tab = target.closest<HTMLElement>('[role="tab"]');
+        if (!tab) return;
+        const scope = tab.closest<HTMLElement>('[data-tabs]');
+        if (!scope) return;
+        const id = tab.getAttribute('data-tab');
+        scope.querySelectorAll<HTMLElement>('[role="tab"]').forEach((t) => {
+          t.setAttribute('aria-selected', String(t === tab));
+        });
+        scope.querySelectorAll<HTMLElement>('[role="tabpanel"]').forEach((p) => {
+          p.hidden = p.getAttribute('data-panel') !== id;
+        });
+      });
+    </script>
+
+    <style>
+      .skip-link {
+        position: absolute;
+        left: -9999px;
+        top: 12px;
+        z-index: 100;
+        background: var(--green);
+        color: #000;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+      .skip-link:focus {
+        left: 12px;
+      }
+    </style>
+  </body>
+</html>

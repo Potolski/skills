@@ -1,0 +1,318 @@
+---
+import Base from '../layouts/Base.astro';
+import SkillCard from '../components/SkillCard.astro';
+import RepoCard from '../components/RepoCard.astro';
+import CopyBlock from '../components/CopyBlock.astro';
+import { registry, totalSkills, installCommands, SITE_URL } from '../lib/registry';
+
+const official = registry.official;
+const featured = registry.ecosystem.filter((r) =>
+  ['sendai-skills', 'solana-new', 'jupiter', 'helius', 'metaplex', 'solana-ai-kit'].includes(r.id)
+);
+const lead = official[0];
+const leadInstall = lead ? installCommands(lead) : null;
+const skillTotal = totalSkills();
+---
+
+<Base
+  title="Solana Skills — agent skills for building on Solana"
+  description={`Open-source agent skills from the Solana Foundation and ecosystem. ${skillTotal}+ skills for Claude Code, Cursor, Codex, and any agent that reads markdown — install them or use them straight from a URL.`}
+>
+  <!-- ————— hero ————— -->
+  <section class="hero">
+    <div class="glow-orb orb-purple"></div>
+    <div class="glow-orb orb-green"></div>
+    <div class="container hero-inner">
+      <span class="eyebrow"><span class="dot"></span> Open-source · Agent Skills format</span>
+      <h1 class="display">
+        Teach your agent to<br />
+        <span class="gradient-text">build on Solana</span>
+      </h1>
+      <p class="hero-sub">
+        Drop-in expertise from the Solana Foundation and ecosystem — for Claude Code, Cursor,
+        Codex, and any agent that reads markdown. Install a skill, or point your agent at a URL
+        and skip the install entirely.
+      </p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="/skills">Browse skills</a>
+        <a class="btn btn-ghost" href="/ecosystem">Explore the ecosystem</a>
+      </div>
+      {
+        leadInstall && (
+          <div class="hero-terminal">
+            <CopyBlock command={leadInstall.cli} />
+          </div>
+        )
+      }
+      <dl class="hero-stats">
+        <div>
+          <dt>Official skills</dt>
+          <dd>{official.length}</dd>
+        </div>
+        <div>
+          <dt>Ecosystem repos</dt>
+          <dd>{registry.ecosystem.length}</dd>
+        </div>
+        <div>
+          <dt>Skills indexed</dt>
+          <dd>{skillTotal}+</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ————— official skills ————— -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Official skills</h2>
+          <p class="section-sub">
+            Written and maintained by the Solana Foundation. Hosted here — install them, or use
+            them straight from the URL.
+          </p>
+        </div>
+        <a class="btn btn-ghost btn-sm" href="/skills">View all</a>
+      </div>
+      <div class="grid grid-official">
+        {official.map((skill) => <SkillCard skill={skill} featured />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ————— how to use ————— -->
+  <section class="section" id="use">
+    <div class="container">
+      <h2 class="section-title">Use a skill in ten seconds</h2>
+      <p class="section-sub">
+        Skills are plain markdown with YAML frontmatter — the open
+        <a class="inline-link" href="https://agentskills.io" target="_blank" rel="noopener"
+          >Agent Skills</a
+        > format. Three ways in, pick one.
+      </p>
+      <div class="use-grid">
+        <div class="card">
+          <span class="use-step">01</span>
+          <h3>Install with the skills CLI</h3>
+          <p>Works with Claude Code, Cursor, Codex, Windsurf and friends — one command per repo.</p>
+          <CopyBlock command={`npx skills add ${lead?.repo ?? 'solana-foundation/solana-dev-skill'}`} />
+        </div>
+        <div class="card">
+          <span class="use-step">02</span>
+          <h3>Add to Claude Code manually</h3>
+          <p>Drop the hosted file into <code class="mono">~/.claude/skills/</code> — global, or per-project under <code class="mono">.claude/skills/</code>.</p>
+          <CopyBlock command={leadInstall?.claudeGlobal ?? ''} />
+        </div>
+        <div class="card">
+          <span class="use-step">03</span>
+          <h3>No install — just paste</h3>
+          <p>
+            Every official skill is hosted as a plain markdown file. Paste this into any agent
+            chat:
+          </p>
+          <CopyBlock
+            prompt={false}
+            command={`Read ${SITE_URL}${lead?.hostedPath ?? '/s/solana-dev.md'} and apply it to this task: `}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ————— ecosystem teaser ————— -->
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">From the ecosystem</h2>
+          <p class="section-sub">
+            Skill repositories maintained by Solana teams and the community — aggregators,
+            protocol vendors, toolkits, and security specialists.
+          </p>
+        </div>
+        <a class="btn btn-ghost btn-sm" href="/ecosystem">Explore all</a>
+      </div>
+      <div class="grid">
+        {featured.map((repo) => <RepoCard repo={repo} expandable={false} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- ————— contribute ————— -->
+  <section class="section">
+    <div class="container">
+      <div class="contribute card">
+        <div class="contribute-text">
+          <h2 class="section-title">Ship your own skill</h2>
+          <p class="section-sub">
+            Write a <code class="mono">SKILL.md</code> following the Agent Skills format, publish
+            it on GitHub, and open a PR to
+            <a
+              class="inline-link"
+              href="https://github.com/solana-foundation/awesome-solana-ai"
+              target="_blank"
+              rel="noopener">awesome-solana-ai</a
+            > to get it in front of the ecosystem.
+          </p>
+        </div>
+        <div class="contribute-actions">
+          <a
+            class="btn btn-primary"
+            href="https://agentskills.io"
+            target="_blank"
+            rel="noopener">Read the spec</a
+          >
+          <a
+            class="btn btn-ghost"
+            href="https://github.com/solana-foundation/awesome-solana-ai"
+            target="_blank"
+            rel="noopener">Submit yours</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    padding: 110px 0 84px;
+    border-bottom: 1px solid var(--border);
+  }
+  .orb-purple {
+    width: 480px;
+    height: 480px;
+    top: -180px;
+    left: 4%;
+    background: rgba(153, 69, 255, 0.24);
+  }
+  .orb-green {
+    width: 420px;
+    height: 420px;
+    top: -60px;
+    right: 2%;
+    background: rgba(20, 241, 149, 0.12);
+  }
+  .hero-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 26px;
+  }
+  .hero-sub {
+    font-size: 1.12rem;
+    color: var(--text-2);
+    max-width: 58ch;
+    text-wrap: pretty;
+  }
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hero-terminal {
+    width: 100%;
+    max-width: 560px;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 14px;
+  }
+  .hero-stats dt {
+    font-size: 0.8rem;
+    color: var(--text-3);
+    order: 2;
+  }
+  .hero-stats dd {
+    font-size: 1.9rem;
+    font-weight: 660;
+    letter-spacing: -0.03em;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero-stats > div {
+    display: flex;
+    flex-direction: column;
+  }
+  .section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+  .grid-official {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+  .use-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 36px;
+  }
+  .use-step {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--green);
+  }
+  .use-grid .card {
+    min-width: 0;
+  }
+  .use-grid .card p {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+  .inline-link {
+    color: var(--green);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(20, 241, 149, 0.4);
+  }
+  .inline-link:hover {
+    text-decoration-color: var(--green);
+  }
+  .contribute {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    padding: 44px;
+    background:
+      radial-gradient(60% 120% at 90% 10%, rgba(153, 69, 255, 0.14), transparent 60%),
+      var(--bg-card);
+  }
+  .contribute-actions {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  @media (max-width: 940px) {
+    .use-grid {
+      grid-template-columns: 1fr;
+    }
+    .grid-official {
+      grid-template-columns: 1fr;
+    }
+    .contribute {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 32px;
+    }
+  }
+  @media (max-width: 640px) {
+    .hero {
+      padding: 72px 0 56px;
+    }
+    .hero-stats {
+      gap: 28px;
+    }
+  }
+</style>

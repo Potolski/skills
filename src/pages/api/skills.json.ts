@@ -1,0 +1,51 @@
+import type { APIRoute } from "astro";
+import { registry, SITE_URL } from "../../lib/registry";
+
+// Stable machine-readable index of everything the site knows about.
+export const GET: APIRoute = () => {
+  const payload = {
+    name: "Solana Skills",
+    url: SITE_URL,
+    updated: registry.updated,
+    official: registry.official.map((s) => ({
+      id: s.id,
+      name: s.name,
+      title: s.title,
+      description: s.description,
+      category: s.category,
+      repo: s.repo,
+      license: s.license,
+      version: s.version,
+      multiFile: s.multiFile,
+      page: `${SITE_URL}/skills/${s.id}`,
+      hosted: `${SITE_URL}${s.hostedPath}`,
+      raw: s.rawUrl,
+      github: s.githubUrl,
+      install: `npx skills add ${s.repo}`,
+    })),
+    ecosystem: registry.ecosystem.map((r) => ({
+      id: r.id,
+      repo: r.repo,
+      name: r.displayName,
+      vendor: r.vendor,
+      type: r.type,
+      description: r.blurb,
+      url: r.url,
+      homepage: r.homepage,
+      stars: r.stars,
+      skillCount: r.skillCount,
+      skills: r.skills.map((s) => ({
+        name: s.name,
+        description: s.description,
+        category: s.category,
+        url: s.url,
+      })),
+    })),
+  };
+  return new Response(JSON.stringify(payload, null, 2), {
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Access-Control-Allow-Origin": "*",
+    },
+  });
+};
