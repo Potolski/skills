@@ -7,6 +7,9 @@ export const GET: APIRoute = () => {
     "/skills",
     "/ecosystem",
     ...registry.official.map((s) => `/skills/${s.id}`),
+    ...registry.ecosystem.flatMap((r) =>
+      r.skills.filter((s) => s.slug).map((s) => `/skills/${r.id}/${s.slug}`),
+    ),
   ];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

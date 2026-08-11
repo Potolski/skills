@@ -32,6 +32,7 @@ const { skill, featured = false } = Astro.props;
   <code class="skill-name mono">{skill.name}</code>
   <p>{skill.summary ?? `${skill.tagline}. ${skill.description}`}</p>
   <div class="card-meta">
+    {skill.logo && <img class="owner-logo" src={skill.logo} alt="" width="18" height="18" loading="lazy" />}
     <span>{skill.repo.split('/')[0]}</span>
     <span aria-hidden="true">·</span>
     {skill.version && <span>v{skill.version}</span>}
@@ -62,5 +63,10 @@ const { skill, featured = false } = Astro.props;
   }
   .featured p {
     -webkit-line-clamp: 4;
+  }
+  .owner-logo {
+    border-radius: 5px;
+    object-fit: cover;
+    background: var(--bg-elev);
   }
 </style>

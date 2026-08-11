@@ -1,6 +1,6 @@
 ---
 import type { EcosystemRepo } from '../lib/registry';
-import { registry, repoInstallCommand } from '../lib/registry';
+import { registry, repoInstallCommand, ecoSkillPage } from '../lib/registry';
 
 interface Props {
   repo: EcosystemRepo;
@@ -35,7 +35,15 @@ const countLabel = repo.highlightsOnly
 
 <article class="card hoverable repo-card" id={repo.id}>
   <header class="repo-head">
-    <div class="avatar" aria-hidden="true">{initial}</div>
+    {
+      repo.logo ? (
+        <img class="avatar avatar-img" src={repo.logo} alt="" width="42" height="42" loading="lazy" />
+      ) : (
+        <div class="avatar" aria-hidden="true">
+          {initial}
+        </div>
+      )
+    }
     <div class="repo-id">
       <h3>{repo.displayName}</h3>
       <a class="mono repo-slug" href={repo.url} target="_blank" rel="noopener">{repo.repo}</a>
@@ -125,14 +133,22 @@ const countLabel = repo.highlightsOnly
           </svg>
         </summary>
         <ul>
-          {repo.skills.map((s) => (
-            <li>
-              <a href={s.url} target="_blank" rel="noopener" title={s.description}>
-                <code class="mono">{s.name}</code>
-                <span class="skill-desc">{s.description}</span>
-              </a>
-            </li>
-          ))}
+          {repo.skills.map((s) => {
+            const page = ecoSkillPage(repo, s);
+            return (
+              <li>
+                <a
+                  href={page ?? s.url}
+                  target={page ? undefined : '_blank'}
+                  rel={page ? undefined : 'noopener'}
+                  title={s.description}
+                >
+                  <code class="mono">{s.name}</code>
+                  <span class="skill-desc">{s.description}</span>
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </details>
     )
@@ -188,6 +204,11 @@ const countLabel = repo.highlightsOnly
     font-size: 1.05rem;
     color: #fff;
     background: linear-gradient(135deg, rgba(153, 69, 255, 0.85), rgba(20, 241, 149, 0.55));
+  }
+  .avatar-img {
+    object-fit: cover;
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
   }
   .repo-id {
     flex: 1;

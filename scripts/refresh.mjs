@@ -7,9 +7,10 @@
  *
  * Set GITHUB_TOKEN to raise API rate limits (60/h anonymous → 5000/h).
  */
-import { readFileSync, writeFileSync, mkdirSync, rmSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import matter from "gray-matter";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REGISTRY_PATH = join(ROOT, "src/data/registry.json");
@@ -57,6 +58,25 @@ const SKILL_PATHS = {
   "DFlowProtocol/dflow_phantom-connect-skill": { include: [/^/], exclude: [] },
   // trailofbits/skills + solanabr/solana-ai-kit are hand-curated (highlights only)
 };
+
+/**
+ * Repos whose skills we mirror in full (SKILL.md verbatim + every companion
+ * .md) so relative links resolve on this domain — same guarantee as the
+ * official skills. Everything else gets a partial mirror: SKILL.md with
+ * relative links rewritten to pinned GitHub URLs (companions stay upstream).
+ */
+const HOSTED_FULL = new Set([
+  "sendaifun/skills",
+  "sendaifun/solana-new",
+  "solanabr/solana-ai-kit",
+]);
+const ECO_FILES_DIR = join(ROOT, "src/data/eco-skill-files");
+
+const slugify = (s) =>
+  (s ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/^[-.]+|[-.]+$/g, "");
 
 let apiCalls = 0;
 async function gh(path) {
@@ -113,6 +133,168 @@ async function repoMeta(repo) {
 
 /** Extract the skill directory from a github tree/blob URL regardless of ref. */
 const dirFromUrl = (url) => url.match(/\/tree\/[^/]+\/(.*)$/)?.[1] ?? null;
+
+const treeCache = new Map();
+/** Recursive git tree at a ref (sha or branch), cached per repo@ref. */
+function treeAt(repo, ref) {
+  const key = `${repo}@${ref}`;
+  if (!treeCache.has(key)) {
+    treeCache.set(key, gh(`/repos/${repo}/git/trees/${ref}?recursive=1`));
+  }
+  return treeCache.get(key);
+}
+
+/**
+ * Rewrite relative markdown links/images/reference-defs to absolute URLs
+ * against `base`. Skips fenced code blocks and inline code spans so example
+ * snippets survive untouched.
+ */
+function rewriteRelativeLinks(txt, base) {
+  const isRel = (u) => !!u && !/^([a-z][a-z0-9+.-]*:|\/|#|\?)/i.test(u);
+  const resolve = (u) => {
+    try {
+      return new URL(u, base).href;
+    } catch {
+      return u;
+    }
+  };
+  let inFence = false;
+  return txt
+    .split("\n")
+    .map((line) => {
+      if (/^\s*(```|~~~)/.test(line)) {
+        inFence = !inFence;
+        return line;
+      }
+      if (inFence) return line;
+      return line
+        .split(/(`+[^`]*`+)/)
+        .map((part, i) => {
+          if (i % 2 === 1) return part; // inline code span
+          return part
+            .replace(
+              /(!?\[[^\]]*\]\()\s*<?([^)\s>]+)>?((?:\s+"[^"]*")?\s*\))/g,
+              (m, pre, url, post) => (isRel(url) ? `${pre}${resolve(url)}${post}` : m)
+            )
+            .replace(/^(\s*\[[^\]]+\]:\s*)(\S+)/, (m, pre, url) =>
+              isRel(url) ? `${pre}${resolve(url)}` : m
+            );
+        })
+        .join("");
+    })
+    .join("\n");
+}
+
+/** Partial mirror: verbatim body, but relative links resolve to pinned GitHub. */
+function partialMirror(txt, repo, ref, dir) {
+  const base = `https://github.com/${repo}/blob/${ref}/${dir ? `${dir}/` : ""}`;
+  const rewritten = rewriteRelativeLinks(txt, base);
+  const note = `<!--\n  Mirror of ${base}SKILL.md hosted by skills.solana.com.\n  Relative links were rewritten to GitHub URLs pinned to the mirrored commit —\n  companion files are not hosted here; the upstream repo is the source of truth.\n-->\n\n`;
+  const fm = rewritten.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
+  return fm ? fm[0] + "\n" + note + rewritten.slice(fm[0].length) : note + rewritten;
+}
+
+/**
+ * Mirror an ecosystem repo's indexed skills for on-site hosting + detail
+ * pages. Mirrors from each skill's *pinned* URL ref (url ↔ mirror always
+ * agree). Repos without a real license are never republished (links only).
+ */
+async function mirrorEcoSkills(eco) {
+  const repoDir = join(ECO_FILES_DIR, eco.id);
+  rmSync(repoDir, { recursive: true, force: true });
+  const fullHost = HOSTED_FULL.has(eco.repo);
+  const licensed = !!eco.license;
+  if (!licensed) console.warn(`⚠ ${eco.id}: no upstream license — skills linked, not mirrored`);
+  const seen = new Set();
+  let hosted = 0;
+  for (const s of eco.skills) {
+    delete s.hostedPath;
+    delete s.hostedFiles;
+    s.hosted = false;
+    // Two upstream shapes: a skill directory (…/tree/<ref>/<dir>, SKILL.md
+    // inside) or a single flat file (…/blob/<ref>/<path>.md).
+    const treeM = s.url.match(/\/tree\/([^/]+)\/?(.*)$/);
+    const blobM = s.url.match(/\/blob\/([^/]+)\/(.+\.md)$/);
+    if (!treeM && !blobM) {
+      console.warn(`⚠ ${eco.id}/${s.name}: unparsable url ${s.url}`);
+      continue;
+    }
+    const ref = (treeM ?? blobM)[1];
+    const skillFilePath = blobM
+      ? blobM[2]
+      : `${treeM[2].replace(/\/$/, "") ? `${treeM[2].replace(/\/$/, "")}/` : ""}SKILL.md`;
+    const dir = blobM
+      ? skillFilePath.split("/").slice(0, -1).join("/")
+      : treeM[2].replace(/\/$/, "");
+    s.dir = dir;
+    let slug = slugify(s.name) || slugify(dir.split("/").pop()) || "skill";
+    while (seen.has(slug)) slug = `${slug}-2`;
+    seen.add(slug);
+    s.slug = slug;
+
+    const txt = await raw(eco.repo, ref, skillFilePath);
+    if (!txt) {
+      console.warn(`⚠ ${eco.id}/${s.name}: ${skillFilePath} unreachable at ${ref.slice(0, 7)}`);
+      continue;
+    }
+    s.bytes = Buffer.byteLength(txt);
+    s.words = txt.replace(/^---[\s\S]*?---\s*/, "").split(/\s+/).length;
+
+    if (blobM) {
+      s.files = [];
+      s.multiFile = false;
+    }
+    const tree = blobM ? null : await treeAt(eco.repo, ref);
+    if (tree?.tree) {
+      const prefix = dir ? `${dir}/` : "";
+      s.files = tree.tree
+        .filter(
+          (n) =>
+            n.path.startsWith(prefix) &&
+            n.path !== `${prefix}SKILL.md` &&
+            n.path.slice(prefix.length) !== "" &&
+            !n.path.slice(prefix.length).startsWith(".")
+        )
+        .map((n) => n.path.slice(prefix.length) + (n.type === "tree" ? "/" : ""))
+        .filter((p) => (dir ? true : !/^(README|LICENSE|\.)/i.test(p)))
+        .sort();
+      s.multiFile = s.files.some((f) => !f.endsWith("/"));
+    }
+
+    if (!licensed) continue;
+    try {
+      matter(txt); // Astro's content layer parses this — reject what would break the build
+    } catch (e) {
+      console.warn(`⚠ ${eco.id}/${slug}: malformed frontmatter — not hosting (${e.message})`);
+      continue;
+    }
+
+    const destDir = join(repoDir, slug);
+    mkdirSync(destDir, { recursive: true });
+    s.hostedFiles = [];
+    if (fullHost) {
+      writeFileSync(join(destDir, "SKILL.md"), txt);
+      const companions = (s.files ?? []).filter((f) => f.endsWith(".md"));
+      for (const rel of companions) {
+        const body = await raw(eco.repo, ref, `${dir ? `${dir}/` : ""}${rel}`);
+        if (!body) {
+          console.warn(`⚠ ${eco.id}/${slug}: companion missing ${rel}`);
+          continue;
+        }
+        const dest = join(destDir, rel);
+        mkdirSync(dirname(dest), { recursive: true });
+        writeFileSync(dest, body);
+        s.hostedFiles.push(rel);
+      }
+    } else {
+      writeFileSync(join(destDir, "SKILL.md"), partialMirror(txt, eco.repo, ref, dir));
+    }
+    s.hosted = true;
+    s.hostedPath = `/s/${eco.id}/${slug}/SKILL.md`;
+    hosted++;
+  }
+  return hosted;
+}
 
 // ---------- official: metadata + verbatim mirrors + file trees ----------
 for (const skill of registry.official) {
@@ -224,52 +406,93 @@ for (const eco of registry.ecosystem) {
   const pinnedUrl = (dir) =>
     dir ? `https://github.com/${eco.repo}/tree/${ref}/${dir}` : `https://github.com/${eco.repo}/tree/${ref}`;
   const filters = SKILL_PATHS[eco.repo];
-  if (metaOnly || !filters) {
+  if (metaOnly) {
     console.log(`✓ eco ${eco.id} (meta only)`);
     continue;
   }
 
-  const tree = await gh(`/repos/${eco.repo}/git/trees/${meta.branch}?recursive=1`);
-  if (!tree?.tree) continue;
-  const skillPaths = tree.tree
-    .map((n) => n.path)
-    .filter((p) => p.endsWith("SKILL.md"))
-    .filter((p) => filters.include.some((re) => re.test(p)))
-    .filter((p) => !filters.exclude.some((re) => re.test(p)));
+  let dropped = 0;
+  if (filters) {
+    const tree = await treeAt(eco.repo, ref);
+    if (!tree?.tree) continue;
+    const skillPaths = tree.tree
+      .map((n) => n.path)
+      .filter((p) => p.endsWith("SKILL.md"))
+      .filter((p) => filters.include.some((re) => re.test(p)))
+      .filter((p) => !filters.exclude.some((re) => re.test(p)));
 
-  const known = new Map(eco.skills.map((s) => [dirFromUrl(s.url) ?? "", s]));
-  const nextSkills = [];
-  let added = 0;
-  for (const path of skillPaths) {
-    const dir = path.replace(/\/SKILL\.md$/, "").replace(/^SKILL\.md$/, "");
-    const existing = known.get(dir);
-    if (existing) {
-      nextSkills.push({ ...existing, url: pinnedUrl(dir) });
-      continue;
+    const known = new Map(eco.skills.map((s) => [dirFromUrl(s.url) ?? "", s]));
+    const nextSkills = [];
+    let added = 0;
+    for (const path of skillPaths) {
+      const dir = path.replace(/\/SKILL\.md$/, "").replace(/^SKILL\.md$/, "");
+      const existing = known.get(dir);
+      if (existing) {
+        nextSkills.push({ ...existing, url: pinnedUrl(dir) });
+        continue;
+      }
+      const txt = await raw(eco.repo, ref, path);
+      if (!txt) continue;
+      const fm = parseFrontmatter(txt);
+      if (!fm.name) {
+        skippedNoName.push(`${eco.repo}/${path}`);
+        continue;
+      }
+      if (nextSkills.some((s) => s.name === fm.name)) continue; // same skill vendored at two paths
+      nextSkills.push({
+        name: fm.name,
+        description: cleanDescription(fm.description),
+        category: null, // curate by hand — auto-bucketing everything as "development" pollutes filters
+        url: pinnedUrl(dir),
+        multiFile: dir !== "" && tree.tree.some((n) => n.path.startsWith(`${dir}/`) && n.path !== path),
+      });
+      added++;
+      console.log(`  + new skill ${eco.id}/${fm.name} (category: curate me)`);
     }
-    const txt = await raw(eco.repo, meta.branch, path);
-    if (!txt) continue;
-    const fm = parseFrontmatter(txt);
-    if (!fm.name) {
-      skippedNoName.push(`${eco.repo}/${path}`);
-      continue;
-    }
-    if (nextSkills.some((s) => s.name === fm.name)) continue; // same skill vendored at two paths
-    nextSkills.push({
-      name: fm.name,
-      description: cleanDescription(fm.description),
-      category: null, // curate by hand — auto-bucketing everything as "development" pollutes filters
-      url: pinnedUrl(dir),
-      multiFile: dir !== "" && tree.tree.some((n) => n.path.startsWith(`${dir}/`) && n.path !== path),
-    });
-    added++;
-    console.log(`  + new skill ${eco.id}/${fm.name} (category: curate me)`);
+    dropped = eco.skills.length + added - nextSkills.length;
+    eco.skills = nextSkills;
+    if (!eco.highlightsOnly) eco.skillCount = nextSkills.length;
   }
-  const dropped = eco.skills.length + added - nextSkills.length;
-  eco.skills = nextSkills;
-  if (!eco.highlightsOnly) eco.skillCount = nextSkills.length;
-  console.log(`✓ eco ${eco.id} (${eco.skills.length} skills${dropped > 0 ? `, ${dropped} dropped — review` : ""})`);
+
+  const hosted = await mirrorEcoSkills(eco);
+  console.log(
+    `✓ eco ${eco.id} (${eco.skills.length} skills, ${hosted} mirrored${dropped > 0 ? `, ${dropped} dropped — review` : ""})`
+  );
 }
+
+// ---------- logos: GitHub org/user avatars, self-hosted ----------
+const owners = new Set(
+  [
+    ...registry.official.map((s) => s.repo),
+    ...registry.ecosystem.map((e) => e.repo),
+    ...registry.communityIndex.map((c) => c.repo),
+  ].map((repo) => repo.split("/")[0])
+);
+const LOGO_DIR = join(ROOT, "public/logos");
+mkdirSync(LOGO_DIR, { recursive: true });
+for (const owner of owners) {
+  const dest = join(LOGO_DIR, `${owner}.png`);
+  try {
+    const res = await fetch(`https://github.com/${owner}.png?size=128`, {
+      headers: { "User-Agent": API_HEADERS["User-Agent"] },
+    });
+    if (res.ok && (res.headers.get("content-type") ?? "").startsWith("image/")) {
+      writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
+    } else if (!existsSync(dest)) {
+      console.warn(`⚠ logo unavailable for ${owner}`);
+    }
+  } catch {
+    if (!existsSync(dest)) console.warn(`⚠ logo fetch failed for ${owner}`);
+  }
+}
+const logoFor = (repo) => {
+  const owner = repo.split("/")[0];
+  return existsSync(join(LOGO_DIR, `${owner}.png`)) ? `/logos/${owner}.png` : null;
+};
+for (const s of registry.official) s.logo = logoFor(s.repo);
+for (const e of registry.ecosystem) e.logo = logoFor(e.repo);
+for (const c of registry.communityIndex) c.logo = logoFor(c.repo);
+console.log(`✓ logos for ${owners.size} orgs`);
 
 registry.updated = new Date().toISOString().slice(0, 10);
 writeFileSync(REGISTRY_PATH, JSON.stringify(registry, null, 2) + "\n");

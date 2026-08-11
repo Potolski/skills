@@ -9,14 +9,17 @@ interface Props {
   description: string;
   canonical?: string;
   noindex?: boolean;
+  /** Page-specific social card (site-relative), defaults to the generic one. */
+  ogImage?: string;
 }
 
-const { title, description, canonical, noindex = false } = Astro.props;
+const { title, description, canonical, noindex = false, ogImage } = Astro.props;
 // build.format 'file' makes pathname end in .html — canonicals must match the
 // extensionless URLs the site links and the sitemap advertise.
 const cleanPath =
   Astro.url.pathname.replace(/\.html$/, "").replace(/^\/index$/, "/") || "/";
 const canonicalURL = canonical ?? new URL(cleanPath, Astro.site).href;
+const ogImageURL = new URL(ogImage ?? '/og.png', Astro.site).href;
 ---
 
 <!doctype html>
@@ -35,13 +38,13 @@ const canonicalURL = canonical ?? new URL(cleanPath, Astro.site).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="Solana Skills" />
-    <meta property="og:image" content={new URL('/og.png', Astro.site).href} />
+    <meta property="og:image" content={ogImageURL} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL('/og.png', Astro.site).href} />
+    <meta name="twitter:image" content={ogImageURL} />
     <link rel="alternate" type="application/json" href="/api/skills.json" title="Skills index" />
     <slot name="head" />
   </head>

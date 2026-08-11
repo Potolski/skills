@@ -23,7 +23,9 @@ export const GET: APIRoute = () => {
         vendor: r.vendor,
         official: false,
         category: s.category,
-        raw: rawSkillUrl(s.url),
+        // Prefer the on-domain mirror (stable, links resolve); fall back to
+        // GitHub raw pinned to the indexed commit.
+        raw: s.hostedPath ? `${SITE_URL}${s.hostedPath}` : rawSkillUrl(s.url),
       })),
     ),
   ];

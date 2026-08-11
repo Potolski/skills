@@ -24,7 +24,8 @@ export const GET: APIRoute = () => {
 
   const ecoLines = registry.ecosystem.map((r) => {
     const n = r.skills.length;
-    return `- [${r.displayName}](${r.url}): ${r.blurb.slice(0, 200)} (${n} ${n === 1 ? "skill" : "skills"} indexed${r.commitSha ? ` @ ${r.commitSha.slice(0, 7)}` : ""})`;
+    const hosted = r.skills.filter((s) => s.hosted).length;
+    return `- [${r.displayName}](${r.url}): ${r.blurb.slice(0, 200)} (${n} ${n === 1 ? "skill" : "skills"} indexed${r.commitSha ? ` @ ${r.commitSha.slice(0, 7)}` : ""}${hosted > 0 ? `; ${hosted} mirrored on this domain` : ""})`;
   });
 
   const tailLines = registry.communityIndex.map(
@@ -72,7 +73,7 @@ ${officialLines.join("\n")}
 
 ## Ecosystem skill repositories
 
-Per-skill names, descriptions, and pinned URLs for every repo below are in the JSON index — fetch ${SITE_URL}/api/skills.json (full) or ${SITE_URL}/api/skills-min.json (token-lean) to find a specific skill:
+Most ecosystem skills are mirrored on this domain too — fetchable at ${SITE_URL}/s/<repo-id>/<skill>/SKILL.md with a human page at ${SITE_URL}/skills/<repo-id>/<skill>. Per-skill names, descriptions, mirror URLs, and pinned GitHub URLs are in the JSON index — fetch ${SITE_URL}/api/skills.json (full) or ${SITE_URL}/api/skills-min.json (token-lean, one fetchable URL per skill) to find a specific skill:
 
 ${ecoLines.join("\n")}
 

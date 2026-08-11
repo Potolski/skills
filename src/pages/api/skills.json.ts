@@ -52,6 +52,7 @@ export const GET: APIRoute = () => {
       description: r.blurb,
       url: r.url,
       homepage: r.homepage,
+      logo: r.logo ? `${SITE_URL}${r.logo}` : null,
       stars: r.stars,
       license: r.license,
       sourceUpdated: r.pushedAt,
@@ -65,6 +66,14 @@ export const GET: APIRoute = () => {
         url: s.url,
         raw: rawSkillUrl(s.url),
         multiFile: s.multiFile,
+        page: s.slug ? `${SITE_URL}/skills/${r.id}/${s.slug}` : null,
+        // Mirror of SKILL.md on this domain. Full-host repos also mirror
+        // companion .md files (hostedFiles, relative to hostedDir); for the
+        // rest, links inside the mirror point at GitHub pinned to `url`.
+        hosted: s.hostedPath ? `${SITE_URL}${s.hostedPath}` : null,
+        hostedDir: s.hosted ? `${SITE_URL}/s/${r.id}/${s.slug}/` : null,
+        hostedFiles: s.hostedFiles ?? [],
+        bytes: s.bytes ?? null,
       })),
     })),
   };

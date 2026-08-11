@@ -12,4 +12,16 @@ const skills = defineCollection({
     .passthrough(),
 });
 
-export const collections = { skills };
+// Mirrored ecosystem skills: src/data/eco-skill-files/<repoId>/<slug>/SKILL.md
+// → entry id "<repoId>/<slug>". Frontmatter is whatever upstream wrote, so no
+// required fields (some skills ship none at all).
+const ecoSkills = defineCollection({
+  loader: glob({
+    pattern: "**/SKILL.md",
+    base: "./src/data/eco-skill-files",
+    generateId: ({ entry }) => entry.replace(/\/SKILL\.md$/, ""),
+  }),
+  schema: z.object({}).passthrough(),
+});
+
+export const collections = { skills, ecoSkills };

@@ -1,11 +1,18 @@
 ---
 import Base from '../../layouts/Base.astro';
 import SkillCard from '../../components/SkillCard.astro';
-import { registry, totalSkills, CATEGORY_LABELS } from '../../lib/registry';
+import { registry, totalSkills, CATEGORY_LABELS, ecoSkillPage } from '../../lib/registry';
 
 const official = registry.official;
 const ecoSkills = registry.ecosystem.flatMap((repo) =>
-  repo.skills.map((s) => ({ ...s, vendor: repo.vendor, repoName: repo.displayName, repoId: repo.id }))
+  repo.skills.map((s) => ({
+    ...s,
+    vendor: repo.vendor,
+    repoName: repo.displayName,
+    repoId: repo.id,
+    logo: repo.logo ?? null,
+    page: ecoSkillPage(repo, s),
+  }))
 );
 
 const categories = [
@@ -28,6 +35,7 @@ const usedCategories = new Set([
 <Base
   title="Browse skills — Solana Skills"
   description={`Search ${totalSkills()}+ agent skills for Solana: official Solana Foundation skills plus ecosystem skills from Jupiter, Helius, Metaplex, SendAI, and more.`}
+  ogImage="/og/skills.png"
 >
   <section class="section catalog-head">
     <div class="container">
@@ -121,21 +129,30 @@ const usedCategories = new Set([
                 data-cat={s.category ?? 'uncategorized'}
                 data-official="false"
               >
-                <a href={s.url} target="_blank" rel="noopener" class="card eco-card">
-                  <svg
-                    class="card-arrow"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M7 17 17 7M7 7h10v10" />
-                  </svg>
+                <a
+                  href={s.page ?? s.url}
+                  target={s.page ? undefined : '_blank'}
+                  rel={s.page ? undefined : 'noopener'}
+                  class="card eco-card"
+                >
+                  {
+                    !s.page && (
+                      <svg
+                        class="card-arrow"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M7 17 17 7M7 7h10v10" />
+                      </svg>
+                    )
+                  }
                   <div class="eco-top">
                     <code class="mono eco-name">{s.name}</code>
                     {s.multiFile && (
@@ -146,6 +163,7 @@ const usedCategories = new Set([
                   </div>
                   <p>{s.description || 'No description provided.'}</p>
                   <div class="card-meta">
+                    {s.logo && <img class="eco-logo" src={s.logo} alt="" width="18" height="18" loading="lazy" />}
                     <span class="badge badge-vendor">{s.vendor}</span>
                     <span>{s.repoName}</span>
                   </div>
@@ -345,6 +363,11 @@ const usedCategories = new Set([
   }
   .eco-card p {
     font-size: 0.86rem;
+  }
+  .eco-logo {
+    border-radius: 5px;
+    object-fit: cover;
+    background: var(--bg-elev);
   }
   .empty-state {
     text-align: center;

@@ -26,6 +26,7 @@ const refs = refsFor(skill.id);
 <Base
   title={`${skill.title} — Solana Skills`}
   description={(skill.summary ?? skill.description).slice(0, 158).replace(/\s+\S*$/, '') + '…'}
+  ogImage={`/og/skills/${skill.id}.png`}
 >
   <section class="detail-head">
     <div class="container">
