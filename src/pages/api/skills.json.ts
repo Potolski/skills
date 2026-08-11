@@ -36,6 +36,7 @@ export const GET: APIRoute = () => {
       url: r.url,
       homepage: r.homepage,
       stars: r.stars,
+      commit: r.commitSha ?? null,
       skillCount: r.skillCount,
       skills: r.skills.map((s) => ({
         name: s.name,
