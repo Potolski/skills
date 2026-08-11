@@ -576,7 +576,11 @@ const refs = refsFor(skill.id);
   }
   @media (max-width: 980px) {
     .detail-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
+    }
+    article,
+    aside {
+      min-width: 0;
     }
     aside {
       position: static;
