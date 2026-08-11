@@ -29,3 +29,13 @@ jobs:
               cmp "$f" "dist/s/$rel" || { echo "::error::dist/s/$rel is not a verbatim mirror"; exit 1; }
             done
           fi
+      - name: Verify hosted ecosystem files match the store
+        # Ecosystem mirrors are transformed (if at all) at refresh time and
+        # committed; the build must serve the committed store byte-for-byte.
+        run: |
+          if [ -d src/data/eco-skill-files ]; then
+            find src/data/eco-skill-files -name '*.md' | while read -r f; do
+              rel=${f#src/data/eco-skill-files/}
+              cmp "$f" "dist/s/$rel" || { echo "::error::dist/s/$rel does not match the committed store"; exit 1; }
+            done
+          fi
