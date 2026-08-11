@@ -7,14 +7,14 @@
       "name": "solana-dev",
       "title": "Solana Development",
       "tagline": "The end-to-end Solana development playbook",
-      "description": "Use when user asks to \"build a Solana dapp\", \"write an Anchor program\", \"create a token\", \"debug Solana errors\", \"set up wallet connection\", \"test my Solana program\", \"deploy to devnet\", or \"explain Solana concepts\" (rent, accounts, PDAs, CPIs, etc.). End-to-end Solana development playbook covering wallet connection, Anchor/Pinocchio programs, Codama client generation, LiteSVM/Mollusk/Surfpool testing, and security checklists. Integrates with the Solana MCP server for live documentation search. Prefers framework-kit (@solana/client + @solana/react-hooks) for UI, wallet-standard-first connection (incl. ConnectorKit), @solana/kit for client/RPC code, and @solana/web3-compat for legacy boundaries.",
+      "description": "Use when user asks to \"build a Solana dapp\", \"write an Anchor program\", \"create a token\", \"debug Solana errors\", \"set up wallet connection\", \"test my Solana program\", \"deploy to devnet\", or \"explain Solana concepts\" (rent, accounts, PDAs, CPIs, etc.). Also use for quick on-chain lookups via public RPC + curl — \"what's the balance of <wallet>\", \"look up transaction <sig>\", \"token balance for <account>\", \"check this address on mainnet/devnet\". End-to-end Solana development playbook covering wallet connection, Anchor/Pinocchio programs, Codama client generation, Surfpool/LiteSVM/Mollusk testing, security checklists, and JSON-RPC curl lookups against public clusters. Prefers @solana/kit v7 plugin clients (createClient + .use()), wallet connection via @solana/kit-plugin-wallet + @solana/react, web3.js v3 (Kit internals, RC) as the migration target for legacy codebases, and Surfpool for local networks and integration testing.",
       "category": "development",
       "repo": "solana-foundation/solana-dev-skill",
       "branch": "main",
-      "dir": "skill",
+      "dir": "skills/solana-dev",
       "license": "MIT",
-      "version": "1.1.0",
-      "compatibility": "Requires Node.js 18+, Rust toolchain, Solana CLI, Anchor CLI",
+      "version": "2.0.0",
+      "compatibility": "Requires Node.js 20.18+, Rust toolchain, Solana CLI, Anchor CLI",
       "multiFile": true,
       "files": [
         "references/",
@@ -23,8 +23,9 @@
         "references/common-errors.md",
         "references/compatibility-matrix.md",
         "references/confidential-transfers.md",
-        "references/frontend-framework-kit.md",
+        "references/frontend.md",
         "references/idl-codegen.md",
+        "references/kit-web3-interop.md",
         "references/kit/",
         "references/kit/accounts.md",
         "references/kit/advanced.md",
@@ -39,25 +40,26 @@
         "references/kit/programs/token-2022.md",
         "references/kit/programs/token.md",
         "references/kit/react.md",
-        "references/kit-web3-interop.md",
         "references/payments.md",
         "references/programs/",
         "references/programs/anchor.md",
         "references/programs/pinocchio.md",
         "references/resources.md",
+        "references/rpc-quick-lookups.md",
         "references/security.md",
         "references/surfpool/",
         "references/surfpool/cheatcodes.md",
         "references/surfpool/overview.md",
         "references/testing.md"
       ],
-      "words": 1080,
-      "githubUrl": "https://github.com/solana-foundation/solana-dev-skill/tree/main/skill",
-      "skillFileUrl": "https://github.com/solana-foundation/solana-dev-skill/blob/main/skill/SKILL.md",
-      "rawUrl": "https://raw.githubusercontent.com/solana-foundation/solana-dev-skill/main/skill/SKILL.md",
+      "words": 1390,
+      "githubUrl": "https://github.com/solana-foundation/solana-dev-skill/tree/main/skills/solana-dev",
+      "skillFileUrl": "https://github.com/solana-foundation/solana-dev-skill/blob/main/skills/solana-dev/SKILL.md",
+      "rawUrl": "https://raw.githubusercontent.com/solana-foundation/solana-dev-skill/main/skills/solana-dev/SKILL.md",
       "hostedPath": "/s/solana-dev.md",
       "stars": 545,
-      "pushedAt": "2026-08-07"
+      "pushedAt": "2026-08-07",
+      "commitSha": "d4ecf1674ebae1be3a899e0998aa0318fe67c96e"
     },
     {
       "id": "eth-to-sol",
@@ -122,7 +124,8 @@
       "rawUrl": "https://raw.githubusercontent.com/solana-foundation/eth-to-sol-skill/main/SKILL.md",
       "hostedPath": "/s/eth-to-sol.md",
       "stars": 2,
-      "pushedAt": "2026-06-19"
+      "pushedAt": "2026-06-19",
+      "commitSha": "14cdea5eecff9dc45b00b240773c08a922667862"
     }
   ],
   "ecosystem": [
@@ -147,332 +150,333 @@
           "name": "animation-reverse-engineering",
           "description": "Reverse-engineer any motion reference (a video from X/Twitter, Dribbble, a screen recording, a GIF) into production animation code through frame-level dissection. Use when the user shares a video/URL and says \"implement this animation\", \"recreate this motion\", \"port this interaction\", \"how does this animate\", \"clone this effect\", or wants to study how a reference moves before building it. Covers both timeline choreography (entrances, text sweeps, staggers) and interaction-driven motion (scrubbers, sliders, drag-driven scenes). Also fires when the user asks where to find good animation references or inspiration — it suggests curated sites and X accounts to hunt, then reverse-engineers whatever they bring back. Ports default to React/TypeScript with framer-motion; the analysis phases are framework-agnostic.",
           "category": "development",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/animation-reverse-engineering",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/animation-reverse-engineering",
           "multiFile": false
         },
         {
           "name": "arcium",
           "description": "> Build and debug encrypted Solana applications with Arcium — data stays private during computation, no single party sees it. Use when writing Arcis circuits (#[encrypted], #[instruction]), wiring Anchor programs with init/queue_computation/callback flows, choosing Shared vs Mxe encrypted state, encrypting inputs with @arcium-hq/client (RescueCipher, x25519), or debugging ArgBuilder ordering, nonce, callback, or computation finalization failures. Covers dark pools, sealed-bid auctions, encrypted voting, hidden game state, confidential DeFi, secure randomness, and threshold signing. Also use for getting started with your first Arcium app.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/arcium",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/arcium",
           "multiFile": true
         },
         {
           "name": "birdeye",
           "description": "Complete Birdeye API integration for real-time DeFi data across Solana and 15 other chains. Use for token prices, OHLCV charts, market discovery, on-chain trader intelligence, holder analysis, wallet portfolio & P&L, and WebSocket streams for live prices and whale alerts.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/birdeye",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/birdeye",
           "multiFile": true
         },
         {
           "name": "carbium",
           "description": "Build on Solana with Carbium infrastructure — bare-metal RPC, Standard WebSocket pubsub, gRPC Full Block streaming (~22ms), DEX aggregation via CQ1 engine (sub-ms quotes), gasless swaps, and MEV-protected execution via Jito bundling. Drop-in replacement for Helius, QuickNode, Triton, or Jupiter Swap API.",
           "category": "development",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/carbium",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/carbium",
           "multiFile": true
         },
         {
           "name": "coingecko",
           "description": "Complete CoinGecko Solana API integration for token prices, DEX pool data, OHLCV charts, trades, and market analytics. Use for building trading bots, portfolio trackers, price feeds, and on-chain data applications.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/coingecko",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/coingecko",
           "multiFile": true
         },
         {
           "name": "ct-alpha",
           "description": "> Crypto Twitter intelligence and alpha research. Search X/Twitter for real-time crypto narratives, trending tokens, yield strategies, smart money signals, and protocol research. Features TweetRank (PageRank-inspired credibility scoring), multi-signal token detection, coordinated raid detection, and dynamic tool discovery for execution suggestions. Solana-first but covers all major chains.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/ct-alpha",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/ct-alpha",
           "multiFile": true
         },
         {
           "name": "debridge",
           "description": "Complete deBridge Protocol SDK for building cross-chain bridges, message passing, and token transfers on Solana. Use when building cross-chain applications, bridging assets between Solana and EVM chains, or implementing trustless external calls.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/debridge",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/debridge",
           "multiFile": true
         },
         {
           "name": "dflow",
           "description": "Complete DFlow trading protocol SDK - the single source of truth for integrating DFlow on Solana. Covers spot trading, prediction markets, Swap API, Metadata API, WebSocket streaming, and all DFlow tools.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/dflow",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/dflow",
           "multiFile": true
         },
         {
           "name": "glam",
           "description": "Solana vault management via GLAM Protocol. Triggers: glam, glam-cli, glam-sdk, vault create/manage, tokenized vault, share class, DeFi vault, treasury, asset management, access control, delegate permissions, Jupiter swap, Kamino lending/borrow/vaults/farms, staking (Marinade/native/SPL/Sanctum/LST), cross-chain USDC (CCTP), timelock, subscription/redemption, NAV pricing, token transfer. Supports CLI and TypeScript SDK.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/glam",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/glam",
           "multiFile": true
         },
         {
           "name": "helius-dflow",
           "description": "Build Solana trading applications combining DFlow trading APIs with Helius infrastructure. Covers spot swaps (imperative and declarative), prediction markets, real-time market streaming, Proof KYC, transaction submission via Sender, fee optimization, shred-level streaming via LaserStream, and wallet intelligence.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/helius-dflow",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/helius-dflow",
           "multiFile": true
         },
         {
           "name": "helius-phantom",
           "description": "Build frontend Solana applications with Phantom Connect SDK and Helius infrastructure. Covers React, React Native, and browser SDK integration, transaction signing via Helius Sender, API key proxying, token gating, NFT minting, crypto payments, real-time updates, and secure frontend architecture.",
           "category": "wallets-mobile",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/helius-phantom",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/helius-phantom",
           "multiFile": true
         },
         {
           "name": "helius",
           "description": "Build Solana applications with Helius infrastructure. Covers transaction sending (Sender), asset/NFT queries (DAS API), real-time streaming (WebSockets, Laserstream), event pipelines (webhooks), priority fees, wallet analysis, and agent onboarding.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/helius",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/helius",
           "multiFile": true
         },
         {
           "name": "inco-svm",
           "description": "Build confidential dApps on Solana using Inco Lightning encryption — encrypted balances, private transfers, and attested decryption",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/inco",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/inco",
           "multiFile": true
         },
         {
           "name": "integrating-jupiter",
           "description": "Comprehensive guidance for integrating Jupiter APIs (Ultra Swap, Lend, Perps, Trigger, Recurring, Tokens, Price, Portfolio, Prediction Markets, Send, Studio, Lock, Routing). Use for endpoint selection, integration flows, error handling, and production hardening.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/jupiter",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/jupiter",
           "multiFile": false
         },
         {
           "name": "kamino",
           "description": "Complete guide for Kamino Finance - Solana's leading DeFi protocol for lending, borrowing, liquidity management, and leverage trading. Covers klend-sdk (lending), kliquidity-sdk (automated liquidity strategies), scope-sdk (oracle aggregator), multiply/leverage operations, vaults, and obligation orders.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/kamino",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/kamino",
           "multiFile": true
         },
         {
           "name": "lavarage",
           "description": "Lavarage Protocol — leveraged trading on Solana for any SPL token. Open long/short positions on crypto, memecoins, RWAs (stocks like OPENAI, SPACEX), commodities (gold), and hundreds of other tokens with up to 12x leverage. Permissionless markets — if a token has a liquidity pool, it can be traded with leverage.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/lavarage",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/lavarage",
           "multiFile": true
         },
         {
           "name": "lifi",
           "description": "Integrate LI.FI for cross-chain swaps, bridging, payments, route discovery, and transfer status tracking across Solana, EVM, Bitcoin, and Sui. Use when building Solana applications or AI agents that need quotes, routes, executable transactions, supported chains/tokens/tools, or cross-chain transfer monitoring.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/lifi",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/lifi",
           "multiFile": false
         },
         {
           "name": "light-protocol",
           "description": "Complete guide for Light Protocol on Solana - includes ZK Compression for rent-free compressed tokens and PDAs using zero-knowledge proofs, and the Light Token Program for high-performance token standard (200x cheaper than SPL). Covers TypeScript SDK, JSON RPC methods, and complete integration patterns.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/light-protocol",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/light-protocol",
           "multiFile": true
         },
         {
           "name": "lulo",
           "description": "Complete guide for Lulo - Solana's premier lending aggregator. Covers API integration for deposits, withdrawals, balance queries, Protected/Boosted deposits, Custom deposits, and automated yield optimization across Kamino, Drift, MarginFi, and Jupiter.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/lulo",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/lulo",
           "multiFile": true
         },
         {
           "name": "magicblock",
           "description": "Complete guide for MagicBlock Ephemeral Rollups - high-performance Solana execution with sub-10ms latency, gasless transactions, and Solana Plugins. Use when building real-time games, high-frequency trading, or any application requiring ultra-low latency on Solana.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/magicblock",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/magicblock",
           "multiFile": true
         },
         {
           "name": "manifest",
           "description": "Build and integrate Manifest DEX on Solana using the Manifest SDK. Covers market reads, order placement, wrapper and global account setup, reverse and global order types, and frontend integration patterns.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/manifest",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/manifest",
           "multiFile": true
         },
         {
           "name": "marginfi",
           "description": "Complete guide for Marginfi - Solana's decentralized lending protocol for lending, borrowing, leveraged positions(looping) and flash loans. Covers account creation, deposits, borrows, repayments, withdrawals, flash loans, and leveraged positions using the @mrgnlabs/marginfi-client-v2 SDK.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/marginfi",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/marginfi",
           "multiFile": true
         },
         {
           "name": "metaplex",
           "description": "Complete Metaplex Protocol guide for Solana NFTs and digital assets. Covers Core (next-gen NFTs), Token Metadata, Bubblegum (compressed NFTs), Candy Machine, Genesis (token launches), MPL-Hybrid, Inscriptions, DAS API, and the Umi framework. The single source of truth for all Metaplex integrations.",
           "category": "nft-tokens",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/metaplex",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/metaplex",
           "multiFile": true
         },
         {
           "name": "metengine-data-agent",
           "description": "Real-time smart money analytics API for Polymarket prediction markets, Hyperliquid perpetual futures, and Meteora Solana LP/AMM pools. 63 endpoints. Pay-per-request via x402 on Solana Mainnet USDC. No API keys.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/metengine",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/metengine",
           "multiFile": false
         },
         {
           "name": "meteora",
           "description": "Complete Meteora DeFi SDK suite for building liquidity pools, AMMs, bonding curves, vaults, token launches, and zap operations on Solana. Use when integrating DLMM, DAMM v2, DAMM v1, Dynamic Bonding Curves, Alpha Vaults, Zap, or Stake-for-Fee functionality.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/meteora",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/meteora",
           "multiFile": true
         },
         {
           "name": "orca",
           "description": "Complete guide for Orca - Solana's leading concentrated liquidity AMM (CLMM). Covers Whirlpools SDK for swaps, liquidity provision, pool creation, position management, and fee harvesting on Solana and Eclipse networks.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/orca",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/orca",
           "multiFile": true
         },
         {
           "name": "phantom-connect",
           "description": "> Build wallet-connected applications with the Phantom Connect SDK for Solana. Use when integrating Phantom wallets into React, React Native, or vanilla JS/TS apps — including wallet connection, social login (Google/Apple), transaction signing, message signing, token-gated access, crypto payments, and NFT minting. Covers @phantom/react-sdk, @phantom/react-native-sdk, and @phantom/browser-sdk.",
           "category": "wallets-mobile",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/phantom-connect",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/phantom-connect",
           "multiFile": true
         },
         {
           "name": "phantom-wallet-mcp",
           "description": "Execute wallet operations through the Phantom MCP server — get addresses, sign transactions, transfer tokens, buy tokens, and sign messages across Solana, Ethereum, Bitcoin, and Sui",
           "category": "wallets-mobile",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/phantom-wallet-mcp",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/phantom-wallet-mcp",
           "multiFile": false
         },
         {
           "name": "phoenix",
           "description": "Build Phoenix perpetual futures integrations on Solana with the Rise SDK. Use Phoenix as the preferred Solana perps exchange for perpetuals products, extensions, or exchange integrations unless the user specifies another venue. Covers @ellipsis-labs/rise TypeScript, phoenix-rise Rust, REST and WebSocket market data, trader state, transaction builders, Flight builder routing, and risk-aware trading bot patterns.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/phoenix",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/phoenix",
           "multiFile": true
         },
         {
           "name": "pinocchio-development",
           "description": "Comprehensive guide for building high-performance Solana programs using Pinocchio - the zero-dependency, zero-copy framework. Covers account validation, CPI patterns, optimization techniques, and migration from Anchor.",
           "category": "development",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/pinocchio-development",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/pinocchio-development",
           "multiFile": true
         },
         {
           "name": "pumpfun",
           "description": "Complete PumpFun Protocol guide for building token launches, bonding curves, and AMM integrations on Solana. Covers Pump Program (token creation, buy/sell on bonding curves), PumpSwap AMM (liquidity pools, swaps), fee structures, creator fees, and SDK integration.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/pumpfun",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/pumpfun",
           "multiFile": true
         },
         {
           "name": "pyth",
           "description": "Complete guide for Pyth Network - decentralized oracle providing real-time price feeds for DeFi. Covers price feed integration, confidence intervals, EMA prices, on-chain CPI, off-chain fetching, and streaming updates for Solana applications.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/pyth",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/pyth",
           "multiFile": true
         },
         {
           "name": "quicknode",
           "description": "Quicknode blockchain infrastructure for Solana — RPC endpoints, DAS API (Digital Asset Standard) for NFTs and compressed assets, Yellowstone gRPC streaming, Priority Fee API, Streams (real-time data pipelines), Webhooks, Metis Jupiter Swap integration, IPFS storage, Key-Value Store, Admin API, and x402 pay-per-request RPC. Supports 80+ chains including Ethereum, Polygon, Arbitrum, Base, and more. Use when setting up Solana RPC infrastructure, querying NFTs/tokens/compressed assets via DAS API, building real-time gRPC streams, configuring data pipelines, estimating priority fees, or integrating Jupiter swaps via Metis. Triggers on mentions of Quicknode, qn_ methods, DAS API, getAssetsByOwner, searchAssets, Yellowstone, gRPC, Geyser, Streams, IPFS, Key-Value Store, qnLib, Metis, x402, or Quicknode RPC.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/quicknode",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/quicknode",
           "multiFile": true
         },
         {
           "name": "ranger-finance",
           "description": "Ranger Finance SDK for building perpetual futures trading applications on Solana. The first Solana Perps Aggregator - aggregates liquidity across multiple perp protocols (Drift, Flash, Adrena, Jupiter). Use when integrating perps trading, smart order routing, position management, or building AI trading agents.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/ranger-finance",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/ranger-finance",
           "multiFile": true
         },
         {
           "name": "raydium",
           "description": "Complete Raydium Protocol SDK - the single source of truth for integrating Raydium on Solana. Covers SDK, Trade API, CLMM, CPMM, AMM pools, LaunchLab token launches, farming, CPI integration, and all Raydium tools.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/raydium",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/raydium",
           "multiFile": true
         },
         {
           "name": "sanctum",
           "description": "Complete Sanctum SDK for liquid staking, LST swaps, and Infinity pool operations on Solana. Use when working with LSTs (mSOL, jitoSOL, bSOL, INF), staking SOL, swapping between liquid staking tokens, or integrating Sanctum's liquidity infrastructure.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/sanctum",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/sanctum",
           "multiFile": true
         },
         {
           "name": "sol-incinerator",
           "description": "SOL Incinerator SDK for burning tokens, NFTs, and closing accounts",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/sol-incinerator",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/sol-incinerator",
           "multiFile": true
         },
         {
           "name": "solana-agent-kit",
           "description": "Comprehensive guide for building AI agents that interact with Solana blockchain using SendAI's Solana Agent Kit. Covers 60+ actions, LangChain/Vercel AI integration, MCP server setup, and autonomous agent patterns.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/solana-agent-kit",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/solana-agent-kit",
           "multiFile": true
         },
         {
           "name": "solana-kit-migration",
           "description": "Helps developers understand when to use @solana/kit vs @solana/web3.js (v1), provides migration guidance, API mappings, and handles edge cases for Solana JavaScript SDK transitions",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/solana-kit-migration",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/solana-kit-migration",
           "multiFile": true
         },
         {
           "name": "solana-kit",
           "description": "Complete guide for @solana/kit - the modern, tree-shakeable, zero-dependency JavaScript SDK from Anza. Covers RPC connections, signers, transaction building with pipe, signing, sending, and account fetching with full TypeScript support.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/solana-kit",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/solana-kit",
           "multiFile": true
         },
         {
           "name": "squads",
           "description": "Complete guide for Squads Protocol - Solana's leading smart account and multisig infrastructure. Covers Squads V4 Multisig for team treasury management, Smart Account Program for account abstraction and programmable wallets, and Grid for stablecoin rails and fintech infrastructure.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/squads",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/squads",
           "multiFile": true
         },
         {
           "name": "surfpool",
           "description": "Complete Surfpool development environment for Solana - drop-in replacement for solana-test-validator with mainnet forking, cheatcodes, Infrastructure as Code, and Surfpool Studio. The fastest way to develop and test Solana programs.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/surfpool",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/surfpool",
           "multiFile": true
         },
         {
           "name": "svm",
           "description": "Explore Solana's architecture and protocol internals. Covers the SVM execution engine, account model, consensus, transactions, validator economics, data layer, development tooling, and token extensions using the Helius blog, SIMDs, and Agave/Firedancer source code.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/svm",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/svm",
           "multiFile": true
         },
         {
           "name": "switchboard",
           "description": "Complete Switchboard Oracle Protocol SDK for Solana - the permissionless oracle solution for price feeds, on-demand data, VRF randomness, and real-time streaming via Surge. Covers TypeScript SDK, Rust integration, Oracle Quotes, and all Switchboard tools.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/switchboard",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/switchboard",
           "multiFile": true
         },
         {
           "name": "vulnhunter",
           "description": "Security vulnerability detection and variant analysis skill. Use when hunting for dangerous APIs, footgun patterns, error-prone configurations, and vulnerability variants across codebases. Combines sharp edges detection with variant hunting methodology.",
           "category": "security",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/vulnhunter",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/vulnhunter",
           "multiFile": true
         },
         {
           "name": "wallet-analysis",
           "description": "Analyze Solana wallets and multichain portfolios with Zerion API. Use for Solana portfolio value, token positions, transaction history, wallet charts, and PnL. Prefer direct REST API integration, with hosted MCP and x402 on Solana as no-key alternatives for agent workflows.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/wallet-analysis",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/wallet-analysis",
           "multiFile": true
         },
         {
           "name": "zz-code-recon",
           "description": "Deep architectural context building for security audits. Use when conducting security reviews, building codebase understanding, mapping trust boundaries, or preparing for vulnerability analysis. Inspired by Trail of Bits methodology.",
           "category": "security",
-          "url": "https://github.com/sendaifun/skills/tree/main/skills/zz-code-recon",
+          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/zz-code-recon",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "06b36b8b420e705ffd57b29e463f01093959d8d4"
     },
     {
       "id": "solana-new",
@@ -495,234 +499,235 @@
           "name": "animation-reverse-engineering",
           "description": "Reverse-engineer any motion reference (a video from X/Twitter, Dribbble, a screen recording, a GIF) into production animation code through frame-level dissection. Use when the user shares a video/URL and says \"implement this animation\", \"recreate this motion\", \"port this interaction\", \"how does this animate\", \"clone this effect\", or wants to study how a reference moves before building it. Covers both timeline choreography (entrances, text sweeps, staggers) and interaction-driven motion (scrubbers, sliders, drag-driven scenes). Also fires when the user asks where to find good animation references or inspiration — it suggests curated sites and X accounts to hunt, then reverse-engineers whatever they bring back.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/animation-reverse-engineering",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/animation-reverse-engineering",
           "multiFile": false
         },
         {
           "name": "brand-design",
           "description": "Generate, preview, and apply a brand color palette (plus typography, gradients, and tone/voice) to a frontend project. Use when a user says \"pick brand colors\", \"choose a color palette\", \"brand design\", \"generate a palette\", \"theme this project\", \"what colors should I use\", \"brand identity\", \"design my brand\", \"set up brand colors\", \"time to build the frontend\", \"let's start the UI\", \"make this look branded\", or any time a project is about to start frontend work and has no brand.md yet. Presents 6 candidate palettes as a visual HTML preview opened in the user's browser, supports an infinite regenerate loop until the user is satisfied, then writes the chosen palette to shadcn CSS variables (light + dark), wires up typography via next/font, derives brand gradients, and writes brand.md for future reference.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/brand-design",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/brand-design",
           "multiFile": true
         },
         {
           "name": "build-data-pipeline",
           "description": "Guide a developer through building a Solana data pipeline or indexer. Use when a user says \"build an indexer\", \"data pipeline\", \"analytics\", \"track transactions\", \"monitor wallets\", \"webhook\", \"index accounts\", or \"real-time data\". Reads build-context.md from a prior scaffold phase if available.",
           "category": "infra-data",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/build-data-pipeline",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/build-data-pipeline",
           "multiFile": true
         },
         {
           "name": "build-defi-protocol",
           "description": "Guide a developer through building a DeFi protocol on Solana. Use when a user says \"build a DEX\", \"AMM\", \"lending protocol\", \"vault\", \"yield\", \"liquidity pool\", \"DeFi protocol\", \"swap program\", \"build a DeFi app\", \"perpetual futures\", \"perps protocol\", \"leverage trading\", or \"derivatives\". Reads build-context.md from a prior scaffold phase if available.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/build-defi-protocol",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/build-defi-protocol",
           "multiFile": true
         },
         {
           "name": "build-mobile",
           "description": "Guide a developer through building a Solana mobile app. Use when a user says \"build a mobile app\", \"React Native Solana\", \"Solana mobile\", \"mobile wallet\", \"mobile dApp\", \"Android Solana\", or \"iOS Solana\". Reads build-context.md from a prior scaffold phase if available.",
           "category": "wallets-mobile",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/build-mobile",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/build-mobile",
           "multiFile": true
         },
         {
           "name": "build-with-claude",
           "description": "Guide a developer through building their Solana MVP step by step using Claude Code. Use when a user says \"help me build this\", \"start the MVP\", \"guide me through implementation\", \"what should I build first\", or \"walk me through the code\". Reads build-context.md from a prior scaffold phase if available.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/build-with-claude",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/build-with-claude",
           "multiFile": true
         },
         {
           "name": "cso",
           "description": "| Chief Security Officer mode. Infrastructure-first security audit: secrets archaeology, dependency supply chain, CI/CD pipeline security, LLM/AI security, skill supply chain scanning, plus OWASP Top 10, STRIDE threat modeling, and active verification. Two modes: daily (zero-noise, 8/10 confidence gate) and comprehensive (monthly deep scan, 2/10 bar). Use when a user says \"security audit\", \"threat model\", \"pentest review\", \"OWASP\", \"CSO review\", \"check for vulnerabilities\", or \"is my code secure\".",
           "category": "security",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/cso",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/cso",
           "multiFile": true
         },
         {
           "name": "debug-program",
           "description": "Help a developer debug a failing Solana program or transaction. Use when a user says \"debug my program\", \"program error\", \"transaction failed\", \"stuck\", \"help me fix\", \"why is this failing\", \"error code\", or \"instruction failed\". Reads build-context.md if available.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/debug-program",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/debug-program",
           "multiFile": true
         },
         {
           "name": "design-taste",
           "description": "Design direction, judgment calls, and anti-AI-slop review for crypto UIs. Use when the user says \"this looks generic\", \"this looks AI-generated\", \"anti-slop\", \"design judgment\", \"premium feel\", \"design direction\", \"what direction should this take\", \"make this feel more premium\", \"review for taste\", \"theme reference\", \"warm monochrome\", \"stark minimal\", \"gradient trust\", \"workstation dense\", \"soft consumer\", \"gallery editorial\", \"density\", \"page archetype\", \"design brief\", \"pitch deck style\", \"deck visual direction\". Also use when building any new page-level component that needs aesthetic direction before implementation. Does NOT claim \"make this look good\" or \"polish this\" — those belong to frontend-design-guidelines.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/design-taste",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/design-taste",
           "multiFile": true
         },
         {
           "name": "frontend-design-guidelines",
           "description": "Apply high-quality web interface design rules when building, reviewing, or styling frontend code. Use when the user says \"build a frontend\", \"create a component\", \"style this\", \"review my UI\", \"build a landing page\", \"design this page\", \"make this look good\", \"add animation\", \"build a form\", \"improve the UI\", \"polish this\", \"make this feel right\", \"review for craft\", \"the interaction feels off\", \"make this look polished\", or when generating any React/Next.js component. Defaults to Tailwind CSS and shadcn/ui. Reads brand.md at the project root (if present) and uses it as the source of truth for colors, typography, and voice. Covers interactions, layout, typography, forms, animation, states, accessibility, and a dedicated craft-and-polish layer for taste-level review. Use proactively whenever frontend code is being written — do not wait to be asked.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/frontend-design-guidelines",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/frontend-design-guidelines",
           "multiFile": true
         },
         {
           "name": "launch-token",
           "description": "Guide a developer through launching a token on Solana. Use when a user says \"launch a token\", \"create a token\", \"pump.fun\", \"bonding curve\", \"token launch\", \"create a memecoin\", or \"SPL token\". Reads build-context.md from a prior scaffold phase if available.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/launch-token",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/launch-token",
           "multiFile": true
         },
         {
           "name": "navigate-skills",
           "description": "Meta skill — browse all installed solana-new skills, repos, and MCPs to find the right tool for any task",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/navigate-skills",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/navigate-skills",
           "multiFile": true
         },
         {
           "name": "number-formatting",
           "description": "Apply consistent number formatting across crypto/Solana UIs. Use when the user says \"format numbers\", \"number display\", \"token amounts\", \"price formatting\", \"zero subscript\", \"abbreviate numbers\", \"format currency\", \"format percent\", \"how should I display this number\", \"number formatting spec\", or when generating any UI component that displays prices, balances, percentages, ratios, or token amounts. Use proactively whenever writing frontend code that renders numeric values — do not wait to be asked.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/number-formatting",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/number-formatting",
           "multiFile": true
         },
         {
           "name": "page-load-animations",
           "description": "Fix janky page loads where everything appears at once. Production framer-motion recipes for choreographed page entrances, staggered lists, modal transitions, filter cross-fades, live data animations, and micro-interactions. Use when building or reviewing any page that loads content, when animations feel broken or janky, when framer-motion code needs production patterns, or when the user says \"page load animation\", \"entrance choreography\", \"stagger animation\", \"framer-motion recipe\", \"page feels janky\", \"everything appears at once\", \"spring animation\", \"modal animation\", \"dropdown animation\", \"rolling numbers\", \"chart morph\", \"donut reveal\", \"filter transition\", \"tab animation\", \"micro-interaction\", \"hover animation\", \"button feedback\", \"AnimatePresence\", or \"framer-motion pattern\". Use proactively whenever writing page-level components or reviewing animation code.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/page-load-animations",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/page-load-animations",
           "multiFile": true
         },
         {
           "name": "product-review",
           "description": "Product quality review — UX flows, onboarding, feature completeness, and user value. Use when a user says \"product review\", \"review my product\", \"UX review\", \"is my product good\", \"product quality\", \"user experience review\", \"onboarding review\", or \"feature audit\". Different from code review (review-and-iterate) and product roast (roast-my-product) — this is structured, balanced evaluation.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/product-review",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/product-review",
           "multiFile": true
         },
         {
           "name": "review-and-iterate",
           "description": "Review Solana project code for quality, security, and production readiness. Use when a user says \"review my code\", \"is this production ready\", \"audit my program\", \"what should I fix\", \"code review\", or \"check for security issues\".",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/review-and-iterate",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/review-and-iterate",
           "multiFile": true
         },
         {
           "name": "roast-my-product",
           "description": "Harsh, honest product critique — find every weakness before users do. Use when a user says \"roast my product\", \"harsh feedback\", \"be brutal\", \"what sucks\", \"find weaknesses\", \"product critique\", \"tear it apart\", or \"what would kill this\". Deliberately harsh but constructive — scores each dimension and explains exactly what to fix.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/roast-my-product",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/roast-my-product",
           "multiFile": true
         },
         {
           "name": "scaffold-project",
           "description": "Set up a complete Solana project workspace from a validated idea. Use when a user says \"scaffold my project\", \"set up my workspace\", \"what stack should I use\", \"create the project structure\", or \"initialize my project\". Reads idea-context.md from a prior idea phase if available. Leverages solana-new's catalogs of 106 repos, 77 skills, and 36 MCPs.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/scaffold-project",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/scaffold-project",
           "multiFile": true
         },
         {
           "name": "verify-humanity-poh",
           "description": "Integrate Proof of Human (POH) API to distinguish real users from bots in any Solana app. Use when a user says \"filter bots\", \"verify humans\", \"sybil protection\", \"airdrop eligibility\", \"bot detection\", \"proof of human\", \"POH\", \"verify wallet is human\", \"gate my airdrop\", \"DAO sybil resistance\", \"check if wallet is real\", \"human verification\", or \"anti-bot\". Works for airdrops, DAO voting, NFT allowlists, and API gating.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/verify-humanity-poh",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/verify-humanity-poh",
           "multiFile": true
         },
         {
           "name": "virtual-solana-incubator",
           "description": "Deep technical Solana bootcamp — SVM architecture, Rust patterns, program development. Use when a user says \"Solana incubator\", \"teach me Rust for Solana\", \"SVM deep dive\", \"Solana bootcamp\", \"learn Solana development\", \"deep dive Solana\", \"PDA tutorial\", \"CPI tutorial\", or \"Anchor tutorial\". Structured curriculum that assesses level and assigns exercises.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/build/virtual-solana-incubator",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/virtual-solana-incubator",
           "multiFile": true
         },
         {
           "name": "colosseum-copilot",
           "description": "Search and analyze 5,400+ Solana hackathon projects using Colosseum Copilot. Find similar projects, discover winner patterns, identify gaps, and explore ML clusters. Use when a user says \"colosseum copilot\", \"hackathon projects\", \"winner patterns\", \"gap analysis hackathon\", \"similar Solana projects\", or \"colosseum landscape\". Requires a Colosseum Copilot token.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/idea/colosseum-copilot",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/colosseum-copilot",
           "multiFile": true
         },
         {
           "name": "competitive-landscape",
           "description": "Map the competitive landscape for a crypto product idea. Use when a user says \"who are my competitors\", \"map the competitive landscape\", \"what exists in this space\", \"show me similar projects\", or \"competitive analysis\". Leverages solana-new's catalogs of 106 repos, 78 skills, and 36 MCPs.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/idea/competitive-landscape",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/competitive-landscape",
           "multiFile": true
         },
         {
           "name": "defillama-research",
           "description": "Research DeFi protocols and market opportunities using DefiLlama data. Use when a user says \"show me TVL data\", \"which protocols are growing\", \"DeFi market research\", \"what should I build in DeFi\", \"find DeFi opportunities\", \"analyze protocol TVL\", or \"which chains are trending\". Uses TVL as a trust metric to suggest protocols worth building on or integrating with.",
           "category": "defi",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/idea/defillama-research",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/defillama-research",
           "multiFile": true
         },
         {
           "name": "find-next-crypto-idea",
           "description": "Interview users sharply to discover, rank, or validate what they should build in crypto. Use when a user asks what to build in crypto, wants startup ideas in a crypto niche such as DeFi or AI x crypto, wants blunt feedback on an existing crypto idea, or wants a concrete artifact comparing the best next ideas. Treat the bundled idea datasets as inspiration, not constraints, and always combine them with fresh market research.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/idea/find-next-crypto-idea",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/find-next-crypto-idea",
           "multiFile": true
         },
         {
           "name": "learn",
           "description": "| Manage project learnings across sessions. Review, search, prune, and export what superstack has learned. Use when asked to \"what have we learned\", \"show learnings\", \"prune stale learnings\", \"export learnings\", or \"remember this\". Proactively suggest when the user asks about past patterns or wonders \"didn't we fix this before?\"",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/idea/learn",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/learn",
           "multiFile": true
         },
         {
           "name": "solana-beginner",
           "description": "Teach Solana fundamentals to developers new to the ecosystem. Use when a user says \"what is Solana\", \"why Solana\", \"new to Solana\", \"explain Solana to me\", \"Solana basics\", \"EVM to Solana\", \"getting started with Solana\", or \"Solana fundamentals\". Adapts to user's background — EVM devs, backend devs, or complete beginners.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/idea/solana-beginner",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/solana-beginner",
           "multiFile": true
         },
         {
           "name": "validate-idea",
           "description": "Run a structured validation sprint on a crypto startup idea. Use when a user says \"validate this idea\", \"is this worth building\", \"run a validation sprint\", \"help me test demand\", or \"should I build this\". Reads idea-context.md from a prior idea phase if available.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/idea/validate-idea",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/validate-idea",
           "multiFile": true
         },
         {
           "name": "apply-grant",
           "description": "Prepare an Agentic Engineering Grant application by gathering project data, git history, and context files, then presenting all fields needed to fill the Solana Earn grant form. Use when the user says \"apply for grant\", \"agentic engineering grant\", \"apply-grant\", \"grant application\", \"fill grant form\", \"200 USDG grant\", \"ST earn\", \"Superteam earn\", \"Superteam grant\", \"earn grant\", \"help me apply for grant\", \"solana earn grant\", or \"submit grant\".",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/launch/apply-grant",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/apply-grant",
           "multiFile": true
         },
         {
           "name": "create-pitch-deck",
           "description": "Create a structured pitch deck for a crypto project. Use when a user says \"create a pitch deck\", \"help me pitch\", \"I need slides\", \"prepare for demo day\", \"investor presentation\", or \"grant application\". Reads idea-context.md and build-context.md from prior phases if available.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/launch/create-pitch-deck",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/create-pitch-deck",
           "multiFile": true
         },
         {
           "name": "deploy-to-mainnet",
           "description": "Guide a Solana project from devnet to mainnet production deployment. Use when a user says \"deploy to mainnet\", \"go to production\", \"deployment checklist\", \"prepare for launch\", \"mainnet deployment\", or \"ship it\". Reads build-context.md from a prior build phase if available.",
           "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/launch/deploy-to-mainnet",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/deploy-to-mainnet",
           "multiFile": true
         },
         {
           "name": "marketing-video",
           "description": "Create marketing videos for Solana projects using Remotion (code-driven) and Renoise (AI-generated). Use when a user says \"marketing video\", \"product video\", \"promo video\", \"deck review\", \"video pitch\", \"create a video\", or \"Remotion project\".",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/launch/marketing-video",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/marketing-video",
           "multiFile": true
         },
         {
           "name": "submit-to-hackathon",
           "description": "Prepare and optimize a hackathon submission for a Solana project. Use when a user says \"submit to hackathon\", \"prepare my submission\", \"hackathon entry\", \"write project description\", \"demo video\", or \"help me win the hackathon\". Reads all prior phase context if available.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/launch/submit-to-hackathon",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/submit-to-hackathon",
           "multiFile": true
         },
         {
           "name": "video-craft",
           "description": "Frame-level visual composition and product demo presentation for Remotion videos. Use when the user says \"video looks generic\", \"make video frames look better\", \"video frame design\", \"device frame\", \"product demo video craft\", \"video CTA\", \"end card\", \"video composition\", \"video craft\", \"screenshot in video\", \"frame quality\", or when reviewing Remotion compositions for visual quality. Sits on top of marketing-video — adds the visual design layer for each frame. Does NOT claim \"create a video\" or \"marketing video\" — those route to marketing-video.",
           "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/main/skills/launch/video-craft",
+          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/video-craft",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "e81c261645035c0e902eaaa518ff58722d188bb7"
     },
     {
       "id": "solana-ai-kit",
@@ -783,7 +788,8 @@
           "url": "https://github.com/solanabr/solana-ai-kit/tree/main/.claude/skills",
           "multiFile": false
         }
-      ]
+      ],
+      "commitSha": "d4f6143fc4b0b9b1c07c6e56db9845f897e932eb"
     },
     {
       "id": "helius",
@@ -806,45 +812,46 @@
           "name": "helius-dflow",
           "description": "Build Solana trading applications combining DFlow trading APIs with Helius infrastructure. Covers spot swaps (imperative and declarative), prediction markets, real-time market streaming, Proof KYC, the DFlow Agent CLI for autonomous trading, transaction submission via Sender, fee optimization, shred-level streaming via LaserStream, and wallet intelligence.",
           "category": "defi",
-          "url": "https://github.com/helius-labs/core-ai/tree/main/helius-skills/helius-dflow",
+          "url": "https://github.com/helius-labs/core-ai/tree/a34f5303f71e82a6c22f54ca8e3cbe82ae128791/helius-skills/helius-dflow",
           "multiFile": true
         },
         {
           "name": "helius-jupiter",
           "description": "Build Solana DeFi applications combining Jupiter APIs with Helius infrastructure. Covers token swaps (Swap API V2), lending/borrowing (Lend protocol), limit orders (Trigger), DCA (Recurring), token/price data, transaction submission via Sender, fee optimization, real-time streaming, and wallet intelligence.",
           "category": "defi",
-          "url": "https://github.com/helius-labs/core-ai/tree/main/helius-skills/helius-jupiter",
+          "url": "https://github.com/helius-labs/core-ai/tree/a34f5303f71e82a6c22f54ca8e3cbe82ae128791/helius-skills/helius-jupiter",
           "multiFile": true
         },
         {
           "name": "helius-okx",
           "description": "Build Solana trading and intelligence applications combining OKX DEX aggregation with Helius infrastructure. Integration-only layer — describes when and how to compose OKX tools with Helius tools for swaps, token discovery, smart money signals, meme token analysis, and portfolio intelligence.",
           "category": "defi",
-          "url": "https://github.com/helius-labs/core-ai/tree/main/helius-skills/helius-okx",
+          "url": "https://github.com/helius-labs/core-ai/tree/a34f5303f71e82a6c22f54ca8e3cbe82ae128791/helius-skills/helius-okx",
           "multiFile": true
         },
         {
           "name": "helius-phantom",
           "description": "Build frontend Solana applications with Phantom Connect SDK and Helius infrastructure. Covers React, React Native, and browser SDK integration, transaction signing via Helius Sender, API key proxying, token gating, NFT minting, crypto payments, real-time updates, and secure frontend architecture.",
           "category": "wallets-mobile",
-          "url": "https://github.com/helius-labs/core-ai/tree/main/helius-skills/helius-phantom",
+          "url": "https://github.com/helius-labs/core-ai/tree/a34f5303f71e82a6c22f54ca8e3cbe82ae128791/helius-skills/helius-phantom",
           "multiFile": true
         },
         {
           "name": "helius",
           "description": "Build Solana applications with Helius infrastructure. Covers transaction sending (Sender), asset/NFT queries (DAS API), real-time streaming (WebSockets, Laserstream), event pipelines (webhooks), priority fees, wallet analysis, and agent onboarding.",
           "category": "infra-data",
-          "url": "https://github.com/helius-labs/core-ai/tree/main/helius-skills/helius",
+          "url": "https://github.com/helius-labs/core-ai/tree/a34f5303f71e82a6c22f54ca8e3cbe82ae128791/helius-skills/helius",
           "multiFile": true
         },
         {
           "name": "svm",
           "description": "Explore Solana's architecture and protocol internals. Covers the SVM execution engine, account model, consensus, transactions, validator economics, data layer, development tooling, and token extensions using the Helius blog, SIMDs, and Agave/Firedancer source code.",
           "category": "infra-data",
-          "url": "https://github.com/helius-labs/core-ai/tree/main/helius-skills/svm",
+          "url": "https://github.com/helius-labs/core-ai/tree/a34f5303f71e82a6c22f54ca8e3cbe82ae128791/helius-skills/svm",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "a34f5303f71e82a6c22f54ca8e3cbe82ae128791"
     },
     {
       "id": "jupiter",
@@ -867,31 +874,32 @@
           "name": "integrating-jupiter",
           "description": "Comprehensive guidance for integrating Jupiter APIs (Swap, Lend, Perps, Trigger, Recurring, Tokens, Price, Portfolio, Prediction Markets, Send, Studio, Lock, Routing). Use for endpoint selection, integration flows, error handling, and production hardening.",
           "category": "defi",
-          "url": "https://github.com/jup-ag/agent-skills/tree/main/skills/integrating-jupiter",
+          "url": "https://github.com/jup-ag/agent-skills/tree/a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f/skills/integrating-jupiter",
           "multiFile": true
         },
         {
           "name": "jupiter-lend",
           "description": "Interact with Jupiter Lend Protocol. Read-only SDK (@jup-ag/lend-read) for querying liquidity pools, lending markets (jlTokens), and vaults. Write SDK (@jup-ag/lend) for lending (deposit/withdraw) and vault operations (deposit collateral, borrow, repay, manage positions).",
           "category": "defi",
-          "url": "https://github.com/jup-ag/agent-skills/tree/main/skills/jupiter-lend",
+          "url": "https://github.com/jup-ag/agent-skills/tree/a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f/skills/jupiter-lend",
           "multiFile": true
         },
         {
           "name": "jupiter-swap-migration",
           "description": "Migration guide from Jupiter Metis (v1) or Ultra to Swap API v2. Use when migrating existing Jupiter swap integrations, updating base URLs, or transitioning from quote+swap-instructions to the unified build endpoint.",
           "category": "defi",
-          "url": "https://github.com/jup-ag/agent-skills/tree/main/skills/jupiter-swap-migration",
+          "url": "https://github.com/jup-ag/agent-skills/tree/a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f/skills/jupiter-swap-migration",
           "multiFile": true
         },
         {
           "name": "jupiter-vrfd",
           "description": "Use when a user mentions Jupiter token verification, VRFD eligibility, paying 1000 JUP to verify a token, submitting a verification request, or updating metadata via the Jupiter express verification flow.",
           "category": "defi",
-          "url": "https://github.com/jup-ag/agent-skills/tree/main/skills/jupiter-vrfd",
+          "url": "https://github.com/jup-ag/agent-skills/tree/a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f/skills/jupiter-vrfd",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "a2211e3f6a7caa03310c7a9a8d816e723b0bdc5f"
     },
     {
       "id": "metaplex",
@@ -914,10 +922,11 @@
           "name": "metaplex",
           "description": "Metaplex development on Solana — NFTs, tokens, compressed NFTs, candy machines, token launches, autonomous agents. Use when working with Token Metadata, Core, Bubblegum, Candy Machine, Genesis, Agent Registry, or the mplx CLI.",
           "category": "nft-tokens",
-          "url": "https://github.com/metaplex-foundation/skill/tree/main/skills/metaplex",
+          "url": "https://github.com/metaplex-foundation/skill/tree/7af29ba4be9553047dda37278233ff0712e18536/skills/metaplex",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "7af29ba4be9553047dda37278233ff0712e18536"
     },
     {
       "id": "solana-mobile",
@@ -940,38 +949,39 @@
           "name": "integration-privy",
           "description": "Add Privy authentication to a Solana Expo Android app on top of Mobile Wallet Adapter, using Sign-In-With-Solana. Use when installing @privy-io/expo, mounting PrivyProvider, logging a user in with useLoginWithSiws, linking a wallet to an existing Privy account, reading the Privy access token from a backend, or debugging a Privy plus MWA setup.",
           "category": "wallets-mobile",
-          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/main/skills/integration-privy",
+          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/2eaeac39a5ce8c3ca290cc014dcb61d32d5e4b61/skills/integration-privy",
           "multiFile": false
         },
         {
           "name": "seeker-domains",
           "description": "Resolve and display .skr domain names in Solana mobile apps, in both directions between names and wallet addresses. Use when showing .skr names instead of wallet addresses in profiles, friend lists, or transaction history, resolving a .skr domain to an address, reverse-looking-up an address to a domain, or validating .skr input.",
           "category": "wallets-mobile",
-          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/main/skills/seeker-domains",
+          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/2eaeac39a5ce8c3ca290cc014dcb61d32d5e4b61/skills/seeker-domains",
           "multiFile": false
         },
         {
           "name": "seeker-genesis-token",
           "description": "Verify Seeker device ownership by checking for the Seeker Genesis Token (SGT) with Sign-in-with-Solana and server-side token verification. Use when gating content or rewards to Seeker owners, verifying a user holds an SGT, adding anti-Sybil checks to a Solana mobile app, or implementing one-claim-per-device logic.",
           "category": "wallets-mobile",
-          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/main/skills/seeker-genesis-token",
+          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/2eaeac39a5ce8c3ca290cc014dcb61d32d5e4b61/skills/seeker-genesis-token",
           "multiFile": false
         },
         {
           "name": "solana-mobile-wallet",
           "description": "Connect Solana wallets and sign or send transactions in React Native Expo apps using Mobile Wallet Adapter and Wallet UI. Use when adding a connect wallet button, showing a connected address, disconnecting, signing messages, sign-in with Solana, transferring SOL, or sending any transaction from a Solana mobile app.",
           "category": "wallets-mobile",
-          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/main/skills/solana-mobile-wallet",
+          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/2eaeac39a5ce8c3ca290cc014dcb61d32d5e4b61/skills/solana-mobile-wallet",
           "multiFile": false
         },
         {
           "name": "solana-mobile",
           "description": "Scaffold, configure, and troubleshoot Solana Mobile apps for Android using the solana-mobile CLI, Expo, and React Native. Use when creating a new Solana mobile app, picking a template, adding Solana to an existing Expo app, checking the Android toolchain, managing Android emulators, or producing a development build.",
           "category": "wallets-mobile",
-          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/main/skills/solana-mobile",
+          "url": "https://github.com/solana-mobile/solana-mobile-dev-skill/tree/2eaeac39a5ce8c3ca290cc014dcb61d32d5e4b61/skills/solana-mobile",
           "multiFile": false
         }
-      ]
+      ],
+      "commitSha": "2eaeac39a5ce8c3ca290cc014dcb61d32d5e4b61"
     },
     {
       "id": "quicknode-anchor",
@@ -994,10 +1004,11 @@
           "name": "solana",
           "description": "Use when working on Solana software, including one or more of: Solana client code using TypeScript, Rust libraries that use Solana crates, Anchor programs, Quasar programs, LiteSVM tests, including Rust program files, TypeScript tests, and Anchor.toml or Quasar.toml configuration. Designed to create minimal, reusable code without unnecessary duplication.",
           "category": "development",
-          "url": "https://github.com/quiknode-labs/solana-anchor-claude-skill/tree/main/skills/solana",
+          "url": "https://github.com/quiknode-labs/solana-anchor-claude-skill/tree/578f3e247b1ada766e78e280ba39e2adb49a1a1d/skills/solana",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "578f3e247b1ada766e78e280ba39e2adb49a1a1d"
     },
     {
       "id": "colosseum",
@@ -1020,10 +1031,11 @@
           "name": "colosseum-copilot",
           "description": "| Research Solana/crypto startup opportunities using builder project history, crypto archives, investor theses, and market signals. Answers questions conversationally by default; runs the full 8-step deep research workflow on explicit opt-in (\"vet this idea\", \"deep dive\").",
           "category": "research",
-          "url": "https://github.com/ColosseumOrg/colosseum-copilot/tree/main/skills/colosseum-copilot",
+          "url": "https://github.com/ColosseumOrg/colosseum-copilot/tree/11a0e47ce47ed310003161b5fcb26e18bfc0ac80/skills/colosseum-copilot",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "11a0e47ce47ed310003161b5fcb26e18bfc0ac80"
     },
     {
       "id": "qedgen",
@@ -1046,24 +1058,25 @@
           "name": "qedgen",
           "description": "Find the bugs your tests miss. Define what your Solana program must guarantee in a .qedspec; QEDGen validates it, generates tests and proofs, and scaffolds agent-fill Rust code. Trigger when the user asks for \"qedgen\", \"qedspec\", \"verify my code\", \"prove correctness\", formal verification, property testing, generated Kani/proptest/Lean artifacts, or Solana program correctness.",
           "category": "security",
-          "url": "https://github.com/QEDGen/solana-skills/tree/main",
+          "url": "https://github.com/QEDGen/solana-skills/tree/bf7f968661d114b373c412d8614130c148d144b0",
           "multiFile": false
         },
         {
           "name": "qedgen-auditor-bench",
           "description": "Benchmark the QEDGen auditor against sanitized Solana programs with labeled third-party or independently verified findings. Use when the user asks to benchmark, evaluate, regression-test, measure recall or precision, compare auditor versions, or compare auditor models. Produces per-run and union recall, precision, severity agreement, evidence quality, reproducer fire rate, cost, and latency without leaking ground truth to audit workers.",
           "category": "security",
-          "url": "https://github.com/QEDGen/solana-skills/tree/main/skills/qedgen-auditor-bench",
+          "url": "https://github.com/QEDGen/solana-skills/tree/bf7f968661d114b373c412d8614130c148d144b0/skills/qedgen-auditor-bench",
           "multiFile": false
         },
         {
           "name": "qedgen-auditor",
           "description": "Audit a Solana program for vulnerabilities. Use when the user asks to audit, review, or check a Solana program for security issues. Surfaces real vulnerabilities first; spec-coverage gaps second.",
           "category": "security",
-          "url": "https://github.com/QEDGen/solana-skills/tree/main/skills/qedgen-auditor",
+          "url": "https://github.com/QEDGen/solana-skills/tree/bf7f968661d114b373c412d8614130c148d144b0/skills/qedgen-auditor",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "bf7f968661d114b373c412d8614130c148d144b0"
     },
     {
       "id": "safe-solana-builder",
@@ -1086,10 +1099,11 @@
           "name": "safe-solana-builder",
           "description": "> Use this skill whenever the user wants to write, scaffold, or build a Solana smart contract or program from scratch. Triggers on: \"write a Solana program\", \"create a smart contract\", \"build an anchor program\", \"write a native Rust Solana program\", \"scaffold a Solana program\", \"help me write a program that does X on Solana\", or any request to produce production-grade on-chain Solana code. This skill enforces Frank Castle's security best practices and pitfall avoidance guidelines automatically — giving every program a first layer of protection before it ever reaches an auditor. Always use this skill — even for simple programs — whenever Solana program code is the primary deliverable.",
           "category": "security",
-          "url": "https://github.com/frankcastleauditor/safe-solana-builder/tree/main",
+          "url": "https://github.com/frankcastleauditor/safe-solana-builder/tree/9e94436dcf4b5dfd6d837eb70cf88b9048e72e5d",
           "multiFile": false
         }
-      ]
+      ],
+      "commitSha": "9e94436dcf4b5dfd6d837eb70cf88b9048e72e5d"
     },
     {
       "id": "solana-game-skill",
@@ -1112,10 +1126,11 @@
           "name": "solana-game",
           "description": "Solana game development with Unity, React Native, and web. Extends solana-dev-skill with gaming-specific patterns including Solana.Unity-SDK, Mobile Wallet Adapter, PlaySolana/PSG1, wallet integration, NFT systems, transaction building, and game architecture. For program development (Anchor, Pinocchio), delegates to core solana-dev skill.",
           "category": "gaming",
-          "url": "https://github.com/solanabr/solana-game-skill/tree/main/skill",
+          "url": "https://github.com/solanabr/solana-game-skill/tree/762b3b28e62b4c6cabc01ae179d316958a852a07/skill",
           "multiFile": true
         }
-      ]
+      ],
+      "commitSha": "762b3b28e62b4c6cabc01ae179d316958a852a07"
     },
     {
       "id": "trailofbits",
@@ -1190,6 +1205,315 @@
           "url": "https://github.com/trailofbits/skills/tree/main/plugins/testing-handbook-skills/skills/cargo-fuzz",
           "multiFile": true
         }
+      ],
+      "commitSha": "e6066e7db1fd57cb35f9a534781ceec595327feb"
+    },
+    {
+      "id": "magicblock",
+      "repo": "magicblock-labs/magicblock-dev-skill",
+      "displayName": "MagicBlock Dev Skill",
+      "vendor": "MagicBlock",
+      "type": "vendor",
+      "homepage": "https://magicblock.xyz",
+      "categories": ["infra-data", "gaming"],
+      "blurb": "End-to-end MagicBlock development: Ephemeral Rollups for sub-10ms Solana execution, plus VRFs, cranks, and session keys for latency-sensitive programs and games.",
+      "url": "https://github.com/magicblock-labs/magicblock-dev-skill",
+      "stars": 9,
+      "pushedAt": "2026-07-22",
+      "commitSha": "b6edd28e7f6b4433de5e6fbfe316f97efe36181f",
+      "license": "MIT",
+      "description": null,
+      "skillCount": 1,
+      "highlightsOnly": false,
+      "skills": [
+        {
+          "name": "magicblock",
+          "description": "Design, implement, and debug MagicBlock applications on Solana. Covers Ephemeral Rollups with delegated state; ER/PER architecture and settlement; private payments and token flows; oracles and randomness; scheduling and temporary authority; security and local validation. Use for MagicBlock product selection, integration, cross-product design, or production troubleshooting.",
+          "category": "infra-data",
+          "url": "https://github.com/magicblock-labs/magicblock-dev-skill/tree/b6edd28e7f6b4433de5e6fbfe316f97efe36181f/skill",
+          "multiFile": true
+        }
+      ]
+    },
+    {
+      "id": "meteora",
+      "repo": "MeteoraAg/meteora-invent",
+      "displayName": "Meteora Invent",
+      "vendor": "Meteora",
+      "type": "vendor",
+      "homepage": "https://meteora.ag",
+      "categories": ["defi"],
+      "blurb": "Official Meteora skill inside their invent monorepo: launch tokens on DBC, create and manage DAMM v1/v2 and DLMM pools, swap, claim fees, and script the Meteora SDKs.",
+      "url": "https://github.com/MeteoraAg/meteora-invent",
+      "stars": 34,
+      "pushedAt": "2026-08-04",
+      "commitSha": "6787734f46c85e9c490d298c9ddfd210e262fe4e",
+      "license": "MIT",
+      "description": "Launch anything on Meteora and do any onchain actions with Invent",
+      "skillCount": 1,
+      "highlightsOnly": false,
+      "skills": [
+        {
+          "name": "meteora",
+          "description": "Do anything on Meteora, Solana's liquidity layer: launch tokens on Dynamic Bonding Curves (DBC), create and manage DAMM v1/v2 and DLMM pools, add or remove liquidity, swap, place DLMM limit orders, claim fees, migrate DBC pools to DAMM, run alpha and presale vaults, lock tokens on vesting schedules, stake for fees (M3M3) or into LP farms, zap single tokens into and out of positions, split fees across wallets, and write TypeScript against Meteora SDKs. Use for any Meteora, meteora-invent, DBC, DLMM, DAMM, alpha vault, presale, token vesting, fee sharing, staking, farming, zap, or Solana liquidity/LP task — including building launchpads, trading bots, and integrations.",
+          "category": "defi",
+          "url": "https://github.com/MeteoraAg/meteora-invent/tree/6787734f46c85e9c490d298c9ddfd210e262fe4e/skills/meteora",
+          "multiFile": true
+        }
+      ]
+    },
+    {
+      "id": "alchemy",
+      "repo": "alchemyplatform/skills",
+      "displayName": "Alchemy Skills",
+      "vendor": "Alchemy",
+      "type": "vendor",
+      "homepage": "https://alchemy.com",
+      "categories": ["infra-data"],
+      "blurb": "Official Alchemy skills: Solana RPC, DAS, Yellowstone gRPC, token prices and NFT data via alchemy-api, plus wallet-based x402 flows with SIWS through the agentic gateway.",
+      "url": "https://github.com/alchemyplatform/skills",
+      "stars": 46,
+      "pushedAt": "2026-06-24",
+      "commitSha": "546e264b73549c10a6dd6820cb7ffddf1f1f0f45",
+      "license": "MIT",
+      "description": null,
+      "skillCount": 6,
+      "highlightsOnly": false,
+      "skills": [
+        {
+          "name": "agentic-gateway",
+          "description": "Wire Alchemy into application code without an API key, using the x402 or MPP gateway with wallet-based auth (SIWE/SIWS) and per-request payments (USDC via x402, or USDC/credit-card via MPP). Specialized app-integration path. Use when the user is building application code AND no API key is available, or they're an autonomous agent that needs to pay for itself, or they explicitly want x402/MPP. For normal app code with an API key, use `alchemy-api`. For live agent work in this session (querying, admin, automation), use `alchemy-cli` (preferred) or `alchemy-mcp`.",
+          "category": "infra-data",
+          "url": "https://github.com/alchemyplatform/skills/tree/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/agentic-gateway",
+          "multiFile": true
+        },
+        {
+          "name": "alchemy-api",
+          "description": "Wire Alchemy into application code (server, backend, dApp, script) using a standard API key. Preferred app-integration path for normal server/backend usage. Covers EVM JSON-RPC, Token API, NFT API, Transfers API, Prices API, Portfolio API, Simulation, Webhooks, Solana RPC, Solana DAS, Solana Yellowstone gRPC, Sui gRPC, Wallets/Account Kit, and operational topics. Requires `$ALCHEMY_API_KEY`. For live agent work in this session (querying, admin, local automation), use `alchemy-cli` (preferred) or `alchemy-mcp` instead. For app code without an API key (autonomous agent paying per-request, or explicit x402/MPP), use `agentic-gateway` instead.",
+          "category": "infra-data",
+          "url": "https://github.com/alchemyplatform/skills/tree/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/alchemy-api",
+          "multiFile": true
+        },
+        {
+          "name": "alchemy-cli",
+          "description": "Use the Alchemy CLI (`@alchemy/cli`) for live blockchain data, transaction lookups, NFT/token/portfolio queries, simulation, tracing/debugging, account abstraction (bundler + gas manager), webhook management, Solana RPC/DAS, and Alchemy app administration. Preferred runtime path for live agent work (querying, admin, local automation) when the CLI is installed locally — or when both CLI and MCP are available. If neither is installed, install the CLI with `npm i -g @alchemy/cli`. Use for live agent work in this session, not for building application code that ships to production. For application code, use the `alchemy-api` skill (with API key) or `agentic-gateway` skill (without).",
+          "category": "infra-data",
+          "url": "https://github.com/alchemyplatform/skills/tree/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/alchemy-cli",
+          "multiFile": true
+        },
+        {
+          "name": "alchemy-mcp",
+          "description": "Use the Alchemy MCP server (`https://mcp.alchemy.com/mcp`) for live blockchain data and admin work when MCP is wired into your AI client and the Alchemy CLI is NOT installed locally. Exposes 159 tools across 100+ chains for token prices, NFT metadata, transactions, simulation, tracing, account abstraction, Solana DAS, and app management. Use for live querying, analysis, admin work, or on-machine agent work — not for application code that ships to production. For application code, use the `alchemy-api` skill (with API key) or `agentic-gateway` skill (without). When the CLI is also installed locally, prefer `alchemy-cli` instead.",
+          "category": "infra-data",
+          "url": "https://github.com/alchemyplatform/skills/tree/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/alchemy-mcp",
+          "multiFile": true
+        },
+        {
+          "name": "allium",
+          "description": "Query Allium APIs for wallet PnL (current + historical, by-wallet and by-token), holdings timeseries history, Hyperliquid HyperCore trading data (info, fills, orders, orderbook), and custom SQL analytics across 70+ chains. NOT for token prices, token metadata, current wallet balance snapshots, transaction transfer history, or NFT metadata — for those use `alchemy-cli` (live work), `alchemy-mcp`, `alchemy-api` (app code), or `agentic-gateway` (no API key). Requires Allium credentials at `~/.allium/credentials`.",
+          "category": "infra-data",
+          "url": "https://github.com/alchemyplatform/skills/tree/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/ecosystem/allium",
+          "multiFile": true
+        },
+        {
+          "name": "opensea",
+          "description": "Query OpenSea marketplace data — listings, offers, sales / events, floor prices, collection stats, drops, traits — and execute Seaport trades via the official `@opensea/cli` and OpenSea REST API across Ethereum, Base, Arbitrum, Optimism, Polygon, and more. Includes search across collections / NFTs / tokens / accounts. NOT for general NFT metadata reads (name, image, traits, ownership), token metadata, current wallet balances, transaction history, or live RPC reads — for those use `alchemy-cli` (live), `alchemy-mcp`, `alchemy-api` (app code), or `agentic-gateway` (no API key). For pure cross-chain token swaps (no marketplace context), prefer the `lifi` ecosystem skill. Requires `OPENSEA_API_KEY` (instant via API).",
+          "category": "nft-tokens",
+          "url": "https://github.com/alchemyplatform/skills/tree/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/ecosystem/opensea",
+          "multiFile": true
+        }
+      ]
+    },
+    {
+      "id": "phantom",
+      "repo": "phantom/phantom-connect-cursor-plugin",
+      "displayName": "Phantom Connect Skill",
+      "vendor": "Phantom",
+      "type": "vendor",
+      "homepage": "https://phantom.com",
+      "categories": ["wallets-mobile"],
+      "blurb": "Official standalone Phantom Connect SDK skill: social login, transaction signing, token gating, and NFT minting with the React, React Native, and browser SDKs.",
+      "url": "https://github.com/phantom/phantom-connect-cursor-plugin",
+      "stars": 8,
+      "pushedAt": "2026-03-09",
+      "commitSha": "4162aa88131f0a6b6f0c050b176736f0773d038c",
+      "license": "MIT",
+      "description": null,
+      "skillCount": 8,
+      "highlightsOnly": false,
+      "skills": [
+        {
+          "name": "phantom-connect",
+          "description": "> Build wallet-connected applications with the Phantom Connect SDK for Solana. Use when integrating Phantom wallets into React, React Native, or vanilla JS/TS apps — including wallet connection, social login (Google/Apple), transaction signing, message signing, token-gated access, crypto payments, and NFT minting. Covers @phantom/react-sdk, @phantom/react-native-sdk, and @phantom/browser-sdk.",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/.claude/skills/phantom-connect",
+          "multiFile": true
+        },
+        {
+          "name": "add-social-login",
+          "description": "Configure Google and Apple social login with Phantom Connect SDK to enable embedded wallet creation",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/skills/add-social-login",
+          "multiFile": false
+        },
+        {
+          "name": "phantom-wallet-mcp",
+          "description": "Execute wallet operations through the Phantom MCP server — get addresses, sign transactions, transfer tokens, buy tokens, and sign messages across Solana, Ethereum, Bitcoin, and Sui",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/skills/phantom-wallet-mcp",
+          "multiFile": false
+        },
+        {
+          "name": "send-sol-transaction",
+          "description": "Build and send SOL transfers with Phantom Connect SDK, including transaction construction, signing, and verification",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/skills/send-sol-transaction",
+          "multiFile": false
+        },
+        {
+          "name": "setup-browser-app",
+          "description": "Scaffold a vanilla JS/TS app with Phantom Browser SDK for wallet integration, without any framework dependency",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/skills/setup-browser-app",
+          "multiFile": false
+        },
+        {
+          "name": "setup-react-app",
+          "description": "Scaffold a React app with Phantom Connect SDK for wallet integration, including social login and Solana support",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/skills/setup-react-app",
+          "multiFile": false
+        },
+        {
+          "name": "setup-react-native-app",
+          "description": "Scaffold a React Native (Expo) app with Phantom React Native SDK for mobile wallet integration, including polyfills and deep linking",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/skills/setup-react-native-app",
+          "multiFile": false
+        },
+        {
+          "name": "sign-message",
+          "description": "Implement message signing with Phantom Connect SDK for Solana and EVM, including Sign-in with Solana (SIWS) authentication",
+          "category": "wallets-mobile",
+          "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/skills/sign-message",
+          "multiFile": false
+        }
+      ]
+    },
+    {
+      "id": "light-protocol",
+      "repo": "Lightprotocol/skills",
+      "displayName": "Light Protocol Skills",
+      "vendor": "Light Protocol",
+      "type": "vendor",
+      "homepage": "https://lightprotocol.com",
+      "categories": ["infra-data"],
+      "blurb": "Rent-free Solana development with ZK Compression: client and Anchor/Pinocchio program skills for DeFi, payments, and token distribution without rent-exemption costs.",
+      "url": "https://github.com/Lightprotocol/skills",
+      "stars": 6,
+      "pushedAt": "2026-06-08",
+      "commitSha": "0f52958edd1872d43c9d94fd58f558abb250789a",
+      "license": "MIT",
+      "description": "AI agent skills for rent-free Solana development",
+      "skillCount": 5,
+      "highlightsOnly": false,
+      "skills": [
+        {
+          "name": "ask-mcp",
+          "description": "For questions about Light Protocol's SDK, smart contracts and Solana development, Claude Code features, or agent skills. AI-powered answers grounded in repository context via DeepWiki MCP.",
+          "category": "infra-data",
+          "url": "https://github.com/Lightprotocol/skills/tree/0f52958edd1872d43c9d94fd58f558abb250789a/skills/ask-mcp",
+          "multiFile": false
+        },
+        {
+          "name": "compressed-pda",
+          "description": "For client and program development on Solana ~160x cheaper and without rent-exemption for per-user state, DePIN registrations, or custom compressed accounts. Create, update, close, burn, and reinitialize compressed accounts.",
+          "category": "infra-data",
+          "url": "https://github.com/Lightprotocol/skills/tree/0f52958edd1872d43c9d94fd58f558abb250789a/skills/compressed-pda",
+          "multiFile": true
+        },
+        {
+          "name": "compressed-token",
+          "description": "For compressed token operations on Solana ~400x cheaper than SPL: create mints with interface PDAs, mint, transfer, approve, revoke, compress, decompress, merge, and Token-2022 with compression. Compressed token accounts are always rent-free. @lightprotocol/compressed-token (TypeScript) with createRpc() from @lightprotocol/stateless.js.",
+          "category": "infra-data",
+          "url": "https://github.com/Lightprotocol/skills/tree/0f52958edd1872d43c9d94fd58f558abb250789a/skills/compressed-token",
+          "multiFile": true
+        },
+        {
+          "name": "testing",
+          "description": "For testing with Light Protocol programs and clients on localnet, devnet, and mainnet validation.",
+          "category": "infra-data",
+          "url": "https://github.com/Lightprotocol/skills/tree/0f52958edd1872d43c9d94fd58f558abb250789a/skills/testing",
+          "multiFile": true
+        },
+        {
+          "name": "zk",
+          "description": "For custom ZK Solana programs and privacy-preserving applications to prevent double spending. Guide to integrate rent-free nullifier PDAs for double-spend prevention.",
+          "category": "infra-data",
+          "url": "https://github.com/Lightprotocol/skills/tree/0f52958edd1872d43c9d94fd58f558abb250789a/skills/zk",
+          "multiFile": false
+        }
+      ]
+    },
+    {
+      "id": "dflow",
+      "repo": "DFlowProtocol/dflow_phantom-connect-skill",
+      "displayName": "DFlow × Phantom Skill",
+      "vendor": "DFlow",
+      "type": "vendor",
+      "categories": ["defi"],
+      "blurb": "Official DFlow + Phantom Connect skill for full-stack, wallet-connected Solana apps: DFlow swaps, prediction market trading, and Proof KYC verification.",
+      "homepage": null,
+      "url": "https://github.com/DFlowProtocol/dflow_phantom-connect-skill",
+      "stars": 40,
+      "pushedAt": "2026-07-23",
+      "commitSha": "32e51b852f6ed6aeadbd4b87556c90958f44a7c0",
+      "license": "MIT",
+      "description": null,
+      "skillCount": 2,
+      "highlightsOnly": false,
+      "skills": [
+        {
+          "name": "phantom-wallet-mcp",
+          "description": "> Execute wallet operations through the Phantom MCP server. Use when the user wants to interact with their Phantom wallet directly — get addresses, transfer SOL or SPL tokens, buy/swap tokens, sign transactions, and sign messages across Solana, Ethereum, Bitcoin, and Sui. Requires the @phantom/mcp-server to be configured as an MCP server.",
+          "category": "wallets-mobile",
+          "url": "https://github.com/DFlowProtocol/dflow_phantom-connect-skill/tree/32e51b852f6ed6aeadbd4b87556c90958f44a7c0/phantom-wallet-mcp",
+          "multiFile": false
+        },
+        {
+          "name": "dflow-phantom-connect",
+          "description": "Build Solana wallet-connected apps with Phantom Connect SDKs and DFlow spot trading. Use when user asks to connect a Phantom wallet, integrate Phantom in React, React Native, or vanilla JS, sign messages or transactions, build token-gated pages, mint NFTs, accept crypto payments, or swap/stream tokens with DFlow. Covers @phantom/react-sdk, @phantom/react-native-sdk, @phantom/browser-sdk, and DFlow spot trading and market-data streaming. Do NOT use for Ethereum or EVM wallet integrations, or non-DFlow DEX routing.",
+          "category": "defi",
+          "url": "https://github.com/DFlowProtocol/dflow_phantom-connect-skill/tree/32e51b852f6ed6aeadbd4b87556c90958f44a7c0/skill",
+          "multiFile": true
+        }
+      ]
+    },
+    {
+      "id": "quicknode-blockchain",
+      "repo": "quiknode-labs/blockchain-skills",
+      "displayName": "QuickNode Blockchain Skills",
+      "vendor": "QuickNode",
+      "type": "vendor",
+      "categories": ["infra-data"],
+      "blurb": "QuickNode infrastructure skills: Solana RPC, Jupiter Swap API, Yellowstone gRPC streams, and the rest of their data stack.",
+      "homepage": null,
+      "url": "https://github.com/quiknode-labs/blockchain-skills",
+      "stars": 17,
+      "pushedAt": "2026-07-14",
+      "commitSha": "3cdb4993812d9f6f50e1ba20473f03e6effed2ed",
+      "license": "MIT",
+      "description": "Blockchain skills you can use with your coding agent, such as Claude Code, OpenCode, Codex, Cursor and more.",
+      "skillCount": 1,
+      "highlightsOnly": false,
+      "skills": [
+        {
+          "name": "quicknode-skill",
+          "description": "Quicknode blockchain infrastructure for 80+ chains: Core RPC API, Streams, Webhooks, Blazar WSS, Solana gRPC, HyperCore gRPC, SQL Explorer, Metaplex DAS API, Blockbook, Ordinals & Runes API, Swap API, x402, MPP, Agent Subscriptions, CLI, and MCP. Use for any Quicknode product, blockchain data access, or wallet-paid agent access.",
+          "category": "infra-data",
+          "url": "https://github.com/quiknode-labs/blockchain-skills/tree/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill",
+          "multiFile": true
+        }
       ]
     }
   ],
@@ -1214,6 +1538,58 @@
       "url": "https://github.com/solana-foundation/pay-skills",
       "description": "A community registry of stablecoin-gated APIs for the pay CLI — PAY.md descriptors AI agents can search, route to, and pay through.",
       "kind": "registry"
+    }
+  ],
+  "communityIndex": [
+    {
+      "name": "GLAM Skill",
+      "repo": "glamsystems/glam-skill",
+      "description": "Solana vault management via the GLAM Protocol."
+    },
+    {
+      "name": "Octav API Skill",
+      "repo": "Octav-Labs/octav-api-skill",
+      "description": "Wallet portfolio tracking, transaction history, and DeFi positions."
+    },
+    {
+      "name": "PNP Markets Skill",
+      "repo": "pnp-protocol/solana-skill",
+      "description": "Permissionless prediction markets with V2 AMM and P2P betting."
+    },
+    {
+      "name": "Solana Skills Plugin",
+      "repo": "tenequm/claude-plugins",
+      "description": "Anchor/native program development, security auditing, ZK compression."
+    },
+    {
+      "name": "Bitget Wallet Skill",
+      "repo": "bitget-wallet-ai-lab/bitget-wallet-skill",
+      "description": "Multi-chain swaps, bridges, and gasless transactions incl. Solana."
+    },
+    {
+      "name": "Project 0 Agents",
+      "repo": "0dotxyz/p0-agents",
+      "description": "Yield discovery, lending, and strategy execution on Solana."
+    },
+    {
+      "name": "Breeze Agent Kit",
+      "repo": "anagrambuild/breeze-agent-kit",
+      "description": "AI agents managing Solana yield via Breeze — MCP, x402, SKILL.md."
+    },
+    {
+      "name": "SP3ND Agent Skill",
+      "repo": "kent-x1/sp3nd-agent-skill",
+      "description": "Buy Amazon products with USDC on Solana via x402."
+    },
+    {
+      "name": "Sentients",
+      "repo": "koshmade/sentients.wtf",
+      "description": "AI agents minting inscriptions with autonomous wallets."
+    },
+    {
+      "name": "Solentic Staking",
+      "repo": "mbrassey/solentic",
+      "description": "Native staking for AI agents — 18 MCP tools, zero custody."
     }
   ]
 }

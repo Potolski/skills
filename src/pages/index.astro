@@ -105,14 +105,14 @@ const skillTotal = totalSkills();
         </div>
         <div class="card">
           <span class="use-step">03</span>
-          <h3>No install — just paste</h3>
+          <h3>No install — tell your agent</h3>
           <p>
-            Every official skill is hosted as a plain markdown file. Paste this into any agent
-            chat:
+            Every official skill is hosted as plain markdown at a stable URL. One line in any
+            agent chat:
           </p>
           <CopyBlock
             prompt={false}
-            command={`Read ${SITE_URL}${lead?.hostedPath ?? '/s/solana-dev.md'} and apply it to this task: `}
+            command={`Read ${SITE_URL}/llms.txt before you start building on Solana.`}
           />
         </div>
       </div>

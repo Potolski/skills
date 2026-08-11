@@ -45,6 +45,13 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
         <a class="muted repo-link" href={skill.githubUrl} target="_blank" rel="noopener"
           >{skill.repo}</a
         >
+        <span class="muted">·</span>
+        <a
+          class="agent-view mono"
+          href={skill.hostedPath}
+          title="The raw SKILL.md this page renders — the URL to hand an agent"
+          >Agent view ↗</a
+        >
       </div>
       <p class="lead">{skill.description}</p>
     </div>
@@ -90,10 +97,17 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
           </div>
           <div class="tab-panel" role="tabpanel" data-panel="nono" hidden>
             <p class="panel-note">
-              The skill is hosted as plain markdown — paste this into any agent chat, no setup:
+              The skill is hosted as plain markdown — tell your agent:
             </p>
-            <CopyBlock prompt={false} command={`Read ${install.hosted} and apply it to this task: `} />
-            <p class="panel-note">Or pull it into a terminal session:</p>
+            <CopyBlock
+              prompt={false}
+              command={`Read ${install.hosted} and follow it for this task: `}
+            />
+            <p class="panel-note">
+              Or have the skills CLI generate a one-shot prompt (pipe it straight into your agent):
+            </p>
+            <CopyBlock command={`npx skills use ${skill.repo}@${skill.name} | claude`} />
+            <p class="panel-note">Or pull the raw file into a terminal session:</p>
             <CopyBlock command={`curl -fsSL ${install.hosted}`} />
           </div>
           <div class="tab-panel" role="tabpanel" data-panel="git" hidden>
@@ -248,6 +262,17 @@ const readMinutes = Math.max(1, Math.round(skill.words / 220));
   }
   .repo-link:hover {
     color: var(--green);
+  }
+  .agent-view {
+    font-size: 0.8rem;
+    color: var(--green);
+    border: 1px solid rgba(20, 241, 149, 0.3);
+    border-radius: 999px;
+    padding: 2px 11px;
+    transition: all 0.15s ease;
+  }
+  .agent-view:hover {
+    background: rgba(20, 241, 149, 0.1);
   }
   .lead {
     margin-top: 18px;

@@ -33,10 +33,17 @@ const SKILL_PATHS = {
   "metaplex-foundation/skill": { include: [/^skills\//], exclude: [] },
   "solana-mobile/solana-mobile-dev-skill": { include: [/^/], exclude: [] },
   "quiknode-labs/solana-anchor-claude-skill": { include: [/^skills\//], exclude: [] },
+  "quiknode-labs/blockchain-skills": { include: [/^/], exclude: [] },
   "ColosseumOrg/colosseum-copilot": { include: [/^skills\//], exclude: [] },
   "QEDGen/solana-skills": { include: [/^/], exclude: [] },
   "frankcastleauditor/safe-solana-builder": { include: [/^/], exclude: [] },
   "solanabr/solana-game-skill": { include: [/^skill\/SKILL\.md$/], exclude: [/solana-dev-skill/] },
+  "magicblock-labs/magicblock-dev-skill": { include: [/^/], exclude: [] },
+  "MeteoraAg/meteora-invent": { include: [/^skills\//], exclude: [] },
+  "alchemyplatform/skills": { include: [/^skills\//], exclude: [] },
+  "phantom/phantom-connect-cursor-plugin": { include: [/^/], exclude: [] },
+  "Lightprotocol/skills": { include: [/^/], exclude: [] },
+  "DFlowProtocol/dflow_phantom-connect-skill": { include: [/^/], exclude: [] },
   // trailofbits/skills + solanabr/solana-ai-kit are hand-curated (highlights only)
 };
 
@@ -74,14 +81,20 @@ function parseFrontmatter(txt) {
 async function repoMeta(repo) {
   const data = await gh(`/repos/${repo}`);
   if (!data) return null;
+  const branch = data.default_branch ?? "main";
+  const branchData = await gh(`/repos/${repo}/branches/${branch}`);
   return {
     stars: data.stargazers_count ?? null,
     pushedAt: data.pushed_at?.slice(0, 10) ?? null,
     license: data.license?.spdx_id ?? null,
     description: data.description ?? null,
-    branch: data.default_branch ?? "main",
+    branch,
+    commitSha: branchData?.commit?.sha ?? null,
   };
 }
+
+/** Extract the skill directory from a github tree/blob URL regardless of ref. */
+const dirFromUrl = (url) => url.match(/\/tree\/[^/]+\/(.*)$/)?.[1] ?? null;
 
 // ---------- official: metadata + verbatim mirrors + file trees ----------
 for (const skill of registry.official) {
@@ -93,13 +106,33 @@ for (const skill of registry.official) {
   skill.stars = meta.stars;
   skill.pushedAt = meta.pushedAt;
   skill.branch = meta.branch;
+  skill.commitSha = meta.commitSha;
   if (meta.license && meta.license !== "NOASSERTION") skill.license = meta.license;
   if (metaOnly) continue;
 
-  const dirPart = skill.dir ? `${skill.dir}/` : "";
+  const tree = await gh(`/repos/${skill.repo}/git/trees/${skill.branch}?recursive=1`);
+  const skillFiles = (tree?.tree ?? [])
+    .map((n) => n.path)
+    .filter((p) => p.endsWith("SKILL.md"));
+
+  // Auto-heal upstream restructures: if the recorded dir no longer holds a
+  // SKILL.md, adopt the tree's actual location (prefer a path containing the id).
+  let dirPart = skill.dir ? `${skill.dir}/` : "";
+  if (!skillFiles.includes(`${dirPart}SKILL.md`) && skillFiles.length > 0) {
+    const next =
+      skillFiles.find((p) => p.includes(skill.id)) ??
+      skillFiles.find((p) => p.includes(skill.name)) ??
+      (skillFiles.length === 1 ? skillFiles[0] : null);
+    if (next) {
+      skill.dir = next.replace(/\/?SKILL\.md$/, "");
+      dirPart = skill.dir ? `${skill.dir}/` : "";
+      console.warn(`⚠ ${skill.repo}: SKILL.md moved — dir now "${skill.dir}"`);
+    }
+  }
+
   const txt = await raw(skill.repo, skill.branch, `${dirPart}SKILL.md`);
   if (!txt) {
-    console.warn(`⚠ ${skill.repo}: SKILL.md not found at ${dirPart}SKILL.md`);
+    console.warn(`⚠ ${skill.repo}: SKILL.md not found at ${dirPart}SKILL.md — mirror NOT updated`);
     continue;
   }
   writeFileSync(join(ROOT, "src/data/skills", `${skill.id}.md`), txt);
@@ -107,11 +140,10 @@ for (const skill of registry.official) {
   if (fm.name) skill.name = fm.name;
   if (fm.description) skill.description = fm.description;
   if (fm.compatibility) skill.compatibility = fm.compatibility;
-  const version = (fm.metadata || "").match(/version:\s*([\d.]+)/)?.[1];
+  const version = (fm.metadata || "").match(/version:\s*"?([\d.]+)"?/)?.[1];
   if (version) skill.version = version;
   skill.words = txt.replace(/^---[\s\S]*?---\s*/, "").split(/\s+/).length;
 
-  const tree = await gh(`/repos/${skill.repo}/git/trees/${skill.branch}?recursive=1`);
   if (tree?.tree) {
     const prefix = skill.dir ? `${skill.dir}/` : "";
     skill.files = tree.tree
@@ -142,8 +174,12 @@ for (const eco of registry.ecosystem) {
   }
   eco.stars = meta.stars;
   eco.pushedAt = meta.pushedAt;
+  eco.commitSha = meta.commitSha;
   eco.license = meta.license === "NOASSERTION" ? null : meta.license;
   eco.description = meta.description;
+  const ref = meta.commitSha ?? meta.branch;
+  const pinnedUrl = (dir) =>
+    dir ? `https://github.com/${eco.repo}/tree/${ref}/${dir}` : `https://github.com/${eco.repo}/tree/${ref}`;
   const filters = SKILL_PATHS[eco.repo];
   if (metaOnly || !filters) {
     console.log(`✓ eco ${eco.id} (meta only)`);
@@ -158,32 +194,35 @@ for (const eco of registry.ecosystem) {
     .filter((p) => filters.include.some((re) => re.test(p)))
     .filter((p) => !filters.exclude.some((re) => re.test(p)));
 
-  const known = new Map(eco.skills.map((s) => [s.url.split("/tree/main/")[1] ?? s.name, s]));
+  const known = new Map(eco.skills.map((s) => [dirFromUrl(s.url) ?? "", s]));
   const nextSkills = [];
+  let added = 0;
   for (const path of skillPaths) {
     const dir = path.replace(/\/SKILL\.md$/, "").replace(/^SKILL\.md$/, "");
-    const existing = known.get(dir) ?? [...known.values()].find((s) => s.url.endsWith(`/${dir}`));
+    const existing = known.get(dir);
     if (existing) {
-      nextSkills.push(existing);
+      nextSkills.push({ ...existing, url: pinnedUrl(dir) });
       continue;
     }
     const txt = await raw(eco.repo, meta.branch, path);
     if (!txt) continue;
     const fm = parseFrontmatter(txt);
     if (!fm.name) continue;
+    if (nextSkills.some((s) => s.name === fm.name)) continue; // same skill vendored at two paths
     nextSkills.push({
       name: fm.name,
       description: (fm.description ?? "").trim(),
       category: "development",
-      url: `https://github.com/${eco.repo}/tree/${meta.branch}/${dir}`.replace(/\/$/, ""),
-      multiFile: false,
+      url: pinnedUrl(dir),
+      multiFile: dir !== "" && tree.tree.some((n) => n.path.startsWith(`${dir}/`) && n.path !== path),
     });
+    added++;
     console.log(`  + new skill ${eco.id}/${fm.name}`);
   }
-  const dropped = eco.skills.length - nextSkills.filter((s) => known.has(s.url.split("/tree/main/")[1] ?? "")).length;
+  const dropped = eco.skills.length + added - nextSkills.length;
   eco.skills = nextSkills;
   if (!eco.highlightsOnly) eco.skillCount = nextSkills.length;
-  console.log(`✓ eco ${eco.id} (${eco.skills.length} skills${dropped > 0 ? `, review drops` : ""})`);
+  console.log(`✓ eco ${eco.id} (${eco.skills.length} skills${dropped > 0 ? `, ${dropped} dropped — review` : ""})`);
 }
 
 registry.updated = new Date().toISOString().slice(0, 10);

@@ -7,6 +7,7 @@ export interface OfficialSkill {
   tagline: string;
   description: string;
   category: string;
+  commitSha?: string | null;
   repo: string;
   branch: string;
   dir: string;
@@ -44,6 +45,7 @@ export interface EcosystemRepo {
   url: string;
   stars: number | null;
   pushedAt: string | null;
+  commitSha?: string | null;
   license: string | null;
   description: string | null;
   skillCount: number;
@@ -59,11 +61,18 @@ export interface FoundationResource {
   kind: string;
 }
 
+export interface CommunityEntry {
+  name: string;
+  repo: string;
+  description: string;
+}
+
 export interface Registry {
   updated: string;
   official: OfficialSkill[];
   ecosystem: EcosystemRepo[];
   foundationResources: FoundationResource[];
+  communityIndex: CommunityEntry[];
 }
 
 export const registry = registryJson as unknown as Registry;

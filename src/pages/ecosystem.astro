@@ -104,6 +104,42 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
     })
   }
 
+  <section class="eco-group">
+    <div class="container">
+      <h2 class="group-title">More community skills</h2>
+      <p class="group-sub muted">
+        Smaller and newer entries from
+        <a
+          class="inline-link"
+          href="https://github.com/solana-foundation/awesome-solana-ai"
+          target="_blank"
+          rel="noopener">awesome-solana-ai</a
+        > — listed for discovery, not yet indexed in depth.
+      </p>
+      <ul class="tail-list">
+        {
+          registry.communityIndex.map((entry) => (
+            <li>
+              <a href={`https://github.com/${entry.repo}`} target="_blank" rel="noopener">
+                <span class="tail-name">{entry.name}</span>
+                <code class="mono tail-repo">{entry.repo}</code>
+                <span class="tail-desc muted">{entry.description}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="disclaimer muted">
+        Community skills are independently developed and are not reviewed, endorsed, or maintained
+        by the Solana Foundation. Inclusion in this directory does not imply any warranty, security
+        audit, or recommendation. You are solely responsible for evaluating any community skill
+        before use — review its code, license, and security practices. Ecosystem skill links are
+        pinned to the commit we indexed (<code class="mono">@ sha</code>), so what you audit is what
+        you install.
+      </p>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container">
       <div class="card add-repo">
@@ -152,6 +188,63 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
   }
   .resources .card p {
     -webkit-line-clamp: 4;
+  }
+  .tail-list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+    gap: 4px 24px;
+  }
+  .tail-list li a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 10px;
+    transition: background 0.12s ease;
+    min-width: 0;
+  }
+  .tail-list li a:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .tail-name {
+    font-weight: 570;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+  .tail-repo {
+    font-size: 0.74rem;
+    color: var(--text-3);
+    white-space: nowrap;
+  }
+  .tail-desc {
+    font-size: 0.82rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .tail-list li a:hover .tail-name {
+    color: var(--green);
+  }
+  .disclaimer {
+    margin-top: 28px;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    max-width: 88ch;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+  }
+  @media (max-width: 560px) {
+    .tail-list {
+      grid-template-columns: 1fr;
+    }
+    .tail-list li a {
+      flex-wrap: wrap;
+      gap: 4px 10px;
+    }
   }
   .group-title {
     font-size: 1.25rem;

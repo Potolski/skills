@@ -54,6 +54,22 @@ const fmtStars = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : Strin
         </span>
       )
     }
+    {
+      repo.commitSha && (
+        <>
+          <span aria-hidden="true">·</span>
+          <a
+            class="mono sha-pin"
+            href={`https://github.com/${repo.repo}/tree/${repo.commitSha}`}
+            target="_blank"
+            rel="noopener"
+            title="Skill links are pinned to this commit — what you audited is what you install"
+          >
+            @ {repo.commitSha.slice(0, 7)}
+          </a>
+        </>
+      )
+    }
   </div>
   {
     expandable && repo.skills.length > 0 && (
@@ -159,6 +175,18 @@ const fmtStars = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : Strin
   }
   .repo-blurb {
     -webkit-line-clamp: 4 !important;
+  }
+  .sha-pin {
+    font-size: 0.74rem;
+    color: var(--text-3);
+    border: 1px dashed var(--border-strong);
+    border-radius: 6px;
+    padding: 1px 7px;
+    transition: color 0.12s ease, border-color 0.12s ease;
+  }
+  .sha-pin:hover {
+    color: var(--green);
+    border-color: rgba(20, 241, 149, 0.5);
   }
   .skill-list {
     border-top: 1px solid var(--border);
