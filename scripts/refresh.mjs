@@ -26,8 +26,19 @@ const API_HEADERS = {
 
 /** Where each ecosystem repo keeps its canonical skills (path prefix filters). */
 const SKILL_PATHS = {
-  "sendaifun/skills": { include: [/^skills\//], exclude: [/example-skill/] },
-  "sendaifun/solana-new": { include: [/^skills\//], exclude: [] },
+  "sendaifun/skills": {
+    include: [/^skills\//],
+    exclude: [/example-skill/, /animation-reverse-engineering/],
+  },
+  "sendaifun/solana-new": {
+    include: [/^skills\//],
+    // generic design/video skills — not Solana content
+    exclude: [
+      /animation-reverse-engineering/, /page-load-animations/, /video-craft/,
+      /marketing-video/, /frontend-design-guidelines/, /design-taste/,
+      /brand-design/, /number-formatting/,
+    ],
+  },
   "helius-labs/core-ai": { include: [/^helius-skills\//], exclude: [] },
   "jup-ag/agent-skills": { include: [/^skills\//], exclude: [] },
   "metaplex-foundation/skill": { include: [/^skills\//], exclude: [] },
@@ -62,6 +73,13 @@ async function raw(repo, branch, path) {
   const res = await fetch(`https://raw.githubusercontent.com/${repo}/${branch}/${path}`);
   return res.ok ? res.text() : null;
 }
+
+/** Strip markdown syntax that leaks into one-line descriptions. */
+const cleanDescription = (s) =>
+  (s ?? "")
+    .replace(/^\s*[>|#*-]+\s*/, "")
+    .replace(/\s+/g, " ")
+    .trim();
 
 function parseFrontmatter(txt) {
   const m = txt.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -136,6 +154,9 @@ for (const skill of registry.official) {
     continue;
   }
   writeFileSync(join(ROOT, "src/data/skills", `${skill.id}.md`), txt);
+  skill.hostedPath = `/s/${skill.id}/SKILL.md`;
+  const skillBlob = tree?.tree?.find((n) => n.path === `${dirPart}SKILL.md`);
+  skill.bytes = skillBlob?.size ?? txt.length;
   const fm = parseFrontmatter(txt);
   if (fm.name) skill.name = fm.name;
   if (fm.description) skill.description = fm.description;
@@ -163,6 +184,7 @@ for (const skill of registry.official) {
     const skillFilesDir = join(ROOT, "src/data/skill-files", skill.id);
     rmSync(skillFilesDir, { recursive: true, force: true });
     skill.hostedFiles = [];
+    let refsBytes = 0;
     const companions = skill.files.filter((f) => !f.endsWith("/") && f.endsWith(".md"));
     for (const rel of companions) {
       const body = await raw(skill.repo, skill.branch, `${prefix}${rel}`);
@@ -174,7 +196,9 @@ for (const skill of registry.official) {
       mkdirSync(dirname(dest), { recursive: true });
       writeFileSync(dest, body);
       skill.hostedFiles.push(rel);
+      refsBytes += Buffer.byteLength(body);
     }
+    skill.refsBytes = refsBytes;
   }
   const dirUrl = skill.dir ? `/${skill.dir}` : "";
   skill.githubUrl = `https://github.com/${skill.repo}/tree/${skill.branch}${dirUrl}`;
@@ -184,6 +208,7 @@ for (const skill of registry.official) {
 }
 
 // ---------- ecosystem: metadata + new-skill discovery ----------
+const skippedNoName = [];
 for (const eco of registry.ecosystem) {
   const meta = await repoMeta(eco.repo);
   if (!meta) {
@@ -225,17 +250,20 @@ for (const eco of registry.ecosystem) {
     const txt = await raw(eco.repo, meta.branch, path);
     if (!txt) continue;
     const fm = parseFrontmatter(txt);
-    if (!fm.name) continue;
+    if (!fm.name) {
+      skippedNoName.push(`${eco.repo}/${path}`);
+      continue;
+    }
     if (nextSkills.some((s) => s.name === fm.name)) continue; // same skill vendored at two paths
     nextSkills.push({
       name: fm.name,
-      description: (fm.description ?? "").trim(),
-      category: "development",
+      description: cleanDescription(fm.description),
+      category: null, // curate by hand — auto-bucketing everything as "development" pollutes filters
       url: pinnedUrl(dir),
       multiFile: dir !== "" && tree.tree.some((n) => n.path.startsWith(`${dir}/`) && n.path !== path),
     });
     added++;
-    console.log(`  + new skill ${eco.id}/${fm.name}`);
+    console.log(`  + new skill ${eco.id}/${fm.name} (category: curate me)`);
   }
   const dropped = eco.skills.length + added - nextSkills.length;
   eco.skills = nextSkills;
@@ -245,4 +273,15 @@ for (const eco of registry.ecosystem) {
 
 registry.updated = new Date().toISOString().slice(0, 10);
 writeFileSync(REGISTRY_PATH, JSON.stringify(registry, null, 2) + "\n");
+
+// Legacy flat URLs 301 to dir-style hosting (Cloudflare/Netlify; Vercel uses vercel.json).
+writeFileSync(
+  join(ROOT, "public/_redirects"),
+  registry.official.map((s) => `/s/${s.id}.md /s/${s.id}/SKILL.md 301`).join("\n") + "\n"
+);
+if (skippedNoName.length > 0) {
+  console.warn(
+    `\n⚠ SKIPPED — SKILL.md without a frontmatter name (fix upstream or exclude):\n  ${skippedNoName.join("\n  ")}`
+  );
+}
 console.log(`\nDone — ${apiCalls} GitHub API calls. Registry updated: ${registry.updated}`);

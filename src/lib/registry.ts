@@ -5,9 +5,13 @@ export interface OfficialSkill {
   name: string;
   title: string;
   tagline: string;
+  /** Human-written blurb; `description` is the agent trigger string. */
+  summary?: string;
   description: string;
   category: string;
   commitSha?: string | null;
+  bytes?: number;
+  refsBytes?: number;
   repo: string;
   branch: string;
   dir: string;
@@ -29,7 +33,7 @@ export interface OfficialSkill {
 export interface EcosystemSkill {
   name: string;
   description: string;
-  category: string;
+  category: string | null;
   url: string;
   multiFile: boolean;
 }
@@ -91,9 +95,10 @@ export const CATEGORY_LABELS: Record<string, string> = {
   research: "Ideas & Launch",
 };
 
+/** Skills actually browsable on this site (not upstream marketing totals). */
 export const totalSkills = () =>
   registry.official.length +
-  registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
+  registry.ecosystem.reduce((n, r) => n + r.skills.length, 0);
 
 export function installCommands(skill: OfficialSkill) {
   const hosted = `${SITE_URL}${skill.hostedPath}`;
@@ -110,4 +115,12 @@ export function installCommands(skill: OfficialSkill) {
 
 export function repoInstallCommand(repo: EcosystemRepo): string {
   return `npx skills add ${repo.repo}`;
+}
+
+/** Convert a pinned github tree/blob URL into a raw SKILL.md URL agents can fetch. */
+export function rawSkillUrl(treeUrl: string): string {
+  const raw = treeUrl
+    .replace("https://github.com/", "https://raw.githubusercontent.com/")
+    .replace(/\/(tree|blob)\//, "/");
+  return treeUrl.includes("/blob/") ? raw : `${raw}/SKILL.md`;
 }

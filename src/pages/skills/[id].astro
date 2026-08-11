@@ -25,7 +25,7 @@ const refs = refsFor(skill.id);
 
 <Base
   title={`${skill.title} — Solana Skills`}
-  description={skill.description.slice(0, 300)}
+  description={(skill.summary ?? skill.description).slice(0, 158).replace(/\s+\S*$/, '') + '…'}
 >
   <section class="detail-head">
     <div class="container">
@@ -55,7 +55,15 @@ const refs = refsFor(skill.id);
           >Agent view ↗</a
         >
       </div>
-      <p class="lead">{skill.description}</p>
+      <p class="lead">{skill.summary ?? skill.description}</p>
+      {
+        skill.summary && (
+          <details class="triggers">
+            <summary>When your agent invokes this</summary>
+            <p>{skill.description}</p>
+          </details>
+        )
+      }
     </div>
   </section>
 
@@ -64,23 +72,23 @@ const refs = refsFor(skill.id);
       <article>
         <div class="install-panel" data-tabs>
           <div class="tabs" role="tablist" aria-label="Install methods">
-            <button class="tab" role="tab" data-tab="cli" aria-selected="true">skills CLI</button>
-            <button class="tab" role="tab" data-tab="claude" aria-selected="false"
+            <button class="tab" role="tab" id="tab-cli" aria-controls="panel-cli" data-tab="cli" aria-selected="true">skills CLI</button>
+            <button class="tab" role="tab" id="tab-claude" aria-controls="panel-claude" data-tab="claude" aria-selected="false" tabindex="-1"
               >Claude Code</button
             >
-            <button class="tab" role="tab" data-tab="nono" aria-selected="false"
+            <button class="tab" role="tab" id="tab-nono" aria-controls="panel-nono" data-tab="nono" aria-selected="false" tabindex="-1"
               >No install</button
             >
-            <button class="tab" role="tab" data-tab="git" aria-selected="false">Git</button>
+            <button class="tab" role="tab" id="tab-git" aria-controls="panel-git" data-tab="git" aria-selected="false" tabindex="-1">Git</button>
           </div>
-          <div class="tab-panel" role="tabpanel" data-panel="cli">
+          <div class="tab-panel" role="tabpanel" id="panel-cli" aria-labelledby="tab-cli" tabindex="0" data-panel="cli">
             <p class="panel-note">
               One command for Claude Code, Cursor, Codex, Windsurf and other agents — pulls the
               full skill{skill.multiFile && ', companion files included'}.
             </p>
             <CopyBlock command={install.cli} />
           </div>
-          <div class="tab-panel" role="tabpanel" data-panel="claude" hidden>
+          <div class="tab-panel" role="tabpanel" id="panel-claude" aria-labelledby="tab-claude" tabindex="0" data-panel="claude" hidden>
             <p class="panel-note">
               Drop the hosted file into your skills directory. Global (all projects):
             </p>
@@ -97,7 +105,7 @@ const refs = refsFor(skill.id);
               )
             }
           </div>
-          <div class="tab-panel" role="tabpanel" data-panel="nono" hidden>
+          <div class="tab-panel" role="tabpanel" id="panel-nono" aria-labelledby="tab-nono" tabindex="0" data-panel="nono" hidden>
             <p class="panel-note">
               The skill is hosted as plain markdown — tell your agent:
             </p>
@@ -112,7 +120,7 @@ const refs = refsFor(skill.id);
             <p class="panel-note">Or pull the raw file into a terminal session:</p>
             <CopyBlock command={`curl -fsSL ${install.hosted}`} />
           </div>
-          <div class="tab-panel" role="tabpanel" data-panel="git" hidden>
+          <div class="tab-panel" role="tabpanel" id="panel-git" aria-labelledby="tab-git" tabindex="0" data-panel="git" hidden>
             <p class="panel-note">
               Copy the skill directory{skill.multiFile && ' with all companion files'} straight
               from GitHub:
@@ -191,6 +199,19 @@ const refs = refsFor(skill.id);
               <dt>Length</dt>
               <dd>{skill.words.toLocaleString('en-US')} words · ~{readMinutes} min</dd>
             </div>
+            {
+              skill.bytes && (
+                <div>
+                  <dt>Agent cost</dt>
+                  <dd title="Approximate tokens an agent spends reading this (bytes ÷ 4)">
+                    ~{Math.round(skill.bytes / 4 / 100) / 10}k tokens
+                    {skill.refsBytes
+                      ? ` (+${Math.round((skill.refsBytes / 4) * 1e-3)}k refs)`
+                      : ''}
+                  </dd>
+                </div>
+              )
+            }
             {
               skill.pushedAt && (
                 <div>
@@ -381,6 +402,39 @@ const refs = refsFor(skill.id);
     color: var(--text-2);
     max-width: 76ch;
     font-size: 0.98rem;
+  }
+  .triggers {
+    margin-top: 14px;
+    max-width: 76ch;
+  }
+  .triggers summary {
+    cursor: pointer;
+    font-size: 0.84rem;
+    color: var(--text-3);
+    user-select: none;
+    list-style: none;
+  }
+  .triggers summary::-webkit-details-marker {
+    display: none;
+  }
+  .triggers summary::before {
+    content: '▸ ';
+    color: var(--green);
+  }
+  .triggers[open] summary::before {
+    content: '▾ ';
+  }
+  .triggers summary:hover {
+    color: var(--text-2);
+  }
+  .triggers p {
+    margin-top: 10px;
+    font-size: 0.86rem;
+    color: var(--text-3);
+    padding: 12px 16px;
+    border-left: 2px solid var(--border-strong);
+    background: var(--bg-elev);
+    border-radius: 0 10px 10px 0;
   }
   .detail-body {
     padding-block: 44px 72px;

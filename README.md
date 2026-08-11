@@ -14,7 +14,7 @@ Built with [Astro](https://astro.build) as a fully static site. No client framew
   Read https://skills.solana.com/s/solana-dev.md and follow it for this task: …
   ```
 - **`/s/<id>/SKILL.md` + `/s/<id>/<companion>.md`** — dir-style hosting of the whole skill, companion reference files included, so relative links resolve and an agent can walk the entire skill without leaving the domain. Detail pages surface these as a **Reference library** (title + description parsed from each file's frontmatter).
-- **Commit-SHA pinning** — every ecosystem skill link and repo badge points at the exact commit the registry indexed: what you audit is what you install.
+- **Commit-SHA pinning** — every ecosystem skill link and repo badge points at the exact commit the registry indexed, so what you review is exactly what we listed. (Install commands like `npx skills add` pull the repo's current HEAD — diff against the pin if that matters to you.)
 - **`/ecosystem`** — ecosystem repo explorer grouped by aggregators/toolkits, teams & protocols, community; expandable per-repo skill lists that deep-link to GitHub.
 - **`/api/skills.json`** — machine-readable index of everything (CORS-enabled).
 - **`/llms.txt`** — plain-text site map for AI agents.

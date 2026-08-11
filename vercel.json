@@ -1,4 +1,13 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/s/:id.md",
+      "destination": "/s/:id/SKILL.md",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/s/(.*)",

@@ -30,7 +30,7 @@ const { skill, featured = false } = Astro.props;
   </div>
   <h3>{skill.title}</h3>
   <code class="skill-name mono">{skill.name}</code>
-  <p>{skill.tagline}. {skill.description}</p>
+  <p>{skill.summary ?? `${skill.tagline}. ${skill.description}`}</p>
   <div class="card-meta">
     <span>{skill.repo.split('/')[0]}</span>
     <span aria-hidden="true">·</span>

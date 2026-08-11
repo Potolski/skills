@@ -16,31 +16,31 @@ const groups: { title: string; sub: string; types: string[] }[] = [
   },
   {
     title: 'Community',
-    sub: 'Independent builders filling the gaps.',
+    sub: 'Independent builders — smaller scope, newer, less battle-tested.',
     types: ['community'],
   },
 ];
 
 const byTypes = (types: string[]) => registry.ecosystem.filter((r) => types.includes(r.type));
-const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
+const skillSum = registry.ecosystem.reduce((n, r) => n + r.skills.length, 0);
 ---
 
 <Base
   title="Ecosystem — Solana Skills"
-  description={`Explore ${registry.ecosystem.length} Solana ecosystem skill repositories — ${skillSum}+ skills from Jupiter, Helius, Metaplex, SendAI, Solana Mobile, Trail of Bits, and more.`}
+  description={`Explore ${registry.ecosystem.length} Solana ecosystem skill repositories — ${skillSum} indexed skills from Jupiter, Helius, Metaplex, SendAI, Solana Mobile, Trail of Bits, and more.`}
 >
   <section class="section eco-head">
     <div class="container">
       <h1 class="section-title">Ecosystem skill repositories</h1>
       <p class="section-sub">
-        Beyond the official skills: {registry.ecosystem.length} repositories and {skillSum}+ skills
-        maintained by Solana teams and the community. Sourced from
+        Beyond the official skills: {skillSum} skills indexed across {registry.ecosystem.length}
+        repositories from Solana teams and the community. Sourced from
         <a
           class="inline-link"
           href="https://github.com/solana-foundation/awesome-solana-ai"
           target="_blank"
           rel="noopener">awesome-solana-ai</a
-        > and the repos themselves — each entry links to its home on GitHub.
+        >, refreshed weekly from GitHub.
       </p>
     </div>
   </section>
@@ -49,7 +49,7 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
     <div class="container">
       <h2 class="group-title">More from the Foundation</h2>
       <p class="group-sub muted">
-        Beyond installable skills — official AI infrastructure that pairs with everything here.
+        The docs MCP server, the source directory, and the agentic-payments registry.
       </p>
       <div class="grid resources">
         {
@@ -114,7 +114,7 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
           href="https://github.com/solana-foundation/awesome-solana-ai"
           target="_blank"
           rel="noopener">awesome-solana-ai</a
-        > — listed for discovery, not yet indexed in depth.
+        > — repo links only; we haven&rsquo;t crawled these for individual skills.
       </p>
       <ul class="tail-list">
         {
@@ -129,14 +129,26 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
           ))
         }
       </ul>
-      <p class="disclaimer muted">
-        Community skills are independently developed and are not reviewed, endorsed, or maintained
-        by the Solana Foundation. Inclusion in this directory does not imply any warranty, security
-        audit, or recommendation. You are solely responsible for evaluating any community skill
-        before use — review its code, license, and security practices. Ecosystem skill links are
-        pinned to the commit we indexed (<code class="mono">@ sha</code>), so what you audit is what
-        you install.
-      </p>
+      <div class="disclaimer muted">
+        <p>
+          <strong>Listing criteria.</strong> Repositories are sourced from
+          <a
+            class="inline-link"
+            href="https://github.com/solana-foundation/awesome-solana-ai"
+            target="_blank"
+            rel="noopener">awesome-solana-ai</a
+          >, must contain a <code class="mono">SKILL.md</code> with <code class="mono">name</code>
+          frontmatter, and are re-indexed weekly. Entries whose upstream disappears get delisted. No
+          security review is performed.
+        </p>
+        <p>
+          <strong>Trust the pins, verify the installs.</strong> Ecosystem skills are independently
+          developed — evaluate code, license, and security practices before use. Links on this page
+          point at the exact commit we indexed (<code class="mono">@ sha</code>); install commands
+          like <code class="mono">npx skills add</code> pull the repo&rsquo;s current HEAD — diff
+          them if that matters to you.
+        </p>
+      </div>
     </div>
   </section>
 
@@ -146,8 +158,8 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
         <div>
           <h2>Maintain a Solana skill repo?</h2>
           <p class="muted">
-            Get it listed here by opening a PR to the Foundation&rsquo;s
-            <code class="mono">awesome-solana-ai</code> — that list feeds this page.
+            Open a PR to the Foundation&rsquo;s <code class="mono">awesome-solana-ai</code> — merged
+            repos are picked up by the next weekly refresh and listed here.
           </p>
         </div>
         <a
@@ -236,6 +248,12 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skillCount, 0);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--bg-elev);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .disclaimer strong {
+    color: var(--text-2);
   }
   @media (max-width: 560px) {
     .tail-list {

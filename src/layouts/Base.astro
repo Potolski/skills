@@ -8,10 +8,15 @@ interface Props {
   title: string;
   description: string;
   canonical?: string;
+  noindex?: boolean;
 }
 
-const { title, description, canonical } = Astro.props;
-const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
+const { title, description, canonical, noindex = false } = Astro.props;
+// build.format 'file' makes pathname end in .html — canonicals must match the
+// extensionless URLs the site links and the sitemap advertise.
+const cleanPath =
+  Astro.url.pathname.replace(/\.html$/, "").replace(/^\/index$/, "/") || "/";
+const canonicalURL = canonical ?? new URL(cleanPath, Astro.site).href;
 ---
 
 <!doctype html>
@@ -21,6 +26,7 @@ const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="theme-color" content="#000000" />
@@ -69,19 +75,36 @@ const canonicalURL = canonical ?? new URL(Astro.url.pathname, Astro.site).href;
       });
 
       // Tabs: [role=tab] toggling sibling [role=tabpanel]s within a [data-tabs] scope
-      document.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
-        const tab = target.closest<HTMLElement>('[role="tab"]');
-        if (!tab) return;
+      function activateTab(tab: HTMLElement) {
         const scope = tab.closest<HTMLElement>('[data-tabs]');
         if (!scope) return;
         const id = tab.getAttribute('data-tab');
         scope.querySelectorAll<HTMLElement>('[role="tab"]').forEach((t) => {
           t.setAttribute('aria-selected', String(t === tab));
+          t.tabIndex = t === tab ? 0 : -1;
         });
         scope.querySelectorAll<HTMLElement>('[role="tabpanel"]').forEach((p) => {
           p.hidden = p.getAttribute('data-panel') !== id;
         });
+      }
+      document.addEventListener('click', (e) => {
+        const tab = (e.target as HTMLElement).closest<HTMLElement>('[role="tab"]');
+        if (tab) activateTab(tab);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const tab = (e.target as HTMLElement).closest?.<HTMLElement>('[role="tab"]');
+        if (!tab) return;
+        const tabs = Array.from(
+          tab.closest('[role="tablist"]')?.querySelectorAll<HTMLElement>('[role="tab"]') ?? []
+        );
+        const i = tabs.indexOf(tab);
+        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        if (next) {
+          next.focus();
+          activateTab(next);
+          e.preventDefault();
+        }
       });
     </script>
 

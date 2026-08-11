@@ -30,6 +30,10 @@ export default function rehypeGithubLinks() {
 
     walk(tree, (node) => {
       if (node.type !== "element") return;
+      // The page supplies its own <h1>; demote body headings one level so the
+      // document keeps a single h1 and a sane outline.
+      const h = node.tagName?.match(/^h([1-5])$/);
+      if (h) node.tagName = `h${Number(h[1]) + 1}`;
       for (const attr of ["href", "src"]) {
         const val = node.properties?.[attr];
         if (typeof val === "string" && isRelative(val)) {

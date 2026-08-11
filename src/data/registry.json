@@ -56,7 +56,7 @@
       "githubUrl": "https://github.com/solana-foundation/solana-dev-skill/tree/main/skills/solana-dev",
       "skillFileUrl": "https://github.com/solana-foundation/solana-dev-skill/blob/main/skills/solana-dev/SKILL.md",
       "rawUrl": "https://raw.githubusercontent.com/solana-foundation/solana-dev-skill/main/skills/solana-dev/SKILL.md",
-      "hostedPath": "/s/solana-dev.md",
+      "hostedPath": "/s/solana-dev/SKILL.md",
       "stars": 545,
       "pushedAt": "2026-08-07",
       "commitSha": "d4ecf1674ebae1be3a899e0998aa0318fe67c96e",
@@ -89,7 +89,10 @@
         "references/surfpool/cheatcodes.md",
         "references/surfpool/overview.md",
         "references/testing.md"
-      ]
+      ],
+      "summary": "The Foundation's end-to-end development playbook: wallet connection, Anchor and Pinocchio programs, Codama client generation, Surfpool/LiteSVM testing, and security checklists — Kit-first, with 28 focused reference files.",
+      "bytes": 12140,
+      "refsBytes": 316533
     },
     {
       "id": "eth-to-sol",
@@ -152,7 +155,7 @@
       "githubUrl": "https://github.com/solana-foundation/eth-to-sol-skill/tree/main",
       "skillFileUrl": "https://github.com/solana-foundation/eth-to-sol-skill/blob/main/SKILL.md",
       "rawUrl": "https://raw.githubusercontent.com/solana-foundation/eth-to-sol-skill/main/SKILL.md",
-      "hostedPath": "/s/eth-to-sol.md",
+      "hostedPath": "/s/eth-to-sol/SKILL.md",
       "stars": 2,
       "pushedAt": "2026-06-19",
       "commitSha": "14cdea5eecff9dc45b00b240773c08a922667862",
@@ -182,7 +185,10 @@
         "translation/pattern-mapping.md",
         "translation/stdlib-mapping.md",
         "translation/type-mapping.md"
-      ]
+      ],
+      "summary": "Port Solidity contracts to Solana properly: a faithful Anchor port first, then a Solana-native refactor — with a teaching artifact that explains every change to a developer who knows Solidity well and Solana barely.",
+      "bytes": 26386,
+      "refsBytes": 262657
     }
   ],
   "ecosystem": [
@@ -200,19 +206,12 @@
       "pushedAt": "2026-07-31",
       "license": "Apache-2.0",
       "description": "a public marketplace of all solana-related skills for agents to learn from!",
-      "skillCount": 47,
+      "skillCount": 46,
       "highlightsOnly": false,
       "skills": [
         {
-          "name": "animation-reverse-engineering",
-          "description": "Reverse-engineer any motion reference (a video from X/Twitter, Dribbble, a screen recording, a GIF) into production animation code through frame-level dissection. Use when the user shares a video/URL and says \"implement this animation\", \"recreate this motion\", \"port this interaction\", \"how does this animate\", \"clone this effect\", or wants to study how a reference moves before building it. Covers both timeline choreography (entrances, text sweeps, staggers) and interaction-driven motion (scrubbers, sliders, drag-driven scenes). Also fires when the user asks where to find good animation references or inspiration — it suggests curated sites and X accounts to hunt, then reverse-engineers whatever they bring back. Ports default to React/TypeScript with framer-motion; the analysis phases are framework-agnostic.",
-          "category": "development",
-          "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/animation-reverse-engineering",
-          "multiFile": false
-        },
-        {
           "name": "arcium",
-          "description": "> Build and debug encrypted Solana applications with Arcium — data stays private during computation, no single party sees it. Use when writing Arcis circuits (#[encrypted], #[instruction]), wiring Anchor programs with init/queue_computation/callback flows, choosing Shared vs Mxe encrypted state, encrypting inputs with @arcium-hq/client (RescueCipher, x25519), or debugging ArgBuilder ordering, nonce, callback, or computation finalization failures. Covers dark pools, sealed-bid auctions, encrypted voting, hidden game state, confidential DeFi, secure randomness, and threshold signing. Also use for getting started with your first Arcium app.",
+          "description": "Build and debug encrypted Solana applications with Arcium — data stays private during computation, no single party sees it. Use when writing Arcis circuits (#[encrypted], #[instruction]), wiring Anchor programs with init/queue_computation/callback flows, choosing Shared vs Mxe encrypted state, encrypting inputs with @arcium-hq/client (RescueCipher, x25519), or debugging ArgBuilder ordering, nonce, callback, or computation finalization failures. Covers dark pools, sealed-bid auctions, encrypted voting, hidden game state, confidential DeFi, secure randomness, and threshold signing. Also use for getting started with your first Arcium app.",
           "category": "infra-data",
           "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/arcium",
           "multiFile": true
@@ -240,7 +239,7 @@
         },
         {
           "name": "ct-alpha",
-          "description": "> Crypto Twitter intelligence and alpha research. Search X/Twitter for real-time crypto narratives, trending tokens, yield strategies, smart money signals, and protocol research. Features TweetRank (PageRank-inspired credibility scoring), multi-signal token detection, coordinated raid detection, and dynamic tool discovery for execution suggestions. Solana-first but covers all major chains.",
+          "description": "Crypto Twitter intelligence and alpha research. Search X/Twitter for real-time crypto narratives, trending tokens, yield strategies, smart money signals, and protocol research. Features TweetRank (PageRank-inspired credibility scoring), multi-signal token detection, coordinated raid detection, and dynamic tool discovery for execution suggestions. Solana-first but covers all major chains.",
           "category": "infra-data",
           "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/ct-alpha",
           "multiFile": true
@@ -387,7 +386,7 @@
         },
         {
           "name": "phantom-connect",
-          "description": "> Build wallet-connected applications with the Phantom Connect SDK for Solana. Use when integrating Phantom wallets into React, React Native, or vanilla JS/TS apps — including wallet connection, social login (Google/Apple), transaction signing, message signing, token-gated access, crypto payments, and NFT minting. Covers @phantom/react-sdk, @phantom/react-native-sdk, and @phantom/browser-sdk.",
+          "description": "Build wallet-connected applications with the Phantom Connect SDK for Solana. Use when integrating Phantom wallets into React, React Native, or vanilla JS/TS apps — including wallet connection, social login (Google/Apple), transaction signing, message signing, token-gated access, crypto payments, and NFT minting. Covers @phantom/react-sdk, @phantom/react-native-sdk, and @phantom/browser-sdk.",
           "category": "wallets-mobile",
           "url": "https://github.com/sendaifun/skills/tree/06b36b8b420e705ffd57b29e463f01093959d8d4/skills/phantom-connect",
           "multiFile": true
@@ -549,23 +548,9 @@
       "pushedAt": "2026-07-31",
       "license": "MIT",
       "description": "think. build. ship. tasteful & useful crypto apps. using a curated skills + knowledge base for AI agents on solana contracts & integrations",
-      "skillCount": 33,
+      "skillCount": 25,
       "highlightsOnly": false,
       "skills": [
-        {
-          "name": "animation-reverse-engineering",
-          "description": "Reverse-engineer any motion reference (a video from X/Twitter, Dribbble, a screen recording, a GIF) into production animation code through frame-level dissection. Use when the user shares a video/URL and says \"implement this animation\", \"recreate this motion\", \"port this interaction\", \"how does this animate\", \"clone this effect\", or wants to study how a reference moves before building it. Covers both timeline choreography (entrances, text sweeps, staggers) and interaction-driven motion (scrubbers, sliders, drag-driven scenes). Also fires when the user asks where to find good animation references or inspiration — it suggests curated sites and X accounts to hunt, then reverse-engineers whatever they bring back.",
-          "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/animation-reverse-engineering",
-          "multiFile": false
-        },
-        {
-          "name": "brand-design",
-          "description": "Generate, preview, and apply a brand color palette (plus typography, gradients, and tone/voice) to a frontend project. Use when a user says \"pick brand colors\", \"choose a color palette\", \"brand design\", \"generate a palette\", \"theme this project\", \"what colors should I use\", \"brand identity\", \"design my brand\", \"set up brand colors\", \"time to build the frontend\", \"let's start the UI\", \"make this look branded\", or any time a project is about to start frontend work and has no brand.md yet. Presents 6 candidate palettes as a visual HTML preview opened in the user's browser, supports an infinite regenerate loop until the user is satisfied, then writes the chosen palette to shadcn CSS variables (light + dark), wires up typography via next/font, derives brand gradients, and writes brand.md for future reference.",
-          "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/brand-design",
-          "multiFile": true
-        },
         {
           "name": "build-data-pipeline",
           "description": "Guide a developer through building a Solana data pipeline or indexer. Use when a user says \"build an indexer\", \"data pipeline\", \"analytics\", \"track transactions\", \"monitor wallets\", \"webhook\", \"index accounts\", or \"real-time data\". Reads build-context.md from a prior scaffold phase if available.",
@@ -596,7 +581,7 @@
         },
         {
           "name": "cso",
-          "description": "| Chief Security Officer mode. Infrastructure-first security audit: secrets archaeology, dependency supply chain, CI/CD pipeline security, LLM/AI security, skill supply chain scanning, plus OWASP Top 10, STRIDE threat modeling, and active verification. Two modes: daily (zero-noise, 8/10 confidence gate) and comprehensive (monthly deep scan, 2/10 bar). Use when a user says \"security audit\", \"threat model\", \"pentest review\", \"OWASP\", \"CSO review\", \"check for vulnerabilities\", or \"is my code secure\".",
+          "description": "Chief Security Officer mode. Infrastructure-first security audit: secrets archaeology, dependency supply chain, CI/CD pipeline security, LLM/AI security, skill supply chain scanning, plus OWASP Top 10, STRIDE threat modeling, and active verification. Two modes: daily (zero-noise, 8/10 confidence gate) and comprehensive (monthly deep scan, 2/10 bar). Use when a user says \"security audit\", \"threat model\", \"pentest review\", \"OWASP\", \"CSO review\", \"check for vulnerabilities\", or \"is my code secure\".",
           "category": "security",
           "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/cso",
           "multiFile": true
@@ -606,20 +591,6 @@
           "description": "Help a developer debug a failing Solana program or transaction. Use when a user says \"debug my program\", \"program error\", \"transaction failed\", \"stuck\", \"help me fix\", \"why is this failing\", \"error code\", or \"instruction failed\". Reads build-context.md if available.",
           "category": "development",
           "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/debug-program",
-          "multiFile": true
-        },
-        {
-          "name": "design-taste",
-          "description": "Design direction, judgment calls, and anti-AI-slop review for crypto UIs. Use when the user says \"this looks generic\", \"this looks AI-generated\", \"anti-slop\", \"design judgment\", \"premium feel\", \"design direction\", \"what direction should this take\", \"make this feel more premium\", \"review for taste\", \"theme reference\", \"warm monochrome\", \"stark minimal\", \"gradient trust\", \"workstation dense\", \"soft consumer\", \"gallery editorial\", \"density\", \"page archetype\", \"design brief\", \"pitch deck style\", \"deck visual direction\". Also use when building any new page-level component that needs aesthetic direction before implementation. Does NOT claim \"make this look good\" or \"polish this\" — those belong to frontend-design-guidelines.",
-          "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/design-taste",
-          "multiFile": true
-        },
-        {
-          "name": "frontend-design-guidelines",
-          "description": "Apply high-quality web interface design rules when building, reviewing, or styling frontend code. Use when the user says \"build a frontend\", \"create a component\", \"style this\", \"review my UI\", \"build a landing page\", \"design this page\", \"make this look good\", \"add animation\", \"build a form\", \"improve the UI\", \"polish this\", \"make this feel right\", \"review for craft\", \"the interaction feels off\", \"make this look polished\", or when generating any React/Next.js component. Defaults to Tailwind CSS and shadcn/ui. Reads brand.md at the project root (if present) and uses it as the source of truth for colors, typography, and voice. Covers interactions, layout, typography, forms, animation, states, accessibility, and a dedicated craft-and-polish layer for taste-level review. Use proactively whenever frontend code is being written — do not wait to be asked.",
-          "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/frontend-design-guidelines",
           "multiFile": true
         },
         {
@@ -634,20 +605,6 @@
           "description": "Meta skill — browse all installed solana-new skills, repos, and MCPs to find the right tool for any task",
           "category": "development",
           "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/navigate-skills",
-          "multiFile": true
-        },
-        {
-          "name": "number-formatting",
-          "description": "Apply consistent number formatting across crypto/Solana UIs. Use when the user says \"format numbers\", \"number display\", \"token amounts\", \"price formatting\", \"zero subscript\", \"abbreviate numbers\", \"format currency\", \"format percent\", \"how should I display this number\", \"number formatting spec\", or when generating any UI component that displays prices, balances, percentages, ratios, or token amounts. Use proactively whenever writing frontend code that renders numeric values — do not wait to be asked.",
-          "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/number-formatting",
-          "multiFile": true
-        },
-        {
-          "name": "page-load-animations",
-          "description": "Fix janky page loads where everything appears at once. Production framer-motion recipes for choreographed page entrances, staggered lists, modal transitions, filter cross-fades, live data animations, and micro-interactions. Use when building or reviewing any page that loads content, when animations feel broken or janky, when framer-motion code needs production patterns, or when the user says \"page load animation\", \"entrance choreography\", \"stagger animation\", \"framer-motion recipe\", \"page feels janky\", \"everything appears at once\", \"spring animation\", \"modal animation\", \"dropdown animation\", \"rolling numbers\", \"chart morph\", \"donut reveal\", \"filter transition\", \"tab animation\", \"micro-interaction\", \"hover animation\", \"button feedback\", \"AnimatePresence\", or \"framer-motion pattern\". Use proactively whenever writing page-level components or reviewing animation code.",
-          "category": "development",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/build/page-load-animations",
           "multiFile": true
         },
         {
@@ -722,7 +679,7 @@
         },
         {
           "name": "learn",
-          "description": "| Manage project learnings across sessions. Review, search, prune, and export what superstack has learned. Use when asked to \"what have we learned\", \"show learnings\", \"prune stale learnings\", \"export learnings\", or \"remember this\". Proactively suggest when the user asks about past patterns or wonders \"didn't we fix this before?\"",
+          "description": "Manage project learnings across sessions. Review, search, prune, and export what superstack has learned. Use when asked to \"what have we learned\", \"show learnings\", \"prune stale learnings\", \"export learnings\", or \"remember this\". Proactively suggest when the user asks about past patterns or wonders \"didn't we fix this before?\"",
           "category": "research",
           "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/idea/learn",
           "multiFile": true
@@ -763,24 +720,10 @@
           "multiFile": true
         },
         {
-          "name": "marketing-video",
-          "description": "Create marketing videos for Solana projects using Remotion (code-driven) and Renoise (AI-generated). Use when a user says \"marketing video\", \"product video\", \"promo video\", \"deck review\", \"video pitch\", \"create a video\", or \"Remotion project\".",
-          "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/marketing-video",
-          "multiFile": true
-        },
-        {
           "name": "submit-to-hackathon",
           "description": "Prepare and optimize a hackathon submission for a Solana project. Use when a user says \"submit to hackathon\", \"prepare my submission\", \"hackathon entry\", \"write project description\", \"demo video\", or \"help me win the hackathon\". Reads all prior phase context if available.",
           "category": "research",
           "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/submit-to-hackathon",
-          "multiFile": true
-        },
-        {
-          "name": "video-craft",
-          "description": "Frame-level visual composition and product demo presentation for Remotion videos. Use when the user says \"video looks generic\", \"make video frames look better\", \"video frame design\", \"device frame\", \"product demo video craft\", \"video CTA\", \"end card\", \"video composition\", \"video craft\", \"screenshot in video\", \"frame quality\", or when reviewing Remotion compositions for visual quality. Sits on top of marketing-video — adds the visual design layer for each frame. Does NOT claim \"create a video\" or \"marketing video\" — those route to marketing-video.",
-          "category": "research",
-          "url": "https://github.com/sendaifun/solana-new/tree/e81c261645035c0e902eaaa518ff58722d188bb7/skills/launch/video-craft",
           "multiFile": true
         }
       ],
@@ -807,42 +750,42 @@
           "name": "hackathon",
           "description": "Prepare a winning hackathon submission — tracks, demo script, Superteam Earn.",
           "category": "research",
-          "url": "https://github.com/solanabr/solana-ai-kit/tree/main/.claude/skills/hackathon",
+          "url": "https://github.com/solanabr/solana-ai-kit/tree/d4f6143fc4b0b9b1c07c6e56db9845f897e932eb/.claude/skills/hackathon",
           "multiFile": true
         },
         {
           "name": "idea-sprint",
           "description": "Find and validate what to build in crypto with blunt, structured feedback.",
           "category": "research",
-          "url": "https://github.com/solanabr/solana-ai-kit/tree/main/.claude/skills/idea-sprint",
+          "url": "https://github.com/solanabr/solana-ai-kit/tree/d4f6143fc4b0b9b1c07c6e56db9845f897e932eb/.claude/skills/idea-sprint",
           "multiFile": true
         },
         {
           "name": "pitch-deck",
           "description": "Build a pitch deck for a crypto project — demo day, grants, accelerators.",
           "category": "research",
-          "url": "https://github.com/solanabr/solana-ai-kit/tree/main/.claude/skills/pitch-deck",
+          "url": "https://github.com/solanabr/solana-ai-kit/tree/d4f6143fc4b0b9b1c07c6e56db9845f897e932eb/.claude/skills/pitch-deck",
           "multiFile": true
         },
         {
           "name": "token-2022",
           "description": "Token-2022 extensions: transfer hooks, confidential transfers, metadata.",
           "category": "nft-tokens",
-          "url": "https://github.com/solanabr/solana-ai-kit/tree/main/.claude/skills",
+          "url": "https://github.com/solanabr/solana-ai-kit/blob/d4f6143fc4b0b9b1c07c6e56db9845f897e932eb/.claude/skills/token-2022.md",
           "multiFile": false
         },
         {
           "name": "backend-async",
           "description": "Async Rust backend patterns for Solana services.",
           "category": "development",
-          "url": "https://github.com/solanabr/solana-ai-kit/tree/main/.claude/skills",
+          "url": "https://github.com/solanabr/solana-ai-kit/blob/d4f6143fc4b0b9b1c07c6e56db9845f897e932eb/.claude/skills/backend-async.md",
           "multiFile": false
         },
         {
           "name": "deployment",
           "description": "Devnet-first deployment flow with mainnet confirmation gates.",
           "category": "development",
-          "url": "https://github.com/solanabr/solana-ai-kit/tree/main/.claude/skills",
+          "url": "https://github.com/solanabr/solana-ai-kit/blob/d4f6143fc4b0b9b1c07c6e56db9845f897e932eb/.claude/skills/deployment.md",
           "multiFile": false
         }
       ],
@@ -1086,7 +1029,7 @@
       "skills": [
         {
           "name": "colosseum-copilot",
-          "description": "| Research Solana/crypto startup opportunities using builder project history, crypto archives, investor theses, and market signals. Answers questions conversationally by default; runs the full 8-step deep research workflow on explicit opt-in (\"vet this idea\", \"deep dive\").",
+          "description": "Research Solana/crypto startup opportunities using builder project history, crypto archives, investor theses, and market signals. Answers questions conversationally by default; runs the full 8-step deep research workflow on explicit opt-in (\"vet this idea\", \"deep dive\").",
           "category": "research",
           "url": "https://github.com/ColosseumOrg/colosseum-copilot/tree/11a0e47ce47ed310003161b5fcb26e18bfc0ac80/skills/colosseum-copilot",
           "multiFile": true
@@ -1154,7 +1097,7 @@
       "skills": [
         {
           "name": "safe-solana-builder",
-          "description": "> Use this skill whenever the user wants to write, scaffold, or build a Solana smart contract or program from scratch. Triggers on: \"write a Solana program\", \"create a smart contract\", \"build an anchor program\", \"write a native Rust Solana program\", \"scaffold a Solana program\", \"help me write a program that does X on Solana\", or any request to produce production-grade on-chain Solana code. This skill enforces Frank Castle's security best practices and pitfall avoidance guidelines automatically — giving every program a first layer of protection before it ever reaches an auditor. Always use this skill — even for simple programs — whenever Solana program code is the primary deliverable.",
+          "description": "Use this skill whenever the user wants to write, scaffold, or build a Solana smart contract or program from scratch. Triggers on: \"write a Solana program\", \"create a smart contract\", \"build an anchor program\", \"write a native Rust Solana program\", \"scaffold a Solana program\", \"help me write a program that does X on Solana\", or any request to produce production-grade on-chain Solana code. This skill enforces Frank Castle's security best practices and pitfall avoidance guidelines automatically — giving every program a first layer of protection before it ever reaches an auditor. Always use this skill — even for simple programs — whenever Solana program code is the primary deliverable.",
           "category": "security",
           "url": "https://github.com/frankcastleauditor/safe-solana-builder/tree/9e94436dcf4b5dfd6d837eb70cf88b9048e72e5d",
           "multiFile": false
@@ -1210,56 +1153,56 @@
           "name": "audit-prep-assistant",
           "description": "Prepares codebases for security review using Trail of Bits' checklist. Helps set review goals, runs static analysis tools, increases test coverage, removes dead code, ensures accessibility, and generates documentation (flowcharts, user stories, inline comments).",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/building-secure-contracts/skills/audit-prep-assistant",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/building-secure-contracts/skills/audit-prep-assistant",
           "multiFile": true
         },
         {
           "name": "code-maturity-assessor",
           "description": "Systematic code maturity assessment using Trail of Bits' 9-category framework. Analyzes codebase for arithmetic safety, auditing practices, access controls, complexity, decentralization, documentation, MEV risks, low-level code, and testing. Produces professional scorecard with evidence-based ratings and actionable recommendations.",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/building-secure-contracts/skills/code-maturity-assessor",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/building-secure-contracts/skills/code-maturity-assessor",
           "multiFile": true
         },
         {
           "name": "secure-workflow-guide",
           "description": "Guides through Trail of Bits' 5-step secure development workflow. Runs Slither scans, checks special features (upgradeability/ERC conformance/token integration), generates visual security diagrams, helps document security properties for fuzzing/verification, and reviews manual security areas.",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/building-secure-contracts/skills/secure-workflow-guide",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/building-secure-contracts/skills/secure-workflow-guide",
           "multiFile": true
         },
         {
           "name": "solana-vulnerability-scanner",
           "description": "Scans Solana programs for 6 critical vulnerabilities including arbitrary CPI, improper PDA validation, missing signer/ownership checks, and sysvar spoofing. Use when auditing Solana/Anchor programs.",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/building-secure-contracts/skills/solana-vulnerability-scanner",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/building-secure-contracts/skills/solana-vulnerability-scanner",
           "multiFile": true
         },
         {
           "name": "token-integration-analyzer",
           "description": "Token integration and implementation analyzer based on Trail of Bits' token integration checklist. Analyzes token implementations for ERC20/ERC721 conformity, checks for 20+ weird token patterns, assesses contract composition and owner privileges, performs on-chain scarcity analysis, and evaluates how protocols handle non-standard tokens. Context-aware for both token implementations and token integrations.",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/building-secure-contracts/skills/token-integration-analyzer",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/building-secure-contracts/skills/token-integration-analyzer",
           "multiFile": true
         },
         {
           "name": "differential-review",
-          "description": "> Performs security-focused differential review of code changes (PRs, commits, diffs). Adapts analysis depth to codebase size, uses git history for context, calculates blast radius, checks test coverage, and generates comprehensive markdown reports. Automatically detects and prevents security regressions.",
+          "description": "Performs security-focused differential review of code changes (PRs, commits, diffs). Adapts analysis depth to codebase size, uses git history for context, calculates blast radius, checks test coverage, and generates comprehensive markdown reports. Automatically detects and prevents security regressions.",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/differential-review/skills/differential-review",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/differential-review/skills/differential-review",
           "multiFile": true
         },
         {
           "name": "property-based-testing",
           "description": "Provides guidance for property-based testing across multiple languages and smart contracts. Use when writing tests, reviewing code with serialization/validation/parsing patterns, designing features, or when property-based testing would provide stronger coverage than example-based tests.",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/property-based-testing/skills/property-based-testing",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/property-based-testing/skills/property-based-testing",
           "multiFile": true
         },
         {
           "name": "cargo-fuzz",
-          "description": "> cargo-fuzz is the de facto fuzzing tool for Rust projects using Cargo. Use for fuzzing Rust code with libFuzzer backend.",
+          "description": "cargo-fuzz is the de facto fuzzing tool for Rust projects using Cargo. Use for fuzzing Rust code with libFuzzer backend.",
           "category": "security",
-          "url": "https://github.com/trailofbits/skills/tree/main/plugins/testing-handbook-skills/skills/cargo-fuzz",
+          "url": "https://github.com/trailofbits/skills/tree/e6066e7db1fd57cb35f9a534781ceec595327feb/plugins/testing-handbook-skills/skills/cargo-fuzz",
           "multiFile": true
         }
       ],
@@ -1401,7 +1344,7 @@
       "skills": [
         {
           "name": "phantom-connect",
-          "description": "> Build wallet-connected applications with the Phantom Connect SDK for Solana. Use when integrating Phantom wallets into React, React Native, or vanilla JS/TS apps — including wallet connection, social login (Google/Apple), transaction signing, message signing, token-gated access, crypto payments, and NFT minting. Covers @phantom/react-sdk, @phantom/react-native-sdk, and @phantom/browser-sdk.",
+          "description": "Build wallet-connected applications with the Phantom Connect SDK for Solana. Use when integrating Phantom wallets into React, React Native, or vanilla JS/TS apps — including wallet connection, social login (Google/Apple), transaction signing, message signing, token-gated access, crypto payments, and NFT minting. Covers @phantom/react-sdk, @phantom/react-native-sdk, and @phantom/browser-sdk.",
           "category": "wallets-mobile",
           "url": "https://github.com/phantom/phantom-connect-cursor-plugin/tree/4162aa88131f0a6b6f0c050b176736f0773d038c/.claude/skills/phantom-connect",
           "multiFile": true
@@ -1532,7 +1475,7 @@
       "skills": [
         {
           "name": "phantom-wallet-mcp",
-          "description": "> Execute wallet operations through the Phantom MCP server. Use when the user wants to interact with their Phantom wallet directly — get addresses, transfer SOL or SPL tokens, buy/swap tokens, sign transactions, and sign messages across Solana, Ethereum, Bitcoin, and Sui. Requires the @phantom/mcp-server to be configured as an MCP server.",
+          "description": "Execute wallet operations through the Phantom MCP server. Use when the user wants to interact with their Phantom wallet directly — get addresses, transfer SOL or SPL tokens, buy/swap tokens, sign transactions, and sign messages across Solana, Ethereum, Bitcoin, and Sui. Requires the @phantom/mcp-server to be configured as an MCP server.",
           "category": "wallets-mobile",
           "url": "https://github.com/DFlowProtocol/dflow_phantom-connect-skill/tree/32e51b852f6ed6aeadbd4b87556c90958f44a7c0/phantom-wallet-mcp",
           "multiFile": false
@@ -1642,11 +1585,6 @@
       "name": "Sentients",
       "repo": "koshmade/sentients.wtf",
       "description": "AI agents minting inscriptions with autonomous wallets."
-    },
-    {
-      "name": "Solentic Staking",
-      "repo": "mbrassey/solentic",
-      "description": "Native staking for AI agents — 18 MCP tools, zero custody."
     }
   ]
 }
