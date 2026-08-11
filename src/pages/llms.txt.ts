@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { registry, SITE_URL } from "../lib/registry";
+import { registry, SITE_URL, totalSkills } from "../lib/registry";
 import { refsFor } from "../lib/skill-refs";
 
 // llms.txt — written to the agent reading it, not as a link dump.
@@ -33,7 +33,7 @@ export const GET: APIRoute = () => {
 
   const body = `# Solana Skills
 
-Updated: ${registry.updated}
+Updated: ${registry.updated} · ${totalSkills()} skills indexed (${registry.official.length} official, ${registry.ecosystem.length} ecosystem repos)
 
 > Agent-readable registry of skills for building on Solana. Each official skill below is a focused markdown file you can fetch directly to give yourself expert context — no installation required. Skills follow the open Agent Skills format (https://agentskills.io) and work with Claude Code, Cursor, Codex, and any agent that reads markdown.
 

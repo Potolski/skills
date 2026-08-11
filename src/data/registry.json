@@ -1140,7 +1140,7 @@
       "type": "vendor",
       "homepage": null,
       "categories": ["security", "auditing"],
-      "blurb": "The security firm’s public skill set (74 skills). Solana pick: a vulnerability scanner distilled from their audit practice, plus audit-prep, code-maturity, fuzzing and static-analysis skills that apply to any Rust program.",
+      "blurb": "The security firm’s public skill set — we index the Solana-relevant picks: a vulnerability scanner distilled from their audit practice, plus audit-prep, code-maturity, fuzzing and static-analysis skills that apply to any Rust program.",
       "url": "https://github.com/trailofbits/skills",
       "stars": 6522,
       "pushedAt": "2026-08-10",

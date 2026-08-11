@@ -9,10 +9,11 @@ Built with [Astro](https://astro.build) as a fully static site. No client framew
 - **`/`** — landing: official skills, three ways to use a skill, ecosystem highlights.
 - **`/skills`** — searchable catalog of every indexed skill (official pinned first, category filters).
 - **`/skills/<id>`** — official skill detail: rendered `SKILL.md`, install tabs (skills CLI / Claude Code / no-install / git), companion-file tree, metadata.
-- **`/s/<id>.md`** — **per-file hosting**: the official `SKILL.md` served verbatim with `text/markdown` + CORS, so any agent can consume a skill from a single URL — no install:
+- **`/s/<id>/SKILL.md`** — **per-file hosting**: the official skill served verbatim with `text/markdown` + CORS, so any agent can consume it from a single URL — no install:
   ```
-  Read https://skills.solana.com/s/solana-dev.md and follow it for this task: …
+  Read https://skills.solana.com/s/solana-dev/SKILL.md and follow it for this task: …
   ```
+  (The legacy flat form `/s/<id>.md` 301s here; it survives as a plain-file fallback on hosts without redirect support, but its relative links only resolve from the dir-style URL.)
 - **`/s/<id>/SKILL.md` + `/s/<id>/<companion>.md`** — dir-style hosting of the whole skill, companion reference files included, so relative links resolve and an agent can walk the entire skill without leaving the domain. Detail pages surface these as a **Reference library** (title + description parsed from each file's frontmatter).
 - **Commit-SHA pinning** — every ecosystem skill link and repo badge points at the exact commit the registry indexed, so what you review is exactly what we listed. (Install commands like `npx skills add` pull the repo's current HEAD — diff against the pin if that matters to you.)
 - **`/ecosystem`** — ecosystem repo explorer grouped by aggregators/toolkits, teams & protocols, community; expandable per-repo skill lists that deep-link to GitHub.
