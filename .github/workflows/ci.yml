@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Verify hosted skill files are verbatim mirrors
+        run: |
+          for f in src/data/skills/*.md; do
+            id=$(basename "$f")
+            cmp "$f" "dist/s/$id" || { echo "::error::dist/s/$id is not a verbatim mirror"; exit 1; }
+            cmp "$f" "dist/s/${id%.md}/SKILL.md" || { echo "::error::dist/s/${id%.md}/SKILL.md is not a verbatim mirror"; exit 1; }
+          done
+          if [ -d src/data/skill-files ]; then
+            find src/data/skill-files -name '*.md' | while read -r f; do
+              rel=${f#src/data/skill-files/}
+              cmp "$f" "dist/s/$rel" || { echo "::error::dist/s/$rel is not a verbatim mirror"; exit 1; }
+            done
+          fi
+      - name: Verify hosted ecosystem files match the store
+        # Ecosystem mirrors are transformed (if at all) at refresh time and
+        # committed; the build must serve the committed store byte-for-byte.
+        run: |
+          if [ -d src/data/eco-skill-files ]; then
+            find src/data/eco-skill-files -name '*.md' | while read -r f; do
+              rel=${f#src/data/eco-skill-files/}
+              cmp "$f" "dist/s/$rel" || { echo "::error::dist/s/$rel does not match the committed store"; exit 1; }
+            done
+          fi
+      - name: Verify served bytes match advertised sha256 pins
+        run: node scripts/verify-integrity.mjs

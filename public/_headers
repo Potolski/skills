@@ -1,0 +1,8 @@
+/s/*
+  Access-Control-Allow-Origin: *
+  Content-Type: text/markdown; charset=utf-8
+  Cache-Control: public, max-age=300, s-maxage=3600
+
+/api/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=300, s-maxage=3600

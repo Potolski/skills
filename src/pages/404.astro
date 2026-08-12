@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found — Solana Skills" description="This page does not exist." noindex>
+  <section class="nf">
+    <div class="container nf-inner">
+      <span class="mono nf-code gradient-text">404</span>
+      <h1>Nothing at this address</h1>
+      <p class="muted">No skill lives here. The catalog does, though.</p>
+      <div class="nf-actions">
+        <a class="btn btn-primary" href="/skills">Browse skills</a>
+        <a class="btn btn-ghost" href="/">Home</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    padding: 140px 0;
+  }
+  .nf-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  .nf-code {
+    font-size: 4.6rem;
+    font-weight: 700;
+  }
+  .nf-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 14px;
+  }
+</style>

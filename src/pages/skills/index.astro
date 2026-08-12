@@ -1,0 +1,388 @@
+---
+import Base from '../../layouts/Base.astro';
+import SkillCard from '../../components/SkillCard.astro';
+import { registry, totalSkills, CATEGORY_LABELS, ecoSkillPage } from '../../lib/registry';
+
+const official = registry.official;
+const ecoSkills = registry.ecosystem.flatMap((repo) =>
+  repo.skills.map((s) => ({
+    ...s,
+    vendor: repo.vendor,
+    repoName: repo.displayName,
+    repoId: repo.id,
+    logo: repo.logo ?? null,
+    page: ecoSkillPage(repo, s),
+  }))
+);
+
+const categories = [
+  'development',
+  'defi',
+  'infra-data',
+  'nft-tokens',
+  'wallets-mobile',
+  'security',
+  'research',
+  'gaming',
+  'migration',
+];
+const usedCategories = new Set([
+  ...official.map((s) => s.category),
+  ...ecoSkills.map((s) => s.category),
+]);
+---
+
+<Base
+  title="Browse skills — Solana Skills"
+  description={`Search ${totalSkills()}+ agent skills for Solana: official Solana Foundation skills plus ecosystem skills from Jupiter, Helius, Metaplex, SendAI, and more.`}
+  ogImage="/og/skills.png"
+>
+  <section class="section catalog-head">
+    <div class="container">
+      <h1 class="section-title">Browse skills</h1>
+      <p class="section-sub">
+        Official Solana Foundation skills, plus {ecoSkills.length} skills indexed from{' '}
+        {registry.ecosystem.length} ecosystem repositories — each pinned to the commit we indexed.
+      </p>
+      <div class="filter-bar" role="search">
+        <div class="search-wrap">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="8"></circle>
+            <path d="m21 21-4.3-4.3"></path>
+          </svg>
+          <input
+            id="skill-search"
+            class="search-input"
+            type="search"
+            placeholder={`Search skills — try "jupiter", "anchor", "security"…`}
+            autocomplete="off"
+          />
+        </div>
+        <span class="result-count muted" id="result-count" aria-live="polite"></span>
+      </div>
+      <div class="chips" id="category-chips">
+        <button class="chip" data-cat="all" aria-pressed="true">
+          All <span class="chip-count">{official.length + ecoSkills.length}</span>
+        </button>
+        <button class="chip" data-cat="official" aria-pressed="false">
+          Official <span class="chip-count">{official.length}</span>
+        </button>
+        {
+          categories
+            .filter((c) => usedCategories.has(c))
+            .map((c) => {
+              const n =
+                official.filter((s) => s.category === c).length +
+                ecoSkills.filter((s) => s.category === c).length;
+              return (
+                <button class="chip" data-cat={c} aria-pressed="false">
+                  {CATEGORY_LABELS[c]} <span class="chip-count">{n}</span>
+                </button>
+              );
+            })
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog-body">
+    <div class="container">
+      <div class="group" id="group-official">
+        <h2 class="group-title">
+          <span class="badge badge-official">Official</span> Solana Foundation
+        </h2>
+        <div class="grid grid-official">
+          {
+            official.map((skill) => (
+              <div
+                class="filterable"
+                data-name={skill.name}
+                data-text={`${skill.title} ${skill.name} ${skill.description} ${CATEGORY_LABELS[skill.category] ?? ''} ${skill.category} solana foundation official`.toLowerCase()}
+                data-cat={skill.category}
+                data-official="true"
+              >
+                <SkillCard skill={skill} featured />
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="group" id="group-eco">
+        <h2 class="group-title"><span class="badge">Ecosystem</span> Indexed from the community</h2>
+        <div class="grid">
+          {
+            ecoSkills.map((s) => (
+              <div
+                class="filterable"
+                data-name={s.name}
+                data-text={`${s.name} ${s.description} ${s.vendor} ${s.repoName} ${s.category ? `${CATEGORY_LABELS[s.category] ?? ''} ${s.category}` : ''}`.toLowerCase()}
+                data-cat={s.category ?? 'uncategorized'}
+                data-official="false"
+              >
+                <a
+                  href={s.page ?? s.url}
+                  target={s.page ? undefined : '_blank'}
+                  rel={s.page ? undefined : 'noopener'}
+                  class="card eco-card"
+                >
+                  {
+                    !s.page && (
+                      <svg
+                        class="card-arrow"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                      >
+                        <path d="M7 17 17 7M7 7h10v10" />
+                      </svg>
+                    )
+                  }
+                  <div class="eco-top">
+                    <code class="mono eco-name">{s.name}</code>
+                    {s.multiFile && (
+                      <span class="muted eco-files" title="Includes companion files">
+                        multi-file
+                      </span>
+                    )}
+                  </div>
+                  <p>{s.description || 'No description provided.'}</p>
+                  <div class="card-meta">
+                    {s.logo && <img class="eco-logo" src={s.logo} alt="" width="18" height="18" loading="lazy" />}
+                    <span class="badge badge-vendor">{s.vendor}</span>
+                    <span>{s.repoName}</span>
+                  </div>
+                </a>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="empty-state" id="empty-state" hidden>
+        <p id="empty-message">No skills match.</p>
+        <div class="empty-actions">
+          <button class="btn btn-ghost btn-sm" id="clear-filters">Clear filters</button>
+          <a class="btn btn-ghost btn-sm" href="/ecosystem">Browse by repository →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const search = document.getElementById('skill-search') as HTMLInputElement;
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('#category-chips .chip'));
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('.filterable'));
+  const groups = [document.getElementById('group-official'), document.getElementById('group-eco')];
+  const emptyState = document.getElementById('empty-state');
+  const countEl = document.getElementById('result-count');
+  let activeCat = 'all';
+
+  function apply() {
+    const q = search.value.trim().toLowerCase();
+    const terms = q.split(/\s+/).filter(Boolean);
+    let visible = 0;
+    for (const card of cards) {
+      const text = card.dataset.text ?? '';
+      const matchesQ = terms.every((t) => text.includes(t));
+      const matchesCat =
+        activeCat === 'all' ||
+        (activeCat === 'official'
+          ? card.dataset.official === 'true'
+          : card.dataset.cat === activeCat);
+      const show = matchesQ && matchesCat;
+      card.classList.toggle('skeleton-hide', !show);
+      if (show) visible++;
+    }
+    for (const group of groups) {
+      if (!group) continue;
+      const any = group.querySelector('.filterable:not(.skeleton-hide)');
+      group.classList.toggle('skeleton-hide', !any);
+    }
+    if (emptyState) emptyState.hidden = visible > 0;
+    if (countEl) countEl.textContent = `${visible} skill${visible === 1 ? '' : 's'}`;
+    const emptyMessage = document.getElementById('empty-message');
+    if (emptyMessage && visible === 0) {
+      const catLabel =
+        activeCat !== 'all'
+          ? document.querySelector(`.chip[data-cat="${activeCat}"]`)?.childNodes[0]?.textContent?.trim()
+          : null;
+      emptyMessage.textContent = `No skills match${q ? ` “${q}”` : ''}${catLabel ? ` in ${catLabel}` : ''}.`;
+    }
+  }
+
+  // Keep the URL shareable: ?q=… and #category survive reload and copy-paste
+  function syncUrl() {
+    const url = new URL(location.href);
+    if (search.value.trim()) url.searchParams.set('q', search.value.trim());
+    else url.searchParams.delete('q');
+    url.hash = activeCat === 'all' ? '' : activeCat;
+    history.replaceState(null, '', url);
+  }
+
+  search.addEventListener('input', () => {
+    apply();
+    syncUrl();
+  });
+  for (const chip of chips) {
+    chip.addEventListener('click', () => {
+      activeCat = chip.dataset.cat ?? 'all';
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      apply();
+      syncUrl();
+    });
+  }
+
+  // "/" focuses search from anywhere on the page
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && document.activeElement !== search) {
+      e.preventDefault();
+      search.focus();
+    }
+  });
+
+  document.getElementById('clear-filters')?.addEventListener('click', () => {
+    search.value = '';
+    activeCat = 'all';
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.cat === 'all')));
+    apply();
+    syncUrl();
+    search.focus();
+  });
+
+  // Support /skills#security style deep links + ?q= searches
+  const params = new URLSearchParams(location.search);
+  const q = params.get('q');
+  if (q) search.value = q;
+  const hashCat = location.hash.slice(1);
+  const hashChip = chips.find((c) => c.dataset.cat === hashCat);
+  if (hashChip) {
+    activeCat = hashCat;
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c === hashChip)));
+  }
+  apply();
+</script>
+
+<style>
+  .catalog-head {
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(50% 90% at 15% 0%, rgba(153, 69, 255, 0.1), transparent 65%),
+      var(--bg);
+  }
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 30px;
+  }
+  .result-count {
+    font-size: 0.86rem;
+    white-space: nowrap;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .chip-count {
+    font-size: 0.72rem;
+    color: var(--text-3);
+    background: rgba(255, 255, 255, 0.07);
+    border-radius: 999px;
+    padding: 1px 7px;
+    margin-left: 2px;
+  }
+  .chip[aria-pressed='true'] .chip-count {
+    color: var(--green);
+    background: rgba(20, 241, 149, 0.12);
+  }
+  .catalog-body {
+    padding-block: 48px;
+  }
+  .group + .group {
+    margin-top: 56px;
+  }
+  .group-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 22px;
+  }
+  .grid-official {
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  }
+  @media (max-width: 940px) {
+    .grid-official {
+      grid-template-columns: 1fr;
+    }
+  }
+  .filterable {
+    display: contents;
+  }
+  .eco-card {
+    padding: 20px;
+    gap: 10px;
+  }
+  .eco-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eco-name {
+    font-size: 0.92rem;
+    font-weight: 620;
+    color: var(--text);
+  }
+  .eco-files {
+    font-size: 0.72rem;
+    border: 1px dashed var(--border-strong);
+    border-radius: 999px;
+    padding: 1px 8px;
+  }
+  .eco-card p {
+    font-size: 0.86rem;
+  }
+  .eco-logo {
+    border-radius: 5px;
+    object-fit: cover;
+    background: var(--bg-elev);
+  }
+  .empty-state {
+    text-align: center;
+    padding: 72px 0;
+    color: var(--text-3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .empty-state[hidden] {
+    display: none;
+  }
+  .empty-actions {
+    display: flex;
+    gap: 10px;
+  }
+</style>
