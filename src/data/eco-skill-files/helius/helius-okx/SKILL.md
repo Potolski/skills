@@ -19,7 +19,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/helius-labs/core-ai/blob/a34f5303f71e82a6c22f54ca8e3cbe82ae128791/helius-skills/helius-okx/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/helius-labs/core-ai/blob/77c3ad8e6de8b448aa4eb2dd1a5231eb6b1c0039/helius-skills/helius-okx/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->

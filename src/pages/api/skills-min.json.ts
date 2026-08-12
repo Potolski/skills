@@ -6,8 +6,8 @@ import {
   rawSkillUrl,
 } from "../../lib/registry";
 
-// Token-lean index: one row per skill, fetchable raw URL, nothing else.
-// For descriptions and repo metadata use /api/skills.json.
+// Token-lean index: one row per skill — fetchable raw URL + the commit it
+// was pinned at. For descriptions and repo metadata use /api/skills.json.
 export const GET: APIRoute = () => {
   const rows = [
     ...registry.official.map((s) => ({
@@ -16,6 +16,7 @@ export const GET: APIRoute = () => {
       official: true,
       category: s.category,
       raw: `${SITE_URL}${s.hostedPath}`,
+      commit: s.commitSha ?? null,
     })),
     ...registry.ecosystem.flatMap((r) =>
       r.skills.map((s) => ({
@@ -26,6 +27,7 @@ export const GET: APIRoute = () => {
         // Prefer the on-domain mirror (stable, links resolve); fall back to
         // GitHub raw pinned to the indexed commit.
         raw: s.hostedPath ? `${SITE_URL}${s.hostedPath}` : rawSkillUrl(s.url),
+        commit: s.commitSha ?? null,
       })),
     ),
   ];

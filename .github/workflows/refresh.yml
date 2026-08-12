@@ -28,6 +28,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build with refreshed data
         run: npm run build
+      - name: Verify served bytes match advertised sha256 pins
+        run: node scripts/verify-integrity.mjs
       - name: Commit changes
         run: |
           if git diff --quiet; then

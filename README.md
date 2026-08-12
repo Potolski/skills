@@ -1,6 +1,8 @@
 # skills.solana.com
 
-Agent skills for building on Solana — a curated registry of **official Solana Foundation skills** (hosted verbatim, per-file) plus an explorer for **ecosystem skill repositories** (Jupiter, Helius, Metaplex, SendAI, Solana Mobile, Trail of Bits, and more).
+Agent skills for building on Solana — a curated registry of **official Solana Foundation skills** (hosted verbatim, per-file) plus an explorer for **ecosystem skill repositories** (Jupiter, Helius, Metaplex, SendAI, Solana Mobile, Trail of Bits, Pyth, OKX, and more).
+
+Unlike sites that reskin a single community aggregator, this registry indexes **30 independent source repositories** — protocol-native ones included — every skill pinned to an immutable commit with published integrity hashes.
 
 Built with [Astro](https://astro.build) as a fully static site. No client framework — a few hundred bytes of vanilla JS for search, tabs, and copy buttons.
 
@@ -20,7 +22,10 @@ Built with [Astro](https://astro.build) as a fully static site. No client framew
   - **Full** (`sendaifun/skills`, `sendaifun/solana-new`, `solanabr/solana-ai-kit`): `SKILL.md` verbatim + every companion `.md`, relative links resolve on-domain — same guarantee as official skills.
   - **Partial** (every other repo with a license): `SKILL.md` mirrored with relative links rewritten to GitHub URLs pinned at the indexed commit, plus a provenance comment; companions stay upstream.
   - **Link-only** (repos with no declared license): never republished — pages link to the pinned source instead.
-- **Commit-SHA pinning** — every ecosystem skill link and repo badge points at the exact commit the registry indexed, so what you review is exactly what we listed. Mirrors are fetched from that same pin. (Install commands like `npx skills add` pull the repo's current HEAD — diff against the pin if that matters to you.)
+- **Commit-SHA pinning, end to end** — every skill on the site (official, ecosystem, and link-only community entries) is tied to an immutable git commit plus two timestamps: the upstream committer date (`commitDate`) and when our refresh took the pin (`pinnedAt`). All mirrors are fetched *at* the pinned sha, all advertised `raw`/`github` links point *at* the pinned sha (never a branch), and whole-dir install commands fetch GitHub's codeload tarball *at* the sha (degit can't resolve arbitrary commits — it only matches ref tips) — closing the window where upstream force-pushes or branch moves could swap content between review and install. Pins advance **fail-closed**: only after the content at the new sha is actually fetched, never on a metadata-only (`--meta`) run, and never by falling back to a branch ref — so a recorded commit always describes exactly what was mirrored.
+- **Sanitized rendering** — mirrored markdown is third-party content; `rehype-sanitize` strips raw HTML from every rendered detail page (the raw `.md` mirrors under `/s/` are served untouched as `text/markdown`). (`npx skills add` pulls the repo's current HEAD — diff against the pin if that matters to you.)
+- **Integrity hashes** — every file mirrored on this domain publishes its `sha256` in `/api/skills.json` (`integrity`, keyed by relative path). Verify any mirror with `curl -fsSL <url> | shasum -a 256`; CI recomputes every hash against the built site on every PR and every refresh.
+- **Contributor attribution** — each skill records the GitHub login that last touched its `SKILL.md` as of the pin (`lastAuthor` in the API, "Last updated by" on detail pages), so monorepo skills credit the person who actually wrote them, not just the org.
 - **`/ecosystem`** — ecosystem repo explorer grouped by aggregators/toolkits, teams & protocols, community; expandable per-repo skill lists that deep-link to the on-site detail pages.
 - **`/api/skills.json`** — machine-readable index of everything (CORS-enabled); `/api/skills-min.json` is the token-lean variant with one fetchable URL per skill (on-domain mirror preferred).
 - **`/llms.txt`** — plain-text site map for AI agents.
@@ -47,7 +52,7 @@ npm run refresh            # full: mirrors, file trees, frontmatter, stars, new-
 node scripts/refresh.mjs --meta   # cheap: stars + pushed_at only
 ```
 
-`GITHUB_TOKEN` is optional but raises rate limits. A weekly GitHub Action (`.github/workflows/refresh.yml`) runs the full refresh and commits changes; CI (`ci.yml`) builds every PR and asserts hosted files remain byte-identical mirrors.
+`GITHUB_TOKEN` is optional but raises rate limits. A weekly GitHub Action (`.github/workflows/refresh.yml`) runs the full refresh and commits changes; CI (`ci.yml`) builds every PR, asserts hosted files remain byte-identical mirrors, and re-verifies every advertised `sha256` against the built output (`scripts/verify-integrity.mjs`).
 
 ### Adding an official skill
 

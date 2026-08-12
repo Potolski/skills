@@ -10,12 +10,17 @@
 import { readFileSync, writeFileSync, mkdirSync, rmSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createHash } from "node:crypto";
 import matter from "gray-matter";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REGISTRY_PATH = join(ROOT, "src/data/registry.json");
 const registry = JSON.parse(readFileSync(REGISTRY_PATH, "utf8"));
 const metaOnly = process.argv.includes("--meta");
+
+/** One timestamp per run — every pin taken this run carries the same pinnedAt. */
+const RUN_TS = new Date().toISOString();
+const sha256 = (data) => createHash("sha256").update(data).digest("hex");
 
 const API_HEADERS = {
   Accept: "application/vnd.github+json",
@@ -29,6 +34,9 @@ const API_HEADERS = {
 const SKILL_PATHS = {
   "sendaifun/skills": {
     include: [/^skills\//],
+    // example-skill = template boilerplate; animation-reverse-engineering =
+    // generic frontend/motion skill, no Solana content (deliberate — it is the
+    // one sendaifun skill solanaskills.com lists that we do not).
     exclude: [/example-skill/, /animation-reverse-engineering/],
   },
   "sendaifun/solana-new": {
@@ -56,6 +64,30 @@ const SKILL_PATHS = {
   "phantom/phantom-connect-cursor-plugin": { include: [/^/], exclude: [] },
   "Lightprotocol/skills": { include: [/^/], exclude: [] },
   "DFlowProtocol/dflow_phantom-connect-skill": { include: [/^/], exclude: [] },
+  "pump-fun/pump-fun-skills": { include: [/^/], exclude: [] },
+  "debridge-finance/debridge-skills": { include: [/^skills\//], exclude: [] },
+  "pyth-network/pyth-plugin": { include: [/^skills\//], exclude: [] },
+  "okx/onchainos-skills": { include: [/^skills\//], exclude: [] },
+  "chainstacklabs/pumpclaw": { include: [/^/], exclude: [] },
+  "getpara/para-wallet-skill": { include: [/^/], exclude: [] },
+  "berkayoztunc/orquestra": {
+    // Skills live in two dirs; packages/frontend ships a generic agent-skills
+    // discovery-protocol spec (.well-known) that is not Solana content.
+    include: [/^\.claude\/skills\//, /^agents\/skills\//],
+    exclude: [],
+  },
+  "sanbir/solana-auditor-skills": { include: [/^solana-auditor\//], exclude: [] },
+  // Scoped indexes: only the Solana-exclusive slice of multichain packs
+  // (same precedent as the sendaifun/solana-new exclude list). Extend the
+  // whitelist as upstream adds Solana-dedicated skills.
+  "agiprolabs/claude-trading-skills": {
+    include: [/^skills\/(solana-rpc|jito-bundles|pumpfun-mechanics|helius-api|shredstream)\/SKILL\.md$/],
+    exclude: [],
+  },
+  "ChainGPT-org/chaingpt-claude-skill": {
+    include: [/^skills\/(solana|drift)\/SKILL\.md$/],
+    exclude: [],
+  },
   // trailofbits/skills + solanabr/solana-ai-kit are hand-curated (highlights only)
 };
 
@@ -78,10 +110,24 @@ const slugify = (s) =>
     .replace(/[^a-z0-9._-]+/g, "-")
     .replace(/^[-.]+|[-.]+$/g, "");
 
+/** fetch with retry+backoff on network errors — one ETIMEDOUT must not kill a
+ * 30-repo refresh run. HTTP status handling stays with the callers. */
+async function fetchRetry(url, opts, tries = 3) {
+  for (let i = 0; ; i++) {
+    try {
+      return await fetch(url, opts);
+    } catch (e) {
+      if (i >= tries - 1) throw e;
+      console.warn(`⚠ retry ${i + 1}/${tries - 1} after ${e.cause?.code ?? e.message}: ${url}`);
+      await new Promise((r) => setTimeout(r, 1500 * 2 ** i));
+    }
+  }
+}
+
 let apiCalls = 0;
 async function gh(path) {
   apiCalls++;
-  const res = await fetch(`https://api.github.com${path}`, { headers: API_HEADERS });
+  const res = await fetchRetry(`https://api.github.com${path}`, { headers: API_HEADERS });
   if (res.status === 403 || res.status === 429) {
     throw new Error(`GitHub API rate-limited on ${path} — set GITHUB_TOKEN`);
   }
@@ -90,7 +136,7 @@ async function gh(path) {
 }
 
 async function raw(repo, branch, path) {
-  const res = await fetch(`https://raw.githubusercontent.com/${repo}/${branch}/${path}`);
+  const res = await fetchRetry(`https://raw.githubusercontent.com/${repo}/${branch}/${path}`);
   return res.ok ? res.text() : null;
 }
 
@@ -128,6 +174,7 @@ async function repoMeta(repo) {
     description: data.description ?? null,
     branch,
     commitSha: branchData?.commit?.sha ?? null,
+    commitDate: branchData?.commit?.commit?.committer?.date ?? null,
   };
 }
 
@@ -142,6 +189,37 @@ function treeAt(repo, ref) {
     treeCache.set(key, gh(`/repos/${repo}/git/trees/${ref}?recursive=1`));
   }
   return treeCache.get(key);
+}
+
+const commitDateCache = new Map();
+/** Committer date of an arbitrary ref — one API call per repo@ref, cached. */
+function commitDateAt(repo, ref) {
+  const key = `${repo}@${ref}`;
+  if (!commitDateCache.has(key)) {
+    commitDateCache.set(
+      key,
+      gh(`/repos/${repo}/commits/${ref}`).then((d) => d?.commit?.committer?.date ?? null)
+    );
+  }
+  return commitDateCache.get(key);
+}
+
+const authorCache = new Map();
+/**
+ * GitHub login that last touched a file as of the pinned ref. Login only —
+ * unlinked commit emails yield null rather than an unverifiable display name.
+ */
+function lastAuthorAt(repo, ref, path) {
+  const key = `${repo}@${ref}:${path}`;
+  if (!authorCache.has(key)) {
+    authorCache.set(
+      key,
+      gh(`/repos/${repo}/commits?sha=${ref}&path=${encodeURIComponent(path)}&per_page=1`).then(
+        (d) => d?.[0]?.author?.login ?? null
+      )
+    );
+  }
+  return authorCache.get(key);
 }
 
 /**
@@ -189,7 +267,9 @@ function rewriteRelativeLinks(txt, base) {
 function partialMirror(txt, repo, ref, dir) {
   const base = `https://github.com/${repo}/blob/${ref}/${dir ? `${dir}/` : ""}`;
   const rewritten = rewriteRelativeLinks(txt, base);
-  const note = `<!--\n  Mirror of ${base}SKILL.md hosted by skills.solana.com.\n  Relative links were rewritten to GitHub URLs pinned to the mirrored commit —\n  companion files are not hosted here; the upstream repo is the source of truth.\n-->\n\n`;
+  // A path containing "-->" must not terminate the provenance comment early.
+  const safeBase = `${base}SKILL.md`.replaceAll("-->", "");
+  const note = `<!--\n  Mirror of ${safeBase} hosted by skills.solana.com.\n  Relative links were rewritten to GitHub URLs pinned to the mirrored commit —\n  companion files are not hosted here; the upstream repo is the source of truth.\n-->\n\n`;
   const fm = rewritten.match(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/);
   return fm ? fm[0] + "\n" + note + rewritten.slice(fm[0].length) : note + rewritten;
 }
@@ -210,6 +290,7 @@ async function mirrorEcoSkills(eco) {
   for (const s of eco.skills) {
     delete s.hostedPath;
     delete s.hostedFiles;
+    delete s.integrity;
     s.hosted = false;
     // Two upstream shapes: a skill directory (…/tree/<ref>/<dir>, SKILL.md
     // inside) or a single flat file (…/blob/<ref>/<path>.md).
@@ -231,6 +312,18 @@ async function mirrorEcoSkills(eco) {
     while (seen.has(slug)) slug = `${slug}-2`;
     seen.add(slug);
     s.slug = slug;
+
+    // Per-skill pin: the ref inside the url is the truth (hand-curated repos
+    // may lag the repo HEAD). A non-sha ref is a mutable pin — flag it.
+    const shaPinned = /^[0-9a-f]{40}$/i.test(ref);
+    if (!shaPinned) console.warn(`⚠ ${eco.id}/${s.name}: url ref "${ref}" is not a commit sha — mutable pin`);
+    s.commitSha = shaPinned ? ref : (eco.commitSha ?? null);
+    s.commitDate = !s.commitSha
+      ? null
+      : s.commitSha === eco.commitSha && eco.commitDate
+        ? eco.commitDate
+        : await commitDateAt(eco.repo, s.commitSha);
+    s.lastAuthor = await lastAuthorAt(eco.repo, ref, skillFilePath);
 
     const txt = await raw(eco.repo, ref, skillFilePath);
     if (!txt) {
@@ -272,8 +365,10 @@ async function mirrorEcoSkills(eco) {
     const destDir = join(repoDir, slug);
     mkdirSync(destDir, { recursive: true });
     s.hostedFiles = [];
+    s.integrity = {};
     if (fullHost) {
       writeFileSync(join(destDir, "SKILL.md"), txt);
+      s.integrity["SKILL.md"] = sha256(txt);
       const companions = (s.files ?? []).filter((f) => f.endsWith(".md"));
       for (const rel of companions) {
         const body = await raw(eco.repo, ref, `${dir ? `${dir}/` : ""}${rel}`);
@@ -285,9 +380,12 @@ async function mirrorEcoSkills(eco) {
         mkdirSync(dirname(dest), { recursive: true });
         writeFileSync(dest, body);
         s.hostedFiles.push(rel);
+        s.integrity[rel] = sha256(body);
       }
     } else {
-      writeFileSync(join(destDir, "SKILL.md"), partialMirror(txt, eco.repo, ref, dir));
+      const mirrored = partialMirror(txt, eco.repo, ref, dir);
+      writeFileSync(join(destDir, "SKILL.md"), mirrored);
+      s.integrity["SKILL.md"] = sha256(mirrored);
     }
     s.hosted = true;
     s.hostedPath = `/s/${eco.id}/${slug}/SKILL.md`;
@@ -306,12 +404,27 @@ for (const skill of registry.official) {
   skill.stars = meta.stars;
   skill.pushedAt = meta.pushedAt;
   skill.branch = meta.branch;
-  skill.commitSha = meta.commitSha;
-  if (meta.license && meta.license !== "NOASSERTION") skill.license = meta.license;
   if (metaOnly) continue;
+  if (meta.license && meta.license !== "NOASSERTION") skill.license = meta.license;
 
-  const tree = await gh(`/repos/${skill.repo}/git/trees/${skill.branch}?recursive=1`);
-  const skillFiles = (tree?.tree ?? [])
+  // Fail closed: the pin (commitSha/commitDate/pinnedAt) is only committed
+  // AFTER the mirror content is fetched at it, so a recorded sha always
+  // describes exactly what was mirrored — any fetch failure below leaves the
+  // previous pin, mirror, URLs, and integrity untouched as a matching set.
+  // Never fall back to a mutable branch ref: an unresolvable head skips the
+  // repo instead of silently reverting to pre-pinning behavior.
+  if (!meta.commitSha) {
+    console.warn(`⚠ ${skill.repo}: branch head unresolvable — skipped, pin unchanged`);
+    continue;
+  }
+  const pin = meta.commitSha;
+
+  const tree = await gh(`/repos/${skill.repo}/git/trees/${pin}?recursive=1`);
+  if (!tree?.tree) {
+    console.warn(`⚠ ${skill.repo}: git tree unavailable at ${pin.slice(0, 7)} — skipped, pin unchanged`);
+    continue;
+  }
+  const skillFiles = tree.tree
     .map((n) => n.path)
     .filter((p) => p.endsWith("SKILL.md"));
 
@@ -330,14 +443,20 @@ for (const skill of registry.official) {
     }
   }
 
-  const txt = await raw(skill.repo, skill.branch, `${dirPart}SKILL.md`);
+  const txt = await raw(skill.repo, pin, `${dirPart}SKILL.md`);
   if (!txt) {
-    console.warn(`⚠ ${skill.repo}: SKILL.md not found at ${dirPart}SKILL.md — mirror NOT updated`);
+    console.warn(`⚠ ${skill.repo}: SKILL.md not found at ${dirPart}SKILL.md — skipped, pin unchanged`);
     continue;
   }
+  // Content fetched at the pin — now (and only now) advance the pin with it.
+  skill.commitSha = pin;
+  skill.commitDate = meta.commitDate;
+  skill.pinnedAt = RUN_TS;
   writeFileSync(join(ROOT, "src/data/skills", `${skill.id}.md`), txt);
+  skill.integrity = { "SKILL.md": sha256(txt) };
+  skill.lastAuthor = await lastAuthorAt(skill.repo, pin, `${dirPart}SKILL.md`);
   skill.hostedPath = `/s/${skill.id}/SKILL.md`;
-  const skillBlob = tree?.tree?.find((n) => n.path === `${dirPart}SKILL.md`);
+  const skillBlob = tree.tree.find((n) => n.path === `${dirPart}SKILL.md`);
   skill.bytes = skillBlob?.size ?? txt.length;
   const fm = parseFrontmatter(txt);
   if (fm.name) skill.name = fm.name;
@@ -347,7 +466,7 @@ for (const skill of registry.official) {
   if (version) skill.version = version;
   skill.words = txt.replace(/^---[\s\S]*?---\s*/, "").split(/\s+/).length;
 
-  if (tree?.tree) {
+  {
     const prefix = skill.dir ? `${skill.dir}/` : "";
     skill.files = tree.tree
       .filter(
@@ -369,7 +488,7 @@ for (const skill of registry.official) {
     let refsBytes = 0;
     const companions = skill.files.filter((f) => !f.endsWith("/") && f.endsWith(".md"));
     for (const rel of companions) {
-      const body = await raw(skill.repo, skill.branch, `${prefix}${rel}`);
+      const body = await raw(skill.repo, pin, `${prefix}${rel}`);
       if (!body) {
         console.warn(`⚠ ${skill.repo}: companion missing ${rel}`);
         continue;
@@ -378,14 +497,15 @@ for (const skill of registry.official) {
       mkdirSync(dirname(dest), { recursive: true });
       writeFileSync(dest, body);
       skill.hostedFiles.push(rel);
+      skill.integrity[rel] = sha256(body);
       refsBytes += Buffer.byteLength(body);
     }
     skill.refsBytes = refsBytes;
   }
   const dirUrl = skill.dir ? `/${skill.dir}` : "";
-  skill.githubUrl = `https://github.com/${skill.repo}/tree/${skill.branch}${dirUrl}`;
-  skill.skillFileUrl = `https://github.com/${skill.repo}/blob/${skill.branch}${dirUrl}/SKILL.md`;
-  skill.rawUrl = `https://raw.githubusercontent.com/${skill.repo}/${skill.branch}${dirUrl}/SKILL.md`;
+  skill.githubUrl = `https://github.com/${skill.repo}/tree/${pin}${dirUrl}`;
+  skill.skillFileUrl = `https://github.com/${skill.repo}/blob/${pin}${dirUrl}/SKILL.md`;
+  skill.rawUrl = `https://raw.githubusercontent.com/${skill.repo}/${pin}${dirUrl}/SKILL.md`;
   console.log(`✓ official ${skill.id} (${skill.words} words, ${skill.files.length} files)`);
 }
 
@@ -399,22 +519,36 @@ for (const eco of registry.ecosystem) {
   }
   eco.stars = meta.stars;
   eco.pushedAt = meta.pushedAt;
-  eco.commitSha = meta.commitSha;
+  if (metaOnly) {
+    console.log(`✓ eco ${eco.id} (meta only — pin, license, and hosting unchanged)`);
+    continue;
+  }
+  // License changes only apply on full runs: hosting decisions are made here,
+  // so a meta-only run must never flip a repo to unlicensed while its mirrors
+  // stay published (or vice versa).
   eco.license = meta.license === "NOASSERTION" ? null : meta.license;
   eco.description = meta.description;
-  const ref = meta.commitSha ?? meta.branch;
+  // Fail closed, as with official skills: never fall back to a branch ref,
+  // and advance the repo pin only once the tree it describes is in hand.
+  if (!meta.commitSha) {
+    console.warn(`⚠ ${eco.repo}: branch head unresolvable — skipped, pin unchanged`);
+    continue;
+  }
+  const ref = meta.commitSha;
   const pinnedUrl = (dir) =>
     dir ? `https://github.com/${eco.repo}/tree/${ref}/${dir}` : `https://github.com/${eco.repo}/tree/${ref}`;
   const filters = SKILL_PATHS[eco.repo];
-  if (metaOnly) {
-    console.log(`✓ eco ${eco.id} (meta only)`);
-    continue;
-  }
 
   let dropped = 0;
   if (filters) {
     const tree = await treeAt(eco.repo, ref);
-    if (!tree?.tree) continue;
+    if (!tree?.tree) {
+      console.warn(`⚠ ${eco.repo}: git tree unavailable at ${ref.slice(0, 7)} — skipped, pin unchanged`);
+      continue;
+    }
+    eco.commitSha = ref;
+    eco.commitDate = meta.commitDate;
+    eco.pinnedAt = RUN_TS;
     const skillPaths = tree.tree
       .map((n) => n.path)
       .filter((p) => p.endsWith("SKILL.md"))
@@ -452,6 +586,12 @@ for (const eco of registry.ecosystem) {
     dropped = eco.skills.length + added - nextSkills.length;
     eco.skills = nextSkills;
     if (!eco.highlightsOnly) eco.skillCount = nextSkills.length;
+  } else {
+    // Hand-curated repos: skills carry their own (possibly older) pins; the
+    // repo-level pin is a verified-HEAD stamp, not an indexed-at claim.
+    eco.commitSha = ref;
+    eco.commitDate = meta.commitDate;
+    eco.pinnedAt = RUN_TS;
   }
 
   const hosted = await mirrorEcoSkills(eco);
@@ -459,6 +599,24 @@ for (const eco of registry.ecosystem) {
     `✓ eco ${eco.id} (${eco.skills.length} skills, ${hosted} mirrored${dropped > 0 ? `, ${dropped} dropped — review` : ""})`
   );
 }
+
+// ---------- community index: link-only entries get pinned too ----------
+// No mirror exists for these, so the pin is a verification stamp: the commit
+// that was HEAD when we last confirmed the repo is alive and what it claims.
+for (const c of registry.communityIndex) {
+  const meta = await repoMeta(c.repo);
+  if (!meta) {
+    console.warn(`⚠ community ${c.repo}: repo metadata unavailable`);
+    continue;
+  }
+  c.stars = meta.stars;
+  c.pushedAt = meta.pushedAt;
+  if (metaOnly || !meta.commitSha) continue; // pins advance on full runs only
+  c.commitSha = meta.commitSha;
+  c.commitDate = meta.commitDate;
+  c.pinnedAt = RUN_TS;
+}
+console.log(`✓ community index ${metaOnly ? "refreshed (meta only)" : "pinned"} (${registry.communityIndex.length} repos)`);
 
 // ---------- logos: GitHub org/user avatars, self-hosted ----------
 const owners = new Set(
@@ -473,7 +631,7 @@ mkdirSync(LOGO_DIR, { recursive: true });
 for (const owner of owners) {
   const dest = join(LOGO_DIR, `${owner}.png`);
   try {
-    const res = await fetch(`https://github.com/${owner}.png?size=128`, {
+    const res = await fetchRetry(`https://github.com/${owner}.png?size=128`, {
       headers: { "User-Agent": API_HEADERS["User-Agent"] },
     });
     if (res.ok && (res.headers.get("content-type") ?? "").startsWith("image/")) {
@@ -495,6 +653,7 @@ for (const c of registry.communityIndex) c.logo = logoFor(c.repo);
 console.log(`✓ logos for ${owners.size} orgs`);
 
 registry.updated = new Date().toISOString().slice(0, 10);
+if (!metaOnly) registry.pinnedAt = RUN_TS; // must never be fresher than the pins it describes
 writeFileSync(REGISTRY_PATH, JSON.stringify(registry, null, 2) + "\n");
 
 // Legacy flat URLs 301 to dir-style hosting (Cloudflare/Netlify; Vercel uses vercel.json).

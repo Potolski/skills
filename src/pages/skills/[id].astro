@@ -233,8 +233,14 @@ const refs = refsFor(skill.id);
             {
               skill.commitSha && (
                 <div>
-                  <dt>Mirrored at</dt>
-                  <dd>
+                  <dt>Pinned commit</dt>
+                  <dd
+                    title={
+                      skill.pinnedAt
+                        ? `Pin taken ${skill.pinnedAt} — mirror, links, and installs all reference this exact commit`
+                        : 'Mirror, links, and installs all reference this exact commit'
+                    }
+                  >
                     <a
                       class="mono sha-link"
                       href={`https://github.com/${skill.repo}/tree/${skill.commitSha}`}
@@ -242,6 +248,51 @@ const refs = refsFor(skill.id);
                       rel="noopener"
                     >
                       {skill.commitSha.slice(0, 7)}
+                    </a>
+                    {skill.commitDate && (
+                      <>
+                        {' · '}
+                        <time datetime={skill.commitDate}>
+                          {new Date(skill.commitDate).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            timeZone: 'UTC',
+                          })}
+                        </time>
+                      </>
+                    )}
+                  </dd>
+                </div>
+              )
+            }
+            {
+              skill.integrity?.['SKILL.md'] && (
+                <div>
+                  <dt>Integrity</dt>
+                  <dd
+                    class="mono"
+                    title={`sha256 of the hosted SKILL.md — verify: curl -fsSL https://skills.solana.com${skill.hostedPath} | shasum -a 256`}
+                  >
+                    sha256:{skill.integrity['SKILL.md'].slice(0, 12)}…
+                  </dd>
+                </div>
+              )
+            }
+            {
+              /* Bot committers ([bot] logins) aren't meaningful attribution and
+                 their /<login> profile URLs 404 — show real contributors only. */
+              skill.lastAuthor && !skill.lastAuthor.endsWith('[bot]') && (
+                <div>
+                  <dt>Last updated by</dt>
+                  <dd>
+                    <a
+                      class="inline-link"
+                      href={`https://github.com/${skill.lastAuthor}`}
+                      target="_blank"
+                      rel="noopener"
+                    >
+                      @{skill.lastAuthor}
                     </a>
                   </dd>
                 </div>
@@ -272,7 +323,7 @@ const refs = refsFor(skill.id);
                           href={
                             hostedHere
                               ? `/s/${skill.id}/${f}`
-                              : `https://github.com/${skill.repo}/blob/${skill.branch}${skill.dir ? `/${skill.dir}` : ''}/${f}`
+                              : `https://github.com/${skill.repo}/blob/${skill.commitSha ?? skill.branch}${skill.dir ? `/${skill.dir}` : ''}/${f}`
                           }
                           target={hostedHere ? undefined : '_blank'}
                           rel={hostedHere ? undefined : 'noopener'}

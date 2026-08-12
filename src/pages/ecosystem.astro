@@ -41,7 +41,7 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skills.length, 0);
           href="https://github.com/solana-foundation/awesome-solana-ai"
           target="_blank"
           rel="noopener">awesome-solana-ai</a
-        >, refreshed weekly from GitHub.
+        > and direct ecosystem research, refreshed weekly from GitHub.
       </p>
     </div>
   </section>
@@ -143,22 +143,28 @@ const skillSum = registry.ecosystem.reduce((n, r) => n + r.skills.length, 0);
       </ul>
       <div class="disclaimer muted">
         <p>
-          <strong>Listing criteria.</strong> Repositories are sourced from
+          <strong>Listing criteria.</strong> Repositories come from the Foundation&rsquo;s
           <a
             class="inline-link"
             href="https://github.com/solana-foundation/awesome-solana-ai"
             target="_blank"
             rel="noopener">awesome-solana-ai</a
-          >, must contain a <code class="mono">SKILL.md</code> with <code class="mono">name</code>
-          frontmatter, and are re-indexed weekly. Entries whose upstream disappears get delisted. No
-          security review is performed.
+          > directory and from direct ecosystem research (official protocol orgs, skill registries).
+          Every listed repo must contain a <code class="mono">SKILL.md</code> with
+          <code class="mono">name</code> frontmatter and is re-indexed weekly. Entries whose
+          upstream disappears get delisted. No security review is performed. Skills are mirrored on
+          this domain only when the upstream repo declares a license; unlicensed repos are linked,
+          never republished.
         </p>
         <p>
           <strong>Trust the pins, verify the installs.</strong> Ecosystem skills are independently
-          developed — evaluate code, license, and security practices before use. Links on this page
-          point at the exact commit we indexed (<code class="mono">@ sha</code>); install commands
-          like <code class="mono">npx skills add</code> pull the repo&rsquo;s current HEAD — diff
-          them if that matters to you.
+          developed — evaluate code, license, and security practices before use. Every skill is
+          tied to an immutable commit: links point at the exact sha we indexed, mirrors carry a
+          published <code class="mono">sha256</code> you can check with
+          <code class="mono">curl | shasum -a 256</code>, and both are exposed per skill in
+          <a class="inline-link" href="/api/skills.json">skills.json</a> alongside the commit
+          timestamp. Install commands like <code class="mono">npx skills add</code> pull the
+          repo&rsquo;s current HEAD — diff against the pin if that matters to you.
         </p>
       </div>
     </div>

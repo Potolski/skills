@@ -39,3 +39,5 @@ jobs:
               cmp "$f" "dist/s/$rel" || { echo "::error::dist/s/$rel does not match the committed store"; exit 1; }
             done
           fi
+      - name: Verify served bytes match advertised sha256 pins
+        run: node scripts/verify-integrity.mjs

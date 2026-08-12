@@ -31,7 +31,7 @@ function metaForFile(path) {
     const hit = ecoByPath[`${eco[1]}/${eco[2]}`];
     if (!hit) return null;
     const { repo, skill } = hit;
-    const ref = skill.url.match(/\/(?:tree|blob)\/([^/]+)/)?.[1] ?? "HEAD";
+    const ref = skill.commitSha ?? skill.url.match(/\/(?:tree|blob)\/([^/]+)/)?.[1] ?? "HEAD";
     const dirPart = skill.dir ? `/${skill.dir}` : "";
     return {
       githubBase: `https://github.com/${repo.repo}/blob/${ref}${dirPart}/`,
@@ -44,7 +44,7 @@ function metaForFile(path) {
   if (!official) return null;
   const dirPart = official.dir ? `/${official.dir}` : "";
   return {
-    githubBase: `https://github.com/${official.repo}/blob/${official.branch}${dirPart}/`,
+    githubBase: `https://github.com/${official.repo}/blob/${official.commitSha ?? official.branch}${dirPart}/`,
     hostedPrefix: `/s/${official.id}/`,
     hosted: new Set(official.hostedFiles ?? []),
   };
