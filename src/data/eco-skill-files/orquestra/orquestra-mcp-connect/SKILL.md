@@ -11,7 +11,7 @@ description: |
 ---
 
 <!--
-  Mirror of https://github.com/berkayoztunc/orquestra/blob/18ac4aa4829d823deb690eeb600331d96871fe73/.claude/skills/orquestra-mcp-connect/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/berkayoztunc/orquestra/blob/951532a207397666e1b857b5282d57a45116e3c6/.claude/skills/orquestra-mcp-connect/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->

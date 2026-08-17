@@ -4,7 +4,7 @@ description: "Quicknode blockchain infrastructure for 80+ chains: Core RPC API, 
 ---
 
 <!--
-  Mirror of https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -67,7 +67,7 @@ description: "Quicknode blockchain infrastructure for 80+ chains: Core RPC API, 
 |---------|-------------|----------|
 | **Swap API** | Multi-DEX aggregated token swaps | Solana (Jupiter/Metis), EVM (0x, OpenOcean, Aerodrome, Velodrome, Titan) |
 
-### Marketplace Add-ons
+### Endpoint Add-ons
 
 | Product | Description | Use Case |
 |---------|-------------|----------|
@@ -75,10 +75,10 @@ description: "Quicknode blockchain infrastructure for 80+ chains: Core RPC API, 
 | **Jito Bundles** | Solana bundle submission and status APIs | MEV-aware transaction delivery |
 | **Single Flight RPC** | Request de-duplication for identical in-flight RPC calls | High-concurrency read workloads |
 | **Multi-region Transaction Broadcast** | Transaction propagation across multiple regions | Latency-sensitive submission |
-| **Scorechain Risk Assessment API** | Wallet and transaction risk data | Compliance, fraud monitoring |
+| **Risk Assessment API** | Wallet and transaction risk data | Compliance, fraud monitoring |
 | **Block Timestamp Lookup** | Timestamp-to-block lookup utilities | Time-window to block-range conversion |
 | **Multi-chain Stablecoin Balance API** | Stablecoin balances across supported chains | Treasury, payments, portfolio state |
-| **Covalent GoldRush APIs** | Multi-chain wallet and portfolio data | Wallet summaries, token/NFT holdings |
+| **GoldRush Multichain Data APIs** | Multi-chain wallet and portfolio data | Wallet summaries, token/NFT holdings |
 
 ### Agent Surface
 
@@ -87,7 +87,7 @@ description: "Quicknode blockchain infrastructure for 80+ chains: Core RPC API, 
 | **x402** | Testnet monthly cap plus mainnet pay-per-request via stablecoins | Keyless RPC access, AI agents, pay-as-you-go |
 | **MPP** | Testnet monthly cap plus mainnet pay-per-request via IETF Payment Authentication | AI agents, multi-service payments, high-volume sessions |
 | **Agent Subscriptions** | Wallet-paid Quicknode account creation, returns a `QN_*` full platform API key | Autonomous agents needing full platform access |
-| **Quicknode CLI** | `qn` CLI for endpoints, Streams, Webhooks, KV, and SQL from the terminal | Scripting, CI/CD, infrastructure automation |
+| **Quicknode CLI** | `qn` CLI for endpoints, Streams, Webhooks, KV, and SQL from the terminal, plus RPC via Tooling Access or x402/MPP payments | Scripting, CI/CD, infrastructure automation, keyless paid RPC |
 | **Quicknode MCP** | Native Claude/OpenAI connector plus generic MCP server — Admin API via MCP | Manage Quicknode from Claude, ChatGPT, Codex, Cursor, or any MCP-capable AI tool |
 
 ### Platform
@@ -96,7 +96,7 @@ description: "Quicknode blockchain infrastructure for 80+ chains: Core RPC API, 
 |---------|-------------|----------|
 | **Admin API** | REST API for account management | Endpoint CRUD, usage monitoring, billing |
 | **Key-Value Store** | Serverless key-value and list storage (beta) | Persistent state for Streams, dynamic address lists |
-| **Quicknode SDK** | Official SDK for Quicknode product APIs | Admin API, Streams, Webhooks, KV, SQL Explorer |
+| **Quicknode SDK** | Official SDK for Quicknode product APIs, plus RPC via Tooling Access or x402/MPP payments | Admin API, Streams, Webhooks, KV, SQL Explorer, RPC calls |
 
 ---
 
@@ -104,7 +104,7 @@ description: "Quicknode blockchain infrastructure for 80+ chains: Core RPC API, 
 
 Quicknode provides low-latency RPC endpoints for 80+ blockchain networks.
 
-`qn rpc call` (CLI) and `qn.rpc.call` (SDK) reach any supported network via **Tooling Access** — a single multichain, read-only endpoint Quicknode provisions automatically with short-lived JWTs. No endpoint setup required. See [references/cli-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/cli-reference.md) / [references/sdk-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/sdk-reference.md). Use a dedicated endpoint below for a fixed URL, non-read-only methods, or dedicated throughput.
+`qn rpc call` (CLI) and `qn.rpc.call` (SDK) reach any supported network via **Tooling Access** — a single multichain, read-only endpoint Quicknode provisions automatically with short-lived JWTs. No endpoint setup required. See [references/cli-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/cli-reference.md) / [references/sdk-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/sdk-reference.md). Use a dedicated endpoint below for a fixed URL, non-read-only methods, or dedicated throughput.
 
 ### Endpoint Setup
 
@@ -156,13 +156,13 @@ As of 2026-02-02. Verify current limits in Quicknode docs before sizing a produc
 | Scale | 250 | 950M |
 | Business | 500 | 2B |
 
-See [references/rpc-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/rpc-reference.md) for complete RPC documentation including method tables for EVM, Solana, and Bitcoin chains, WebSocket patterns, and batch request examples.
+See [references/rpc-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/rpc-reference.md) for complete RPC documentation including method tables for EVM, Solana, and Bitcoin chains, WebSocket patterns, and batch request examples.
 
 ## IPFS
 
 Decentralized file storage with Quicknode's IPFS gateway.
 
-See [references/ipfs-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/ipfs-reference.md) for upload examples, metadata examples, and complete IPFS documentation.
+See [references/ipfs-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/ipfs-reference.md) for upload examples, metadata examples, and complete IPFS documentation.
 
 ## Dedicated Clusters
 
@@ -193,7 +193,7 @@ Real-time & historical blockchain data pipelines that filter, transform, and del
 3. Add filter function (JavaScript)
 4. Configure destination (webhook, S3, database)
 
-See [references/streams-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/streams-reference.md) for filter examples and full Streams documentation.
+See [references/streams-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/streams-reference.md) for filter examples and full Streams documentation.
 
 ## Streams Backfills
 
@@ -215,7 +215,7 @@ When asking an agent to trigger a Backfill, provide:
 - End block number (or `latest`)
 - Destination confirmation (Backfills deliver to the Stream's existing destination)
 
-See [references/streams-backfills-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/streams-backfills-reference.md) for dataset selection, range planning, batching, compression, cost guidance, and automation notes.
+See [references/streams-backfills-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/streams-backfills-reference.md) for dataset selection, range planning, batching, compression, cost guidance, and automation notes.
 
 ## Webhooks
 
@@ -231,11 +231,11 @@ Event-driven notifications for blockchain activity.
 | **Processing** | Basic | Full transformation |
 | **Use Case** | Simple alerts | Complex pipelines |
 
-See [references/webhooks-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/webhooks-reference.md) for API examples and full Webhooks documentation.
+See [references/webhooks-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/webhooks-reference.md) for API examples and full Webhooks documentation.
 
 ## Solana gRPC (formerly Yellowstone gRPC)
 
-High-performance Solana Geyser plugin for real-time blockchain data streaming via gRPC. Included on Scale and Business plans; available as a Marketplace add-on on Build and Accelerate plans.
+High-performance Solana Geyser plugin for real-time blockchain data streaming via gRPC. Included on Scale and Business plans; available as an add-on on Build and Accelerate plans.
 
 ### Quick Setup
 
@@ -287,7 +287,7 @@ stream.write({
 | **blocksMeta** | Block metadata without full contents |
 | **entry** | PoH entry updates |
 
-See [references/solana-grpc-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/solana-grpc-reference.md) for complete Solana gRPC documentation.
+See [references/solana-grpc-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/solana-grpc-reference.md) for complete Solana gRPC documentation.
 
 ## Blazar WSS
 
@@ -353,7 +353,7 @@ Quicknode's data delivery infrastructure for the Hyperliquid L1 chain. Provides 
 | `/evm` | No | Partial | Standard EVM operations |
 | `/nanoreth` | Yes | Extended | Debug, trace, WebSocket subscriptions |
 
-See [references/hypercore-hyperliquid-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/hypercore-hyperliquid-reference.md) for complete HyperCore and Hyperliquid documentation.
+See [references/hypercore-hyperliquid-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/hypercore-hyperliquid-reference.md) for complete HyperCore and Hyperliquid documentation.
 
 ---
 
@@ -387,7 +387,7 @@ curl -X POST 'https://api.quicknode.com/sql/rest/v1/query' \
 - **Optimized performance** - Monthly partitioning, sort keys, columnar storage
 - **REST API** - Execute queries programmatically via HTTPS
 
-See [references/sql-explorer.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/sql-explorer.md) for complete table schemas, query examples, optimization tips, and API reference.
+See [references/sql-explorer.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/sql-explorer.md) for complete table schemas, query examples, optimization tips, and API reference.
 
 ## Agent Identity (ERC-8004)
 
@@ -396,7 +396,7 @@ On-chain agent identity and reputation discovery based on the ERC-8004 standard.
 **API Base:** https://erc-8004.quicknode.com
 **REST prefix:** `/v1`
 
-See [references/agent-identity-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/agent-identity-reference.md) for verified endpoints, x402 behavior, rate limits, and on-chain registration guidance.
+See [references/agent-identity-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/agent-identity-reference.md) for verified endpoints, x402 behavior, rate limits, and on-chain registration guidance.
 
 ## Blockbook
 
@@ -415,7 +415,7 @@ Bitcoin (BTC), Ethereum (ETH), Bitcoin Cash (BCH), Dogecoin (DOGE), Litecoin (LT
 - Fetch UTXOs to construct a transaction.
 - Look up confirmed/unconfirmed balance for an address without running a personal indexer.
 
-See [references/blockbook-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/blockbook-reference.md) for methods and examples.
+See [references/blockbook-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/blockbook-reference.md) for methods and examples.
 
 ## Metaplex DAS API (Solana)
 
@@ -465,11 +465,11 @@ const { result } = await response.json();
 | `getNftEditions` | Edition details of a master NFT |
 | `searchAssets` | Search assets with flexible filters |
 
-See [references/metaplex-das-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/metaplex-das-reference.md) for complete DAS API documentation with all methods, parameters, and examples.
+See [references/metaplex-das-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/metaplex-das-reference.md) for complete DAS API documentation with all methods, parameters, and examples.
 
 ## Ordinals & Runes API
 
-Bitcoin inscription and Runes protocol data via a Quicknode Marketplace add-on. Query inscription metadata, satoshi data, Rune details, and collection data through JSON-RPC and ORD-compatible REST on your Bitcoin endpoint. 21 methods available.
+Bitcoin inscription and Runes protocol data via the Quicknode Ordinals & Runes API add-on. Query inscription metadata, satoshi data, Rune details, and collection data through JSON-RPC and ORD-compatible REST on your Bitcoin endpoint. 21 methods available.
 
 **Marketing:** https://www.quicknode.com/ordinals-runes
 **Docs:** https://www.quicknode.com/docs/bitcoin/ord_getInscription
@@ -480,9 +480,9 @@ Bitcoin inscription and Runes protocol data via a Quicknode Marketplace add-on. 
 - Query Rune etching details, minting parameters, and live supply.
 - Fetch Bitcoin outputs and the inscriptions or Runes they contain.
 
-See [references/ordinals-runes-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/ordinals-runes-reference.md) for supported methods and examples.
+See [references/ordinals-runes-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/ordinals-runes-reference.md) for supported methods and examples.
 
-## Marketplace Add-ons
+## Add-ons
 
 Endpoint add-ons for specialized capabilities that can be enabled on Quicknode endpoints. Use the add-on docs or dashboard-provided endpoint details for exact API shapes.
 
@@ -508,7 +508,7 @@ Request de-duplication for identical in-flight RPC calls. Useful for high-concur
 
 Broadcast signed transactions through multiple regions to improve propagation for latency-sensitive transaction submission.
 
-### Scorechain Risk Assessment API
+### Risk Assessment API
 
 Wallet and transaction risk data for compliance, fraud monitoring, and risk-aware transaction workflows.
 
@@ -520,17 +520,17 @@ Timestamp-to-block lookup utilities for converting human time windows into block
 
 Stablecoin balances across supported chains for treasury, payments, and portfolio workflows.
 
-### Covalent GoldRush APIs
+### GoldRush Multichain Data APIs
 
 Multi-chain wallet and portfolio data, including balances, token holdings, NFT holdings, and transaction history where supported.
 
-See [references/marketplace-addons.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/marketplace-addons.md) for current add-on guidance and product-specific reference links.
+See [references/addons.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/addons.md) for current add-on guidance and product-specific reference links.
 
 ---
 
 ## Swap API
 
-Multi-DEX aggregated token swaps via Quicknode Marketplace add-ons. Supports Metis/Jupiter, 0x, OpenOcean, Aerodrome, Velodrome, Titan Meta Aggregator, and Hyperliquid Exchange API. Each provider is enabled as a separate add-on or product surface on your endpoint/account.
+Multi-DEX aggregated token swaps via Quicknode add-ons. Supports Metis/Jupiter, 0x, OpenOcean, Aerodrome, Velodrome, Titan Meta Aggregator, and Hyperliquid Exchange API. Each provider is enabled as a separate add-on or product surface on your endpoint/account.
 
 **Marketing:** https://www.quicknode.com/swap-api
 
@@ -561,7 +561,7 @@ const swapResult = await jupiterApi.swapPost({
 
 Set `QUICKNODE_METIS_URL` to your Metis endpoint (e.g., `https://jupiter-swap-api.quiknode.pro/YOUR_TOKEN`). Enable the **Metis Jupiter Swap API** add-on in the Quicknode dashboard.
 
-See [references/swap-api-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/swap-api-reference.md) for provider positioning, verified examples, safety defaults, and troubleshooting.
+See [references/swap-api-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/swap-api-reference.md) for provider positioning, verified examples, safety defaults, and troubleshooting.
 
 ---
 
@@ -594,7 +594,9 @@ const response = await client.fetch("https://x402.quicknode.com/ethereum-mainnet
 });
 ```
 
-See [references/x402-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/x402-reference.md) for complete x402 documentation including SIWX authentication, credit management, and `@quicknode/x402` setup.
+The fastest path is often the Quicknode CLI or SDK instead of the gateway package: `qn rpc call --x402` (CLI v0.6.0+) or `rpc.payment` with `scheme: "x402"` (SDK Node 3.8.0+, other languages 0.8.0+).
+
+See [references/x402-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/x402-reference.md) for complete x402 documentation including SIWX authentication, credit management, and `@quicknode/x402` setup.
 
 ## MPP (Machine Payments Protocol)
 
@@ -629,7 +631,9 @@ const { result } = await response.json()
 console.log('Block number:', BigInt(result))
 ```
 
-See [references/mpp-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/mpp-reference.md) for complete MPP documentation including charge vs session intents, Solana setup, CLI usage, and payment receipts.
+The Quicknode CLI and SDK also wrap this gateway: `qn rpc call --mpp` (CLI v0.6.0+) or `rpc.payment` with `scheme: "mpp"` (SDK Node 3.8.0+, other languages 0.8.0+).
+
+See [references/mpp-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/mpp-reference.md) for complete MPP documentation including charge vs session intents, Solana setup, CLI usage, and payment receipts.
 
 ## Agent Subscriptions
 
@@ -754,11 +758,13 @@ All requests target `https://www.quicknode.com`.
 - **Synchronous creation**: Account creation and subscription activation happen in the same request. There is no async job or webhook to wait for.
 - **No invented details**: Never fabricate billing details, passwords, or email addresses. Require explicit user input. Password must be 8–64 characters with at least one lowercase letter, one uppercase letter, one number, and one special character.
 
-See [references/agent-subscriptions-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/agent-subscriptions-reference.md) for complete endpoint reference, top-up flow, and balance checks.
+See [references/agent-subscriptions-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/agent-subscriptions-reference.md) for complete endpoint reference, top-up flow, and balance checks.
 
 ## Quicknode CLI
 
 Command-line tool (`qn`) for managing Quicknode infrastructure from the terminal. Available on all paid plans.
+
+It also has a keyless paid lane (v0.6.0+): `qn wallet` plus `qn rpc call --x402`/`--mpp` pay for RPC calls with stablecoins, with no Quicknode account, API key, login, Tooling Access, or provisioned endpoint.
 
 ### Installation
 
@@ -817,7 +823,32 @@ qn kv set get my-key
 
 Use `--format json` for machine-readable output. Mutating commands prompt before acting; require explicit user confirmation before bypassing prompts in automation.
 
-See [references/cli-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/cli-reference.md) for complete CLI documentation.
+### Paid RPC (x402 / MPP)
+
+Requires v0.6.0+. Discover offered networks and assets instead of hardcoding them, and set `--max-amount` (a per-call ceiling in the asset's integer base units) on every signing action.
+
+```bash
+# One-time keyless setup — the key is written locally and is not recoverable
+qn wallet generate --vm evm --name payer
+
+# Discover what each gateway accepts
+qn rpc x402 supported-payments
+qn rpc mpp supported-payments
+
+# Pay per request (query network and payment network are independent)
+qn rpc call eth_blockNumber --network ethereum-mainnet \
+  --x402 --payment-wallet payer \
+  --payment-network base-sepolia --payment-asset USDC --max-amount 1000
+
+# Prepaid credits (x402) or an escrow channel (MPP) for sustained usage
+qn rpc x402 buy-credits --network ethereum-mainnet --payment-wallet payer \
+  --payment-network base-sepolia --payment-asset USDC --max-amount 10000000
+qn rpc call eth_blockNumber --network ethereum-mainnet --x402-drawdown --payment-wallet payer
+```
+
+These commands move real funds. Get explicit user confirmation first and use a dedicated, minimally funded wallet. `qn wallet rm`, `qn rpc x402 buy-credits`, and `qn rpc mpp open`/`top-up`/`close` are gated and prompt before acting. Paid calls never auto-retry: exit 2 means nothing settled, exit 3 means the outcome is unknown and the wallet may already have been charged — check the wallet instead of re-running.
+
+See [references/cli-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/cli-reference.md) for complete CLI documentation.
 
 ## Quicknode MCP
 
@@ -840,13 +871,15 @@ Interactive setup uses OAuth: log in to Quicknode, select **Viewer** or **Admin*
 
 The MCP server provides tools for endpoint management (list, create, delete, rate limits), security rules, usage monitoring, billing, and chain discovery. Agents and users can manage their Quicknode workspace conversationally without leaving their AI tool.
 
-See [references/mcp-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/mcp-reference.md) for the complete tool surface and setup instructions.
+See [references/mcp-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/mcp-reference.md) for the complete tool surface and setup instructions.
 
 ---
 
 ## Quicknode SDK
 
 Official SDK for Quicknode product APIs: Admin API, Streams, Webhooks, Key-Value Store, and SQL Explorer. The `rpc` client (Node `3.7.0+`, other languages `0.7.0+`) also makes JSON-RPC calls to any supported network via Tooling Access — no endpoint setup required. Chain-specific client libraries still apply for typed chain abstractions or a dedicated endpoint.
+
+The same `rpc` client can pay for calls with stablecoins through x402 or MPP (Node `3.8.0+`, other languages `0.8.0+`), with no Quicknode account or API key.
 
 ### Installation
 
@@ -876,7 +909,35 @@ const trades = await qn.sql.query(
 );
 ```
 
-See [references/sdk-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/sdk-reference.md) for complete SDK documentation.
+### RPC Micropayments
+
+Set `rpc.payment` and the SDK answers the `402 Payment Required` challenge, signs the payment, and resends the request. No API key is needed for this lane.
+
+```typescript
+import { QuicknodeSdk, generatePaymentWallet } from '@quicknode/sdk';
+
+// One-time: the key is returned once and cannot be recovered. Persist it securely.
+const wallet = generatePaymentWallet('evm'); // 'evm' or 'svm'
+console.log('Fund this address:', wallet.address);
+
+const qn = new QuicknodeSdk({
+  rpc: {
+    payment: {
+      scheme: 'x402', // or 'mpp'
+      key: process.env.QN_PAYMENT_KEY!,
+      payNetwork: 'eip155:84532', // Base Sepolia
+      asset: '0x036CbD53842c5426634e7929541eC2318f3dCF7e', // Base Sepolia USDC
+      maxAmount: '10000', // spend ceiling in base units, not the amount sent
+    },
+  },
+});
+
+const blockNumber = await qn.rpc.call('eth_blockNumber', [], 'ethereum-mainnet');
+```
+
+`callWithReceipt` returns settlement metadata (non-null on MPP, `null` on x402). For sustained usage, use `gatewayAuthenticate`/`gatewayBuyCredits`/`gatewayDrawdownCall` (x402 credits) or `mppOpen`/`mppSessionCall` (MPP channel). This lane moves real funds — get explicit user confirmation first, and never log the payment config, which holds the raw private key.
+
+See [references/sdk-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/sdk-reference.md) for complete SDK documentation.
 
 ## Admin API
 
@@ -911,7 +972,7 @@ const res = await fetch('https://api.quicknode.com/v0/endpoints', {
 const endpoints = await res.json();
 ```
 
-See [references/admin-api-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/admin-api-reference.md) for full Admin API documentation including endpoint CRUD, usage monitoring, rate limit configuration, security options, Tooling Access, billing, and teams.
+See [references/admin-api-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/admin-api-reference.md) for full Admin API documentation including endpoint CRUD, usage monitoring, rate limit configuration, security options, Tooling Access, billing, and teams.
 
 ## Key-Value Store (Beta)
 
@@ -933,7 +994,7 @@ Serverless storage for lists and key-value sets, primarily accessed from within 
 - `qnLib.qnListAllSets` — list all set keys
 - `qnLib.qnDeleteSet` — delete a set
 
-See [references/kv-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/3cdb4993812d9f6f50e1ba20473f03e6effed2ed/skills/quicknode-skill/references/kv-reference.md) for REST API usage, size limits, and CLI (`qn kv`) commands.
+See [references/kv-reference.md](https://github.com/quiknode-labs/blockchain-skills/blob/7d76454c89ed791b9a6d4479595ca0469483f616/skills/quicknode-skill/references/kv-reference.md) for REST API usage, size limits, and CLI (`qn kv`) commands.
 
 ---
 
@@ -1038,12 +1099,14 @@ const [ethBlock, baseBlock] = await Promise.all([
 - **Solana gRPC**: https://www.quicknode.com/docs/solana/solana-grpc/overview
 - **HyperCore gRPC**: https://www.quicknode.com/docs/hyperliquid/grpc-api
 - **IPFS**: https://www.quicknode.com/docs/ipfs
-- **SDK**: https://www.quicknode.com/docs/quicknode-sdk
+- **SDK**: https://www.quicknode.com/docs/sdk
+- **SDK RPC Micropayments**: https://www.quicknode.com/docs/sdk/micropayments
 - **Admin API**: https://www.quicknode.com/docs/admin-api
 - **Metaplex DAS API (Solana)**: https://www.quicknode.com/docs/solana/solana-das-api
 - **Blockbook**: https://www.quicknode.com/docs/bitcoin/blockbook/overview
 - **Ordinals & Runes API**: https://www.quicknode.com/docs/bitcoin/ord_getInscription
-- **Quicknode CLI**: https://www.quicknode.com/docs/quicknode-cli
+- **Quicknode CLI**: https://www.quicknode.com/docs/cli
+- **CLI RPC Micropayments**: https://www.quicknode.com/docs/cli/micropayments
 - **Quicknode MCP**: https://www.quicknode.com/docs/build-with-ai/quicknode-mcp
 - **Hyperliquid**: https://www.quicknode.com/docs/hyperliquid
 - **SQL Explorer**: https://www.quicknode.com/docs/sql-explorer
@@ -1078,7 +1141,7 @@ const [ethBlock, baseBlock] = await Promise.all([
 
 ### Additional Resources
 - **Quicknode Guides**: https://www.quicknode.com/guides
-- **SDK Reference**: https://www.quicknode.com/docs/quicknode-sdk
-- **Marketplace**: https://marketplace.quicknode.com/
+- **SDK Reference**: https://www.quicknode.com/docs/sdk
+- **Add-ons Catalog**: https://www.quicknode.com/add-ons
 - **Sample App Library**: https://www.quicknode.com/sample-app-library
 - **Guide Examples Repo**: https://github.com/quiknode-labs/qn-guide-examples

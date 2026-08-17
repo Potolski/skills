@@ -1,11 +1,11 @@
 ---
 name: solana-dev
-description: Use when user asks to "build a Solana dapp", "write an Anchor program", "create a token", "debug Solana errors", "set up wallet connection", "test my Solana program", "deploy to devnet", or "explain Solana concepts" (rent, accounts, PDAs, CPIs, etc.). Also use for quick on-chain lookups via public RPC + curl — "what's the balance of <wallet>", "look up transaction <sig>", "token balance for <account>", "check this address on mainnet/devnet". End-to-end Solana development playbook covering wallet connection, Anchor/Pinocchio programs, Codama client generation, Surfpool/LiteSVM/Mollusk testing, security checklists, and JSON-RPC curl lookups against public clusters. Prefers @solana/kit v7 plugin clients (createClient + .use()), wallet connection via @solana/kit-plugin-wallet + @solana/react, web3.js v3 (Kit internals, RC) as the migration target for legacy codebases, and Surfpool for local networks and integration testing.
+description: Use when user asks to "build a Solana dapp", "write an Anchor program", "create a token", "debug Solana errors", "set up wallet connection", "test my Solana program", "fuzz my Solana program", "deploy to devnet", or "explain Solana concepts" (rent, accounts, PDAs, CPIs, etc.). Also use for program architecture questions — "how should I structure my Anchor program", "design a state machine for my program", "reduce compute units", "why is my program a throughput bottleneck", "how should I name instructions and accounts". Also use for quick on-chain lookups via public RPC + curl — "what's the balance of <wallet>", "look up transaction <sig>", "token balance for <account>", "check this address on mainnet/devnet". End-to-end Solana development playbook covering wallet connection, Anchor/Pinocchio programs, Codama client generation, Surfpool/LiteSVM/Mollusk testing, security checklists, and JSON-RPC curl lookups against public clusters. Prefers @solana/kit v7 plugin clients (createClient + .use()), wallet connection via @solana/kit-plugin-wallet + @solana/react, web3.js v3 (Kit internals, RC) as the migration target for legacy codebases, and Surfpool for local networks and integration testing.
 license: MIT
 compatibility: Requires Node.js 20.18+, Rust toolchain, Solana CLI, Anchor CLI
 metadata:
   author: Solana Foundation
-  version: "2.0.0"
+  version: "2.3.0"
 ---
 
 # Solana Development Skill (Kit-first)
@@ -16,8 +16,9 @@ Use this Skill when the user asks for:
 - Wallet connection + signing flows
 - Transaction building / sending / confirmation UX
 - On-chain program development (Anchor or Pinocchio)
+- Program architecture — state layout, PDA seed conventions, naming, parallelization, cranks, vault topology
 - Client SDK generation (typed program clients)
-- Local testing (Surfpool, LiteSVM, Mollusk)
+- Local testing (Surfpool, LiteSVM, Mollusk) and fuzz testing (Trident, cargo-fuzz)
 - Security hardening and audit-style reviews
 - Confidential transfers (Token-2022 ZK extension)
 - **Toolchain setup, version mismatches, GLIBC errors, dependency conflicts**
@@ -61,6 +62,7 @@ Use this Skill when the user asks for:
 5) **Testing (Surfpool-centered)**
 - Unit tests: LiteSVM (in-process, Rust/TS) or Mollusk (Rust instruction harness).
 - Integration tests: **Surfpool** — mainnet forking with lazy account cloning, 26 `surfnet_*` cheatcodes (time travel, account/token state, oracle scenarios, CU profiling), embeddable in-process via the `@solana/surfpool` SDK, and the default `anchor test` runner in Anchor 1.0+.
+- In TypeScript, boot the surfnet through the Kit plugin: `await createClient().use(surfpool())` from `@solana/surfpool/kit` installs a pre-funded payer, the RPC stack, and a typed `client.cheatcodes` — see [surfpool/kit-plugin.md](references/surfpool/kit-plugin.md).
 - Use solana-test-validator only when you need full validator runtime fidelity not emulated by Surfpool.
 
 ## Agent safety guardrails
@@ -115,7 +117,7 @@ Always be explicit about:
 
 ### 4. Add tests
 - Unit test: LiteSVM or Mollusk.
-- Integration test: Surfpool — spawn via CLI (`surfpool start --ci`) or embed with `@solana/surfpool`; use cheatcodes to set up state instead of long setup transactions.
+- Integration test: Surfpool — embed with `.use(surfpool())` from `@solana/surfpool/kit` (preferred) or spawn via CLI (`surfpool start --ci`); use cheatcodes to set up state instead of long setup transactions.
 - For "wallet UX", add mocked hook/provider tests where appropriate.
 
 ### 5. Deliverables expectations
@@ -173,6 +175,8 @@ Surfpool also ships its own MCP server (`surfpool mcp`, stdio) for driving local
 - Legacy web3.js routing (v3 status + migration skill): [kit-web3-interop.md](references/kit-web3-interop.md)
 - Anchor programs: [programs/anchor.md](references/programs/anchor.md)
 - Pinocchio programs: [programs/pinocchio.md](references/programs/pinocchio.md)
+- Program design patterns (state layout, PDAs, parallelization, cranks, ergonomics): [programs/design-patterns.md](references/programs/design-patterns.md)
+- Runtime concepts (rent, off-curve PDAs, entrypoint dispatch, wire format): [concepts.md](references/concepts.md)
 - Testing strategy (Surfpool/LiteSVM/Mollusk): [testing.md](references/testing.md)
 - IDLs + codegen: [idl-codegen.md](references/idl-codegen.md)
 - Payments: [payments.md](references/payments.md)
@@ -182,5 +186,6 @@ Surfpool also ships its own MCP server (`surfpool mcp`, stdio) for driving local
 - **Version compatibility:** [compatibility-matrix.md](references/compatibility-matrix.md)
 - **Common errors & fixes:** [common-errors.md](references/common-errors.md)
 - **Surfpool (local network):** [surfpool/overview.md](references/surfpool/overview.md)
+- **Surfpool Kit plugin (`@solana/surfpool/kit`):** [surfpool/kit-plugin.md](references/surfpool/kit-plugin.md) — embedded surfnet behind a Kit client, typed cheatcodes
 - **Surfpool cheatcodes:** [surfpool/cheatcodes.md](references/surfpool/cheatcodes.md)
 - **Anchor v1 migration:** [anchor/migrating-v0.32-to-v1.md](references/anchor/migrating-v0.32-to-v1.md)
