@@ -4,7 +4,7 @@ description: Build frontend Solana applications with Phantom Connect SDK and Hel
 license: MIT
 metadata:
   author: Helius Labs
-  version: "1.0.1"
+  version: "1.0.2"
   tags:
     - solana
     - phantom
@@ -18,7 +18,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/helius-labs/core-ai/blob/df28e8c790dcd526063d85446cf6c77f032cfab6/helius-skills/helius-phantom/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/helius-labs/core-ai/blob/15cb2b3b22068ef65652c608ab37702d75d7cfb6/helius-skills/helius-phantom/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -50,7 +50,7 @@ Before doing anything, verify these:
 
 ```
 You need to install the Helius MCP server first:
-claude mcp add helius npx helius-mcp@latest
+claude mcp add helius npx helius-mcp@2.1.0
 Then restart Claude so the tools become available.
 ```
 
@@ -354,7 +354,7 @@ Follow these rules in ALL implementations:
 - Rate Limits: `https://www.helius.dev/docs/billing/rate-limits.md`
 - Dashboard: `https://dashboard.helius.dev`
 - Full Agent Signup Instructions: `https://dashboard.helius.dev/agents.md`
-- Helius MCP Server: `claude mcp add helius npx helius-mcp@latest`
+- Helius MCP Server: `claude mcp add helius npx helius-mcp@2.1.0`
 - Orb Explorer: `https://orbmarkets.io`
 
 ## Common Pitfalls

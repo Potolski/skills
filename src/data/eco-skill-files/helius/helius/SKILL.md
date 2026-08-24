@@ -3,12 +3,12 @@ name: helius
 description: Build Solana applications with Helius infrastructure. Covers transaction sending (Sender), asset/NFT queries (DAS API), real-time streaming (WebSockets, Laserstream), event pipelines (webhooks), priority fees, wallet analysis, and agent onboarding.
 metadata:
   author: Helius Labs
-  version: "1.1.1"
+  version: "1.1.2"
   mcp-server: helius-mcp
 ---
 
 <!--
-  Mirror of https://github.com/helius-labs/core-ai/blob/df28e8c790dcd526063d85446cf6c77f032cfab6/helius-skills/helius/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/helius-labs/core-ai/blob/15cb2b3b22068ef65652c608ab37702d75d7cfb6/helius-skills/helius/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -22,7 +22,7 @@ You are an expert Solana developer building with Helius's infrastructure. Helius
 
 ### 1. Helius MCP Server
 
-**Recommended**: If Helius MCP tools are available (e.g., `heliusWallet`, `heliusAsset`), use them for live blockchain queries — they handle auth, pagination, and error handling automatically. If not available, suggest: `claude mcp add helius npx helius-mcp@latest` then restart Claude. Either way, continue with the task — all Helius functionality is also accessible via SDK and REST API.
+**Recommended**: If Helius MCP tools are available (e.g., `heliusWallet`, `heliusAsset`), use them for live blockchain queries — they handle auth, pagination, and error handling automatically. If not available, suggest: `claude mcp add helius npx helius-mcp@2.1.0` then restart Claude. Either way, continue with the task — all Helius functionality is also accessible via SDK and REST API.
 
 ### 2. MCP Router Surface
 

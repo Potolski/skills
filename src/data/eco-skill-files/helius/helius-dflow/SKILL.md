@@ -4,7 +4,7 @@ description: Build Solana trading applications combining DFlow trading APIs with
 license: MIT
 metadata:
   author: Helius Labs
-  version: "1.1.1"
+  version: "1.3.0"
   tags:
     - solana
     - trading
@@ -18,7 +18,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/helius-labs/core-ai/blob/df28e8c790dcd526063d85446cf6c77f032cfab6/helius-skills/helius-dflow/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/helius-labs/core-ai/blob/15cb2b3b22068ef65652c608ab37702d75d7cfb6/helius-skills/helius-dflow/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -50,29 +50,19 @@ Before doing anything, verify these:
 
 ```
 You need to install the Helius MCP server first:
-claude mcp add helius npx helius-mcp@latest
+claude mcp add helius npx helius-mcp@2.1.0
 Then restart Claude so the tools become available.
 ```
 
-### 2. DFlow MCP Server (Optional but Recommended)
+### 2. DFlow MCP Server (Optional, Not Bundled)
 
-Check if DFlow MCP tools are available. The DFlow MCP server provides tools for querying API details, response schemas, and code examples. If not available, DFlow APIs can still be called directly via fetch/curl. To install:
+The DFlow MCP server is **not** bundled with this skill — expect its tools to be absent unless the user has added it themselves. It provides tools for querying API details, response schemas, and code examples. Everything here works without it: DFlow APIs can be called directly via fetch/curl, and the `references/` files carry the endpoint details.
 
-```
-Add the DFlow MCP server at pond.dflow.net/mcp for enhanced API tooling.
-```
-
-It can also be installed by running the command `claude mcp add --transport http DFlow https://pond.dflow.net/mcp`, or by being directly added to your project's `.mcp.json`:
+It is a third-party hosted connector. Do not configure it for the user. If they ask for it, point them at DFlow's own setup docs:
 
 ```
-{
-  "mcpServers": {
-    "DFlow": {
-      "type": "http",
-      "url": "https://pond.dflow.net/mcp"
-    }
-  }
-}
+The DFlow MCP server is optional and not bundled. Setup instructions:
+https://pond.dflow.net/build/mcp
 ```
 
 ### 3. API Keys
@@ -216,7 +206,7 @@ Use this when the user wants to:
 
 Use this when the user needs help with Helius-specific API details, errors, or rate limits.
 
-For DFlow API details, use the DFlow MCP server (`pond.dflow.net/mcp`) or DFlow docs (`pond.dflow.net/introduction`).
+For DFlow API details, use the DFlow MCP server (`pond.dflow.net/mcp`) if the user has added it, otherwise DFlow docs (`pond.dflow.net/introduction`).
 
 ## Composing Multiple Domains
 
@@ -320,7 +310,7 @@ Follow these rules in ALL implementations:
 - Rate Limits: `https://www.helius.dev/docs/billing/rate-limits.md`
 - Dashboard: `https://dashboard.helius.dev`
 - Full Agent Signup Instructions: `https://dashboard.helius.dev/agents.md`
-- Helius MCP Server: `claude mcp add helius npx helius-mcp@latest`
+- Helius MCP Server: `claude mcp add helius npx helius-mcp@2.1.0`
 - LaserStream SDK: `github.com/helius-labs/laserstream-sdk`
 
 ### DFlow

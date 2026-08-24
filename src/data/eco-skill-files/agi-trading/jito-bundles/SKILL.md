@@ -4,7 +4,7 @@ description: Jito bundle submission for MEV protection on Solana — bundle buil
 ---
 
 <!--
-  Mirror of https://github.com/agiprolabs/claude-trading-skills/blob/938a6ee84eed8f2b51cfb5055eaaddc8c596028d/skills/jito-bundles/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/agiprolabs/claude-trading-skills/blob/f3fa5a2a20719cc275d8561ec8ae59a135f36948/skills/jito-bundles/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->

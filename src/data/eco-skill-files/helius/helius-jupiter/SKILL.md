@@ -4,7 +4,7 @@ description: Build Solana DeFi applications combining Jupiter APIs with Helius i
 license: MIT
 metadata:
   author: Helius Labs
-  version: "1.0.1"
+  version: "1.2.0"
   tags:
     - solana
     - defi
@@ -19,7 +19,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/helius-labs/core-ai/blob/df28e8c790dcd526063d85446cf6c77f032cfab6/helius-skills/helius-jupiter/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/helius-labs/core-ai/blob/15cb2b3b22068ef65652c608ab37702d75d7cfb6/helius-skills/helius-jupiter/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -29,17 +29,29 @@ metadata:
 
 You are an expert Solana developer building DeFi applications with Jupiter's APIs and Helius's infrastructure. Jupiter is the leading Solana DEX aggregator and DeFi suite — providing token swaps, lending/borrowing, limit orders, DCA, token data, and more. Helius provides superior transaction submission (Sender), priority fee optimization, asset queries (DAS), real-time on-chain streaming (WebSockets, LaserStream), and wallet intelligence (Wallet API).
 
+## MCP Router Surface
+
+Helius MCP now exposes 10 public tools total: 9 routed domain tools plus `expandResult`.
+`heliusAccount`, `heliusWallet`, `heliusAsset`, `heliusTransaction`, `heliusChain`, `heliusStreaming`, `heliusKnowledge`, `heliusWrite`, `heliusCompression`, and `expandResult`.
+
+This skill still names Helius action names such as `getPriorityFeeEstimate`, `getAssetsByOwner`, or `parseTransactions`. Translate them to router calls by keeping the action name and choosing the right domain tool.
+
+Examples:
+- `heliusChain({ action: "getPriorityFeeEstimate", accountKeys: ["..."] })`
+- `heliusAsset({ action: "getAssetsByOwner", ownerAddress: "..." })`
+- `heliusTransaction({ action: "parseTransactions", transactions: ["..."] })`
+
 ## Prerequisites
 
 Before doing anything, verify these:
 
 ### 1. Helius MCP Server
 
-**CRITICAL**: Check if Helius MCP tools are available (e.g., `getBalance`, `getAssetsByOwner`, `getPriorityFeeEstimate`). If they are NOT available, **STOP**. Do NOT attempt to call Helius APIs via curl or any other workaround. Tell the user:
+**CRITICAL**: Check if Helius MCP public tools are available (e.g., `heliusWallet`, `heliusAsset`, `heliusChain`). If they are NOT available, **STOP**. Do NOT attempt to call Helius APIs via curl or any other workaround. Tell the user:
 
 ```
 You need to install the Helius MCP server first:
-claude mcp add helius npx helius-mcp@latest
+claude mcp add helius npx helius-mcp@2.1.0
 Then restart Claude so the tools become available.
 ```
 
@@ -327,7 +339,7 @@ Follow these rules in ALL implementations:
 - Rate Limits: `https://www.helius.dev/docs/billing/rate-limits.md`
 - Dashboard: `https://dashboard.helius.dev`
 - Full Agent Signup Instructions: `https://dashboard.helius.dev/agents.md`
-- Helius MCP Server: `claude mcp add helius npx helius-mcp@latest`
+- Helius MCP Server: `claude mcp add helius npx helius-mcp@2.1.0`
 - LaserStream SDK: `github.com/helius-labs/laserstream-sdk`
 
 ### Jupiter

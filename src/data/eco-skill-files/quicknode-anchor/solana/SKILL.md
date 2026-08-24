@@ -4,7 +4,7 @@ description: "Use when working on Solana software, including one or more of: Sol
 ---
 
 <!--
-  Mirror of https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -150,7 +150,7 @@ Keep the README focused and practical. Avoid generic boilerplate - write documen
 - **Emphasis is meaningful.** Bold canonical terms on first use, plain everywhere after, like a textbook, and bold the claim a passage turns on. Italicize the titles of books and other works (*TCP/IP Illustrated*). Never use either as decoration.
 - **Define things by what they concretely are, not by abstract category.** An account is "some data, a Rust struct, with an address", never "the unit of state". A definition that would fit equally well in a document about a different subject is too vague. Prefer the short common word to the impressive one: "the deployed program", not "the deployed bytecode"; "compiled code", not "compiled bytecode". Reach for the precise technical term only where the precision is the point.
 - **Talk to readers, never about the document's construction.** No sentences explaining why a section is organized, sized, or placed the way it is ("each section is short on purpose", "that is why it comes first"). If a sentence is addressed to the author, editor, or reviewer rather than the reader, delete it.
-- **No ASCII art, no Mermaid diagrams, no markdown tables.** Use headings, nested bullet lists, or prose. Tables don't render well on chat surfaces. When a project calls for real figures (a book, a docs site), draw hand-authored SVG account diagrams per [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/DIAGRAMS.md) instead.
+- **No ASCII art, no Mermaid diagrams, no markdown tables.** Use headings, nested bullet lists, or prose. Tables don't render well on chat surfaces. When a project calls for real figures (a book, a docs site), draw hand-authored SVG account diagrams per [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/DIAGRAMS.md) instead.
 - **No em-dashes, and none of the phrases that read the same way.** Use a regular dash or rewrite the sentence. An em-dash is an LLM-output tell: a reader clocks it before they have finished the sentence. These phrases fail the same way, so they are banned on the same grounds: "load-bearing", "delve", "tapestry", "intricate", "multifaceted", "holistic", "myriad", "seamless", "robust", "pivotal", "crucial", "elevate", "testament to", "deep dive", "paradigm shift", "game-changer", "unlock the power", "realm of", "landscape of", "in today's", "it is worth noting", "underscores the". Most are also gestures rather than statements, so the fix is the one below: name the thing and say what it does. "The feed is load-bearing" becomes "every number in the fund is computed from the feed". This applies to READMEs, code comments, commit messages, and doc strings.
 - **"X is not Y; it is Z" only when the reader actually believes Y.** The construction corrects a misreading, and it is also a strong LLM tic that degrades with repetition: one manuscript audit found 48 in 50,000 words, a third of them negating a straw man nobody was thinking ("this is not stinginess; it is the only stable policy", "rounding direction is not a detail, it is a security boundary"). Keep it where a reader really would assume the negated half: "a mint is not itself a token: it is the account a token comes from". Everywhere else, drop the negation and assert the second half on its own.
 - **A word repeated is not a word justified.** If a plainer word carries the same meaning, the plainer word is the right one, and finding the fancier one used consistently across a document is evidence of a repeated mistake rather than of a house style. "The program interrogates the price" was "the program checks the price" in all five places it appeared. Same for reaching for an elevated register with ordinary words: "further clusters are stood up from time to time" is "other clusters are started up now and then".
@@ -181,7 +181,7 @@ These apply to READMEs, docs, blog posts, and PR descriptions for finance-relate
 - **Be careful with the word "securities".** It's a legal term. SOL is not a security. Asset-leasing is not "securities lending" even when the mechanics are analogous. Prefer "asset lending", "token lending", or "directional token lending" - and ask before picking one.
 - **Spell out two-asset flows with concrete examples.** "Posts collateral and takes delivery of borrowed tokens" reads circular. "Posts USDC as collateral, borrows NVDAx" makes the asymmetry obvious. Don't make the reader infer that mints A and B are different things.
 - **Name the instruction handlers in lifecycle prose.** When walking through "what the user does" (open position, close position, liquidate), name the actual handler (`take_lease`, `return_lease`, `liquidate`). Plain-English mechanics without handler names leave the reader unable to connect the narrative to the code.
-- **When you explain or summarize a program** - a README, walkthrough, video script, or answer - follow [SUMMARIZING-PROGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/SUMMARIZING-PROGRAMS.md): persona-driven casts, real assets, correct incentives, and step-by-step account state-transition + token-movement ledgers.
+- **When you explain or summarize a program** - a README, walkthrough, video script, or answer - follow [SUMMARIZING-PROGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/SUMMARIZING-PROGRAMS.md): persona-driven casts, real assets, correct incentives, and step-by-step account state-transition + token-movement ledgers.
 
 ## General Coding Guidelines
 
@@ -290,16 +290,17 @@ const FINALIZE_EVENT_DISCRIMINATOR = getEventDiscriminator(
 
 The rules above apply to every file in the project. In addition, read the file that matches the language you are editing:
 
-- **TypeScript** (Solana Kit clients, Solana Kit tests, browser code, anything `.ts`): see [TYPESCRIPT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/TYPESCRIPT.md)
-- **Rust - any Solana program/crate** (financial math, checked arithmetic, project structure, cargo hygiene): see [RUST.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/RUST.md)
-- **Rust - Anchor** (`.rs` files using `anchor_lang`, LiteSVM tests): see [ANCHOR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/ANCHOR.md), plus RUST.md for the shared rules
-- **Rust - Quasar** (`.rs` files using `quasar_lang`/`quasar_spl`/`quasar_test`): see [QUASAR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/QUASAR.md), plus RUST.md for the shared rules
+- **TypeScript** (Solana Kit clients, Solana Kit tests, browser code, anything `.ts`): see [TYPESCRIPT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/TYPESCRIPT.md)
+- **Rust - any Solana program/crate** (financial math, checked arithmetic, project structure, cargo hygiene): see [RUST.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/RUST.md)
+- **Rust - Anchor** (`.rs` files using `anchor_lang`, LiteSVM tests): see [ANCHOR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/ANCHOR.md), plus RUST.md for the shared rules
+- **Rust - Anchor 2.0.0-rc.1** (porting a 1.x program, or writing v2): see [ANCHOR-V2.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/ANCHOR-V2.md), plus ANCHOR.md and RUST.md
+- **Rust - Quasar** (`.rs` files using `quasar_lang`/`quasar_spl`/`quasar_test`): see [QUASAR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/QUASAR.md), plus RUST.md for the shared rules
 
 If a task touches more than one, read each.
 
-For setting up a Solana toolchain in CI or a fresh remote container (Agave, platform-tools behind TLS-intercepting proxies, the Quasar CLI, building Anchor projects without the anchor CLI): see [ENVIRONMENT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/ENVIRONMENT.md).
+For setting up a Solana toolchain in CI or a fresh remote container (Agave, platform-tools behind TLS-intercepting proxies, the Quasar CLI, building Anchor projects without the anchor CLI): see [ENVIRONMENT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/ENVIRONMENT.md).
 
-When you draw diagrams of Solana accounts (SVG figures for books, docs sites, or presentations): see [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/8b8b884928786e16022ab7ed425ab959a4dfe48a/skills/solana/DIAGRAMS.md).
+When you draw diagrams of Solana accounts (SVG figures for books, docs sites, or presentations): see [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/6128616f7737d6dd0a624daa8aebddb2a389602d/skills/solana/DIAGRAMS.md).
 
 ## Git commits
 
