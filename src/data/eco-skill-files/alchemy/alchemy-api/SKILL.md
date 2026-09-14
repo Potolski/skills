@@ -9,7 +9,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/alchemyplatform/skills/blob/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/alchemy-api/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/alchemyplatform/skills/blob/4caf3e555c3af8dbb9e5b540aed558aef986d885/skills/alchemy-api/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -144,6 +144,7 @@ Developers can always create a free API key at [https://dashboard.alchemy.com/](
 | Simulate tx | `alchemy_simulateAssetChanges` | `references/data-simulation-api.md` |
 | Create webhook | `POST /create-webhook` | `references/webhooks-details.md` |
 | Solana NFT data | `getAssetsByOwner` (DAS) | `references/solana-das-api.md` |
+| Solana realtime events (per-account / per-program / logs / tx status) | `accountSubscribe`, `programSubscribe`, `logsSubscribe`, `signatureSubscribe` (PubSub WebSocket) | `references/solana-websocket-subscriptions.md` |
 | Sui objects/txs | `GetObject`, `GetTransaction` (gRPC) | `references/sui-grpc-objects-and-ledger.md` |
 | Sui balances | `GetBalance`, `ListBalances` (gRPC) | `references/sui-grpc-state-and-balances.md` |
 | Sui checkpoints stream | `SubscribeCheckpoints` (gRPC) | `references/sui-grpc-subscriptions.md` |

@@ -11,7 +11,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/alchemyplatform/skills/blob/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/ecosystem/opensea/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/alchemyplatform/skills/blob/4caf3e555c3af8dbb9e5b540aed558aef986d885/skills/ecosystem/opensea/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -108,7 +108,7 @@ export PRIVY_WALLET_ID="..."
 
 > **Security:** never expose `OPENSEA_API_KEY` or Privy credentials in client-side code. Server-side only.
 
-## Endpoint reference → [references/marketplace.md](https://github.com/alchemyplatform/skills/blob/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/ecosystem/opensea/references/marketplace.md)
+## Endpoint reference → [references/marketplace.md](https://github.com/alchemyplatform/skills/blob/4caf3e555c3af8dbb9e5b540aed558aef986d885/skills/ecosystem/opensea/references/marketplace.md)
 
 ### Marketplace queries (most-used)
 

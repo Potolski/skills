@@ -4,7 +4,7 @@ description: PumpFun bonding curve math, graduation mechanics, instruction parsi
 ---
 
 <!--
-  Mirror of https://github.com/agiprolabs/claude-trading-skills/blob/f3fa5a2a20719cc275d8561ec8ae59a135f36948/skills/pumpfun-mechanics/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/agiprolabs/claude-trading-skills/blob/981e1d736cdc02bdc1c55c74ec9224e956414706/skills/pumpfun-mechanics/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->

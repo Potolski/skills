@@ -9,7 +9,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/alchemyplatform/skills/blob/546e264b73549c10a6dd6820cb7ffddf1f1f0f45/skills/alchemy-mcp/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/alchemyplatform/skills/blob/4caf3e555c3af8dbb9e5b540aed558aef986d885/skills/alchemy-mcp/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -44,6 +44,17 @@ Do **not** use this skill to write production application code — MCP tools are
 The server runs at `https://mcp.alchemy.com/mcp` and authenticates via OAuth — your client opens a browser to sign in with your Alchemy account on first use. No API key or local install required.
 
 ### Claude Code
+
+The fastest path is the official [Alchemy Claude Plugin](https://www.alchemy.com/docs/alchemy-claude-plugin), which bundles this MCP server, slash commands (`/alchemy:balance`, `/alchemy:nfts`, `/alchemy:portfolio`, etc.), and the Alchemy agent skills in one install:
+
+```text
+/plugin marketplace add alchemyplatform/alchemy-claude-plugin
+/plugin install alchemy@alchemy
+```
+
+Then run `/alchemy:setup` to pick an app for the session. OAuth opens automatically on the first Alchemy tool call.
+
+To wire just the MCP server without the plugin, use the manual command:
 
 ```bash
 claude mcp add alchemy --transport http https://mcp.alchemy.com/mcp
@@ -163,7 +174,7 @@ Standard EVM RPC, Token API, Transfers & Receipts, Transaction Simulation, Trace
 
 | Cluster | Count | Examples |
 |---------|-------|----------|
-| NFT API | 21 | `getNFTsForOwner`, `getNFTMetadata`, `getOwnersForNFT`, `getFloorPrice`, `getNFTSales` |
+| NFT API | 21 | `getNFTsForOwner`, `getNFTMetadata`, `getOwnersForNFT`, `getFloorPrice`, `getNFTsForContract` |
 | Prices API | 3 | `getTokenPricesBySymbol`, `getTokenPricesByAddress`, `getHistoricalTokenPrices` |
 | Portfolio (multi-chain) | 4 | `getTokensByAddress`, `getTokenBalancesByAddress`, `getNFTsByAddress`, `getNFTContractsByAddress` |
 

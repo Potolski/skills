@@ -4,7 +4,7 @@ description: Design, implement, and debug MagicBlock applications on Solana. Cov
 ---
 
 <!--
-  Mirror of https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -55,7 +55,7 @@ scheduled action: scheduling or eventual commit success alone does not prove tha
 plain commit fails once the account's current nonce reaches 10; accepted commits can still consume
 the delegation PDA fee budget at undelegation. With a delegated payer and validator-scoped
 `magic_fee_vault`, commit 26 starts debiting `100_000` lamports per committed account. Read
-[fees-and-commit-economics.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/fees-and-commit-economics.md) first for fee, refund,
+[fees-and-commit-economics.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/fees-and-commit-economics.md) first for fee, refund,
 sponsorship, cost-estimation, or fee-payer funding questions.
 
 **Lamports top-up**: when a delegated account (e.g. a delegated fee payer) needs more lamports on the ER side, use `lamportsDelegatedTransferIx` from the SDK. The transaction is submitted on **base layer** — the Ephemeral SPL Token program creates a single-use lamports PDA, funds it, and delegates it so the ER credits the destination.
@@ -100,7 +100,7 @@ Use Anchor with `ephemeral-rollups-sdk`; native and Pinocchio are also supported
 - `#[vrf]` on a VRF *request* context **and** `#[vrf_callback]` on the VRF *callback* context — the
   callback macro authenticates fulfillment. Enable the `vrf` feature on `ephemeral-rollups-sdk`.
   SDK v0.16.2 re-exports VRF, so new Anchor code does not need a direct
-  `ephemeral-vrf-sdk` dependency. See [vrf.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/vrf.md).
+  `ephemeral-vrf-sdk` dependency. See [vrf.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/vrf.md).
 
 **Non-Anchor programs:** use the
 `ephemeral-rollups-pinocchio` crate (delegation, commit, and VRF have Pinocchio equivalents). The
@@ -109,7 +109,7 @@ the target program is native rather than Anchor.
 
 Versions in this skill are known-good snapshots or compatibility markers. Before changing dependencies,
 inspect the target repository's manifests, toolchain files, lockfiles, and relevant upstream sources.
-See [resources.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/resources.md) for the dated snapshot and source links.
+See [resources.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/resources.md) for the dated snapshot and source links.
 
 ### Connections
 
@@ -131,7 +131,7 @@ See [resources.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/
 ### 0. Plan architecture when the design is not fixed
 
 For a new application, integration design, migration, or implementation plan, read
-[architecture-planning.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/architecture-planning.md) before writing code. Decide whether MagicBlock
+[architecture-planning.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/architecture-planning.md) before writing code. Decide whether MagicBlock
 is needed, select the smallest product set, map accounts and transaction routing, define settlement
 and recovery, and choose validation environments. Ask at most three material questions per round;
 otherwise proceed with explicit assumptions.
@@ -172,7 +172,7 @@ For each implementation, record:
 - For asynchronous flows, the difference between acceptance/scheduling and completion, plus observation,
   idempotency, timeout, retry, refund, and reconciliation
 
-For security-sensitive designs, reviews, and implementations, read [security.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/security.md). Separate
+For security-sensitive designs, reviews, and implementations, read [security.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/security.md). Separate
 protocol guarantees from required integration validation, application policy, and ordinary Solana
 security. Do not present an application recommendation as a MagicBlock protocol guarantee.
 
@@ -184,7 +184,7 @@ For `InvalidWritableAccount`, missing private balances, validator mismatch, or
 - Query router `getDelegationStatus` and use its `fqdn` for ER reads/transactions.
 - Compare base ownership, router status, ER ownership, and recent ER transaction logs.
 - Treat base ownership by the delegation program as expected for a delegated account.
-- See [debugging.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/debugging.md) for the full runbook.
+- See [debugging.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/debugging.md) for the full runbook.
 
 ### 5. Diagnose possible service-side failures
 
@@ -209,7 +209,7 @@ For unexpected RPC, routing, oracle, or transaction errors that could be service
 - Session Keys for repeated low-friction user actions
 - Ephemeral Accounts for temporary state that is explicitly allowed to disappear
 
-When combining products, read [composition-patterns.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/composition-patterns.md) and keep authority,
+When combining products, read [composition-patterns.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/composition-patterns.md) and keep authority,
 token control, oracle validity, ER execution, base settlement, and asynchronous completion as separate
 guarantees.
 
@@ -222,24 +222,24 @@ When you implement changes, provide:
 
 ## Progressive disclosure (read when needed)
 
-- Architecture planning, output templates, and validation-environment selection: [architecture-planning.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/architecture-planning.md)
-- Cross-product selection and boundary design: [composition-patterns.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/composition-patterns.md)
-- MagicBlock-specific security boundaries and source standards: [security.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/security.md)
-- Debugging ER/delegation failures: [debugging.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/debugging.md)
-- Core delegation patterns: [delegation.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/delegation.md)
-- Fees, commit limits, delegation refunds, action charges, and fee-vault economics: [fees-and-commit-economics.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/fees-and-commit-economics.md)
-- Ephemeral Accounts (ER-only temporary state): [ephemeral-accounts.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/ephemeral-accounts.md)
-- Magic Actions (post-commit base-layer instructions): [magic-actions.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/magic-actions.md)
-- Topping up a delegated account with lamports: [lamports-topup.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/lamports-topup.md)
-- Ephemeral SPL Token lifecycle (deposit, transfer, app-program CPI, undelegate, withdraw): [ephemeral-spl-token.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/ephemeral-spl-token.md)
-- TypeScript frontend setup: [typescript-setup.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/typescript-setup.md)
-- Cranks (scheduled tasks): [cranks.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/cranks.md)
-- VRF (randomness): [vrf.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/vrf.md)
-- Pricing Oracle (feed identity, freshness, and safe consumption): [pricing-oracle.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/pricing-oracle.md)
-- Session Keys (scoped temporary authority): [session-keys.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/session-keys.md)
-- Private Payments API: [private-payments.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/private-payments.md)
-- Local development and environment-specific validation: [local-development.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/local-development.md)
-- Reference links & versions: [resources.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/fabdbefe589481418d2677f200945facfa017993/skill/references/resources.md)
+- Architecture planning, output templates, and validation-environment selection: [architecture-planning.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/architecture-planning.md)
+- Cross-product selection and boundary design: [composition-patterns.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/composition-patterns.md)
+- MagicBlock-specific security boundaries and source standards: [security.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/security.md)
+- Debugging ER/delegation failures: [debugging.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/debugging.md)
+- Core delegation patterns: [delegation.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/delegation.md)
+- Fees, commit limits, delegation refunds, action charges, and fee-vault economics: [fees-and-commit-economics.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/fees-and-commit-economics.md)
+- Ephemeral Accounts (ER-only temporary state): [ephemeral-accounts.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/ephemeral-accounts.md)
+- Magic Actions (post-commit base-layer instructions): [magic-actions.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/magic-actions.md)
+- Topping up a delegated account with lamports: [lamports-topup.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/lamports-topup.md)
+- Ephemeral SPL Token lifecycle (deposit, transfer, app-program CPI, undelegate, withdraw): [ephemeral-spl-token.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/ephemeral-spl-token.md)
+- TypeScript frontend setup: [typescript-setup.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/typescript-setup.md)
+- Cranks (scheduled tasks): [cranks.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/cranks.md)
+- VRF (randomness): [vrf.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/vrf.md)
+- Pricing Oracle (feed identity, freshness, and safe consumption): [pricing-oracle.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/pricing-oracle.md)
+- Session Keys (scoped temporary authority): [session-keys.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/session-keys.md)
+- Private Payments API: [private-payments.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/private-payments.md)
+- Local development and environment-specific validation: [local-development.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/local-development.md)
+- Reference links & versions: [resources.md](https://github.com/magicblock-labs/magicblock-dev-skill/blob/51a869fd7bbdf5a0bf3d7c8128c1fb8f8d22034d/skill/references/resources.md)
 
 ## Terminal Self-Heal Proposal
 

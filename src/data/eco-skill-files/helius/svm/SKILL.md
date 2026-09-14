@@ -8,7 +8,7 @@ metadata:
 ---
 
 <!--
-  Mirror of https://github.com/helius-labs/core-ai/blob/15cb2b3b22068ef65652c608ab37702d75d7cfb6/helius-skills/svm/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/helius-labs/core-ai/blob/21347a28f7d8042d60b5c85c86a80b841daf42a7/helius-skills/svm/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -36,7 +36,7 @@ Examples:
 
 ```
 You need to install the Helius MCP server first:
-claude mcp add helius npx helius-mcp@2.1.0
+claude mcp add helius npx helius-mcp@2.2.0
 Then restart Claude so the tools become available.
 ```
 

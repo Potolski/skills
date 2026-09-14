@@ -4,7 +4,7 @@ description: Solana signing foundation — build unsigned native SOL and SPL tok
 ---
 
 <!--
-  Mirror of https://github.com/ChainGPT-org/chaingpt-claude-skill/blob/9185b17d013b828f299ce33f2a691f3eb31a0699/skills/solana/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/ChainGPT-org/chaingpt-claude-skill/blob/ae19957d7665127f442b43951f372be19baa2489/skills/solana/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
