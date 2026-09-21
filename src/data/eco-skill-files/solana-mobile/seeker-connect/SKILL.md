@@ -4,7 +4,7 @@ description: Connect a web dapp to the Seeker device's built-in wallet with Seek
 ---
 
 <!--
-  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/5c4cbc1b9e10b65bb27afee5b7437d109c94ea33/skills/seeker-connect/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-connect/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -102,7 +102,7 @@ https://docs.solanamobile.com/solana-mobile-stack/seeker-connect-quickstart
   ephemeral kinds, and the failure surfaces later as `association-failed`, not as a clear
   configuration error. Stay with the default, a relay the developer names, or one from the
   verified list in
-  [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/5c4cbc1b9e10b65bb27afee5b7437d109c94ea33/skills/seeker-connect/references/troubleshooting.md#association-failed-on-every-connect).
+  [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-connect/references/troubleshooting.md#association-failed-on-every-connect).
 
 ## Step 3: register once at startup
 
@@ -131,12 +131,12 @@ Configuration:
 | --- | --- | --- |
 | `associationTimeoutMs` | no | How long a launch may take before `association-failed`. Default 30s |
 | `chain` | no | Chain requested at authorization. Default `solana:mainnet` |
-| `firstConnectWalletBaseUri` | no | **Leave unset** unless Solana Mobile publishes a value to paste. Unset, first connects use the generic `solana-wallet:` scheme; set, the page navigates to that host — see [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/5c4cbc1b9e10b65bb27afee5b7437d109c94ea33/skills/seeker-connect/references/troubleshooting.md#first-connect-opens-a-generic-wallet-chooser) |
+| `firstConnectWalletBaseUri` | no | **Leave unset** unless Solana Mobile publishes a value to paste. Unset, first connects use the generic `solana-wallet:` scheme; set, the page navigates to that host — see [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-connect/references/troubleshooting.md#first-connect-opens-a-generic-wallet-chooser) |
 | `identity` | yes | `name`, `uri`, optional `icon`. Shown in the wallet's consent UI |
 | `relayDomain` | yes | Nostr relay that carries the session traffic. Default to `relay.primal.net` — Step 2 |
 
 `registerSeekerConnect` also accepts `seekerLink`, `authorizationCache`, and `presenter`
-overrides — see [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/5c4cbc1b9e10b65bb27afee5b7437d109c94ea33/skills/seeker-connect/references/imperative-api.md).
+overrides — see [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-connect/references/imperative-api.md).
 
 ## Step 4: use it like any other wallet
 
@@ -265,10 +265,10 @@ connect or sign-in call yourself — the button is presentation only.
 
 ## Reference material
 
-- [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/5c4cbc1b9e10b65bb27afee5b7437d109c94ea33/skills/seeker-connect/references/imperative-api.md) — the non-Wallet-Standard
+- [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-connect/references/imperative-api.md) — the non-Wallet-Standard
   path via `createNostrSeekerLink().transact`, and the `seekerLink` /
   `authorizationCache` / `presenter` overrides
-- [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/5c4cbc1b9e10b65bb27afee5b7437d109c94ea33/skills/seeker-connect/references/troubleshooting.md) — association failures,
+- [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-connect/references/troubleshooting.md) — association failures,
   desktop testing, capability-derived features, cache behavior
 
 ## Related skills
