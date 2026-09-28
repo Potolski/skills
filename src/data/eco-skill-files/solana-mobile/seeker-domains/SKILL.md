@@ -4,7 +4,7 @@ description: Resolve and display .skr domain names in Solana mobile apps, in bot
 ---
 
 <!--
-  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -89,7 +89,7 @@ const owner = await resolveSkrDomain(rpc, 'alice.skr') // Address, or null
 const names = await resolveSkrNames(rpc, address('5FHw...')) // ['alice.skr'], sorted
 ```
 
-Copy the implementation from [references/kit-resolver.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/references/kit-resolver.md) — about 140
+Copy the implementation from [references/kit-resolver.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/references/kit-resolver.md) — about 140
 lines, typechecked under `tsc --strict`, and free of `Buffer`/`TextEncoder`, so the same file runs
 on a server and in React Native. It accepts `alice.skr` or `alice`, returns `null` for an
 unregistered name, and only rejects when the RPC itself fails.
@@ -135,7 +135,7 @@ Four things to get right, all verified against mainnet on 1.2.1:
   name](#trusting-a-reverse-resolved-name).
 
 Its ESM build is also broken — see
-[references/server.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/references/server.md#onsoltldparser-alternative) for that and the
+[references/server.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/references/server.md#onsoltldparser-alternative) for that and the
 `createRequire` workaround.
 
 ## API shape
@@ -160,7 +160,7 @@ also stores negative results. Require the RPC URL and the origin list at startup
 falling back to the public endpoint or to open CORS.
 
 Full Express and Hono implementations, plus notes for Fastify, NestJS, Koa, and Next.js
-route handlers: [references/server.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/references/server.md).
+route handlers: [references/server.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/references/server.md).
 
 ## Client integration
 
@@ -183,7 +183,7 @@ the proxy is for.
 The snippet above assumes the proxy. If you resolve directly from the app instead, the Kit
 resolver runs unchanged under Hermes — call it from the same hook in place of `fetch`.
 
-Hook, components, and the truncation helper: [references/client.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/references/client.md).
+Hook, components, and the truncation helper: [references/client.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/references/client.md).
 
 ### Trusting a reverse-resolved name
 
@@ -220,11 +220,11 @@ resolved address.
 
 ## Reference material
 
-- [references/kit-resolver.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/references/kit-resolver.md) — the default resolver, how `.skr`
+- [references/kit-resolver.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/references/kit-resolver.md) — the default resolver, how `.skr`
   names are stored on chain, and what the helper deliberately leaves out
-- [references/server.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/references/server.md) — Express implementation, other frameworks,
+- [references/server.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/references/server.md) — Express implementation, other frameworks,
   validation and error handling
-- [references/client.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/285b31ec5ea795e09e58c40c969909e8f5afc5a7/skills/seeker-domains/references/client.md) — resolution hook, display components,
+- [references/client.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-domains/references/client.md) — resolution hook, display components,
   emulator networking
 
 ## Related skills

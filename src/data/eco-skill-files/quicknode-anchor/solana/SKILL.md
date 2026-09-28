@@ -4,7 +4,7 @@ description: "Use when working on Solana software, including one or more of: Sol
 ---
 
 <!--
-  Mirror of https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -72,7 +72,6 @@ Use these official documentation sources:
 - **Solana Kite**: https://solanakite.org
 - **Solana Kit**: https://solanakit.com
 - **Agave (Solana CLI)**: https://docs.anza.xyz/ (Anza makes the Solana CLI and Agave).
-- **Switchboard** (if used): https://docs.switchboard.xyz/docs-by-chain/solana-svm
 - **Arcium** (if used): https://docs.arcium.com/developers
 - **Quicknode Solana Program Examples**: https://github.com/quicknode/solana-program-examples
 - **Anatoly Yakovenko's GitHub**: https://github.com/aeyakovenko in particular the 'Percolator' perps project repositories.
@@ -105,7 +104,9 @@ Use these official documentation sources:
 
 - Name handlers by one rule: **if the domain has a word for it, use the domain's word; if the handler only stamps out a container, it is `initialize_`.** Domain verbs are what make a program read like finance, and they come in pairs: `make_offer()`/`take_offer()`, `open_position()`/`close_position()`, `place_order()`/`cancel_order()`, plus `borrow`, `repay`, `liquidate`, `contribute`, `refund`. Setup has no domain meaning, so it is always `initialize_x()`, naming what it initializes: `initialize_market()`, `initialize_pool()`, `initialize_config()`, never `create_pool()`, `init_reserve()`, or a bare `initialize()`. The test is whether the handler moves money or takes a market action, or only writes parameters into a new account. A third family, `add_x()`, extends a container that already exists: `add_liquidity()`, `add_outcome()`, `add_asset()`.
 
-- Say **PDA** for an address and **account** for the data at it. They are not synonyms: a program derives the offer PDA and then writes the offer account. Use PDA where the subject is derivation, seeds, authority, ownership, or signing, and account where the subject is fields, balances, rent, creation, or closure.
+- A **key pair** is two keys: a private key that signs, and a public key. The **public key is the address**; the pair is not an address, is not an account, and is never "at" one, and the private key is never shown or named as if it were public. An address made from a key pair is always on the Ed25519 curve, whoever generated the pair and whatever they did with the private key afterwards; only a PDA is off it. So never write "a keypair address", "the keypair's account", "an off-curve keypair", or a caption such as `A CLIENT KEYPAIR`; write "a public key the client generated", "the account's address", or name the account.
+
+- Say **PDA** for an address and **account** for the data at it. They are not synonyms: a program derives the offer PDA and then writes the offer account. Use PDA where the subject is derivation, seeds, authority, ownership, or signing, and account where the subject is fields, balances, rent, creation, or closure. Introduce a program's state as an account that lives at a PDA ("the **market** account lives at a PDA with seeds `"market"` and the two mints, and holds...", or "the **reserve** account (PDA seeds: ...)"), never as "the market is a PDA holding...". Don't write "PDA account": it names both halves at once and blurs them back together. Name the account by its role and add "at a PDA" only when the address model matters. The reverse slip is as common: a vault's authority is the offer PDA, not "the offer account", because authority is signing, and signing is the PDA's.
 
 ## Do not use
 
@@ -117,7 +118,7 @@ Use these official documentation sources:
 
 - Do not use yarn. Yarn has no reason to exist and only adds unnecessary dependencies and is not commonly used for new JS/TS projects in 2026. Replace Yarn with npm everywhere you see it. Use npm for new projects as it does not require additional dependencies. Keep using pnpm if the project already uses pnpm.
 
-- Do not use **Switchboard Functions** - this product is dead and no longer maintained. (Note: Switchboard oracles are still active and usable.)
+- Do not use **Switchboard** - it is shutting down. Every Switchboard implementation was deprecated in September 2026 and support ended on 25 September 2026. Use Pyth for price feeds instead, and migrate any existing Switchboard feed reads.
 
 - Do not use **Clockwork** - this product is dead. For scheduled instruction handler invocation, use [TukTuk](https://github.com/helium/tuktuk/tree/main/typescript-examples) instead.
 
@@ -152,7 +153,7 @@ Keep the README focused and practical. Avoid generic boilerplate - write documen
 - **Define things by what they concretely are, not by abstract category.** An account is "some data, a Rust struct, with an address", never "the unit of state". A definition that would fit equally well in a document about a different subject is too vague. Prefer the short common word to the impressive one: "the deployed program", not "the deployed bytecode"; "compiled code", not "compiled bytecode". Reach for the precise technical term only where the precision is the point.
 - **Say what the reader would see; do not tell them to look.** "Note what is pledged: shares, not raw tokens" is one word longer than "what they pledge is shares, not raw tokens", and the second sentence is the one carrying the fact. The same goes for "Notice who did nothing", "Watch K in the story below", "Read this carefully", and "Look at the two numbers". The reader is already reading; an instruction to read is a sentence that delays the content by exactly its own length. Telling them to watch something in the world ("watch a market maker during a fast market and their quotes vanish") is different, and stays.
 - **Talk to readers, never about the document's construction.** No sentences explaining why a section is organized, sized, or placed the way it is ("each section is short on purpose", "that is why it comes first"). If a sentence is addressed to the author, editor, or reviewer rather than the reader, delete it.
-- **No ASCII art, no Mermaid diagrams, no markdown tables.** Use headings, nested bullet lists, or prose. Tables don't render well on chat surfaces. When a project calls for real figures (a book, a docs site), draw hand-authored SVG account diagrams per [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/DIAGRAMS.md) instead.
+- **No ASCII art, no Mermaid diagrams, no markdown tables.** Use headings, nested bullet lists, or prose. Tables don't render well on chat surfaces. When a project calls for real figures (a book, a docs site), draw hand-authored SVG account diagrams per [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/DIAGRAMS.md) instead.
 - **No em-dashes, and none of the phrases that read the same way.** Use a regular dash or rewrite the sentence. An em-dash is an LLM-output tell: a reader clocks it before they have finished the sentence. These phrases fail the same way, so they are banned on the same grounds: "load-bearing", "delve", "tapestry", "intricate", "multifaceted", "holistic", "myriad", "seamless", "robust", "pivotal", "crucial", "elevate", "testament to", "deep dive", "paradigm shift", "game-changer", "unlock the power", "realm of", "landscape of", "in today's", "it is worth noting", "underscores the". Most are also gestures rather than statements, so the fix is the one below: name the thing and say what it does. "The feed is load-bearing" becomes "every number in the fund is computed from the feed". This applies to READMEs, code comments, commit messages, and doc strings.
 - **"X is not Y; it is Z" only when the reader actually believes Y.** The construction corrects a misreading, and it is also a strong LLM tic that degrades with repetition: one manuscript audit found 48 in 50,000 words, a third of them negating a straw man nobody was thinking ("this is not stinginess; it is the only stable policy", "rounding direction is not a detail, it is a security boundary"). Keep it where a reader really would assume the negated half: "a mint is not itself a token: it is the account a token comes from". Everywhere else, drop the negation and assert the second half on its own.
 - **A paragraph does not end on a maxim.** After the em-dash, the commonest LLM tell: a paragraph makes its point in plain sentences, then closes with a short, quotable restatement of it. "A wall that has never been pushed on is a hypothesis", "Fifteen lines of integer math, doing a central bank's job", "Data model decisions are transaction-format decisions", "Conservation, the escrow edition" were all closing lines in one manuscript, and none carried anything the paragraph had not already said. A reader hears the cadence before the content. Delete the maxim, and if it held a fact the paragraph lacked, state the fact in a plain sentence. The fragment used as a beat ("Not Alice, not the program's author.", "His bot fires.") and the "X is not Y; it is Z" form above are the same tell.
@@ -191,7 +192,8 @@ These apply to READMEs, docs, blog posts, and PR descriptions for finance-relate
 - **Closing an account returns its rent; say so.** Write "closes the option account and returns its rent to the writer", never "closes the option account to the writer". The second is Anchor's `close = writer` read aloud, and it tells the reader nothing about where the lamports go.
 - **Spell out two-asset flows with concrete examples.** "Posts collateral and takes delivery of borrowed tokens" reads circular. "Posts USDC as collateral, borrows NVDAx" makes the asymmetry obvious. Don't make the reader infer that mints A and B are different things.
 - **Name the instruction handlers in lifecycle prose.** When walking through "what the user does" (open position, close position, liquidate), name the actual handler (`take_lease`, `return_lease`, `liquidate`). Plain-English mechanics without handler names leave the reader unable to connect the narrative to the code.
-- **When you explain or summarize a program** - a README, walkthrough, video script, or answer - follow [SUMMARIZING-PROGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/SUMMARIZING-PROGRAMS.md): persona-driven casts, real assets, correct incentives, and step-by-step account state-transition + token-movement ledgers.
+- **A flaw in the program you are writing about gets fixed, not written up.** If the program is open to an attack or can wedge itself (a donation inflating share prices, an order book that fills with no eviction handler), fix the program and open a pull request with a test that proves the fix, then describe the fixed behaviour. A paragraph warning the reader about the flaw is the prose form of a caveat that should have been a fix. The details are in [SUMMARIZING-PROGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/SUMMARIZING-PROGRAMS.md) under _Fix a flawed program - don't document the flaw_.
+- **When you explain or summarize a program** - a README, walkthrough, video script, or answer - follow [SUMMARIZING-PROGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/SUMMARIZING-PROGRAMS.md): persona-driven casts, real assets, correct incentives, and step-by-step account state-transition + token-movement ledgers.
 
 ## General Coding Guidelines
 
@@ -300,17 +302,17 @@ const FINALIZE_EVENT_DISCRIMINATOR = getEventDiscriminator(
 
 The rules above apply to every file in the project. In addition, read the file that matches the language you are editing:
 
-- **TypeScript** (Solana Kit clients, Solana Kit tests, browser code, anything `.ts`): see [TYPESCRIPT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/TYPESCRIPT.md)
-- **Rust - any Solana program/crate** (financial math, checked arithmetic, project structure, cargo hygiene): see [RUST.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/RUST.md)
-- **Rust - Anchor** (`.rs` files using `anchor_lang`, LiteSVM tests): see [ANCHOR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/ANCHOR.md), plus RUST.md for the shared rules
-- **Rust - Anchor 2.0.0-rc.1** (porting a 1.x program, or writing v2): see [ANCHOR-V2.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/ANCHOR-V2.md), plus ANCHOR.md and RUST.md
-- **Rust - Quasar** (`.rs` files using `quasar_lang`/`quasar_spl`/`quasar_test`): see [QUASAR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/QUASAR.md), plus RUST.md for the shared rules
+- **TypeScript** (Solana Kit clients, Solana Kit tests, browser code, anything `.ts`): see [TYPESCRIPT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/TYPESCRIPT.md)
+- **Rust - any Solana program/crate** (financial math, checked arithmetic, project structure, cargo hygiene): see [RUST.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/RUST.md)
+- **Rust - Anchor** (`.rs` files using `anchor_lang`, LiteSVM tests): see [ANCHOR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/ANCHOR.md), plus RUST.md for the shared rules
+- **Rust - Anchor 2.0.0-rc.1** (porting a 1.x program, or writing v2): see [ANCHOR-V2.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/ANCHOR-V2.md), plus ANCHOR.md and RUST.md
+- **Rust - Quasar** (`.rs` files using `quasar_lang`/`quasar_spl`/`quasar_test`): see [QUASAR.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/QUASAR.md), plus RUST.md for the shared rules
 
 If a task touches more than one, read each.
 
-For setting up a Solana toolchain in CI or a fresh remote container (Agave, platform-tools behind TLS-intercepting proxies, the Quasar CLI, building Anchor projects without the anchor CLI): see [ENVIRONMENT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/ENVIRONMENT.md).
+For setting up a Solana toolchain in CI or a fresh remote container (Agave, platform-tools behind TLS-intercepting proxies, the Quasar CLI, building Anchor projects without the anchor CLI): see [ENVIRONMENT.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/ENVIRONMENT.md).
 
-When you draw diagrams of Solana accounts (SVG figures for books, docs sites, or presentations): see [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/129cd6739c32e354d605bfb6ef5a9e734227e16f/skills/solana/DIAGRAMS.md).
+When you draw diagrams of Solana accounts (SVG figures for books, docs sites, or presentations): see [DIAGRAMS.md](https://github.com/quiknode-labs/solana-anchor-claude-skill/blob/bb451d6166ead1f566845b19e2755b5cdc6f64aa/skills/solana/DIAGRAMS.md).
 
 ## Git commits
 
