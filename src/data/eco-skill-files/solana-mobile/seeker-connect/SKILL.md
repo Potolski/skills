@@ -1,10 +1,10 @@
 ---
 name: seeker-connect
-description: Connect a web dapp to the Seeker device's built-in wallet with Seeker Connect. Use when adding wallet connection, sign-in with Solana, message signing, or transaction signing to a website that runs in the browser on a Seeker phone, registering the "Seeker Connect" Wallet Standard wallet, choosing the Nostr relay for relayDomain, using the seeker-connect-button element, or debugging SeekerConnectError codes like association-failed.
+description: Connect a web dapp to the Seeker device's built-in wallet with Seeker Connect. Use when adding wallet connection, sign-in with Solana, message signing, or transaction signing to a website that runs in the browser on a Seeker phone, registering the "Seeker Connect" Wallet Standard wallet, setting the Nostr relay for relayDomain, using the seeker-connect-button element, or debugging SeekerConnectError codes like association-failed.
 ---
 
 <!--
-  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-connect/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-connect/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -41,14 +41,15 @@ they ship, wallet connection inside an Expo or React Native app uses the
   typically within seconds, when nothing answers the wallet launch; the association timeout
   only applies to a wallet that launches but never connects. Register the wallet
   unconditionally; it simply won't get past association elsewhere.
-- **The relay is a public Nostr relay, and the SDK ships no default.** Use the verified
-  default in Step 2 unless the developer names one. Solana Mobile's own relay is handed out
-  behind a terms-of-use acceptance and is never yours to fill in.
+- **The SDK ships no default relay.** Use Solana Mobile's, `relay.solanamobile.com`: it is
+  free, including in production. Using it requires agreeing to Solana Mobile's terms, so tell
+  the developer to accept them — Step 2.
 
 ## Step 1: install
 
 **New project:** the `react-kit-shadcn` template from the Solana Mobile CLI ships with
-Seeker Connect already wired up, using the same default relay as Step 2:
+Seeker Connect already wired up on Solana Mobile's relay. The next steps `create` prints tell
+the developer to accept the relay terms on the quickstart page:
 
 ```bash
 npx solana-mobile@latest create my-app --template react-kit-shadcn
@@ -74,35 +75,19 @@ package managers like pnpm refuse imports of undeclared transitive dependencies.
 | `@solana-mobile/seeker-connect-wallet-standard` | **The entry point** — the Wallet Standard wallet |
 | `@solana-mobile/seeker-connect-web` | MWA-over-Nostr transport, plus an imperative SDK |
 
-## Step 2: choose the relay
+## Step 2: set the relay
 
 Seeker Connect carries MWA's extended remote communication protocol over a Nostr relay,
-named by `relayDomain`. Every session generates a fresh Nostr keypair and publishes
-ephemeral events (kind 20012), so the relay has to accept ephemeral events from a pubkey it
-has never seen — no authentication, payment, allowlist, or web-of-trust check. Payloads are
-end-to-end encrypted between dapp and wallet; the relay carries ciphertext, so a bad relay
-costs availability, not secrecy.
+named by `relayDomain`. Payloads are end-to-end encrypted between dapp and wallet; the relay
+carries ciphertext only.
 
-**Default to `relay.primal.net`.** It met that requirement in repeated probes (September
-2026): every kind 20012 event accepted and delivered, no rate limiting, a funded operator,
-Cloudflare anycast in front. Read it from the app's environment configuration (for example
-a `VITE_SEEKER_RELAY_DOMAIN` variable) with that value as the fallback, so the developer can
-switch relays without a code change.
+**Use `relay.solanamobile.com`.** Solana Mobile runs it for Seeker Connect, and it is free to
+use, including in production. Pass the bare host; the SDK adds the `wss://` scheme itself.
 
-**Solana Mobile's relay is the developer's to supply, not yours.** Solana Mobile runs a
-relay that is faster still, but its domain is published only on the Seeker Connect
-quickstart page, behind a terms-of-use acceptance the developer has to click through:
+**Tell the developer to accept the relay terms.** Using Solana Mobile's relay requires
+agreeing to Solana Mobile's terms. Whenever you wire it in, say so, and point the developer at
+the quickstart page where they accept them:
 https://docs.solanamobile.com/solana-mobile-stack/seeker-connect-quickstart
-
-- **Never write the Solana Mobile relay domain into the app yourself** — not from memory,
-  not copied from another project, not from a search result. Accepting the terms is the
-  developer's act, and the page where they accept is the only place the domain is handed out.
-  If the developer wants it, send them there and let them paste the value back.
-- **Do not invent any other hostname.** Many public relays reject unknown pubkeys or
-  ephemeral kinds, and the failure surfaces later as `association-failed`, not as a clear
-  configuration error. Stay with the default, a relay the developer names, or one from the
-  verified list in
-  [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-connect/references/troubleshooting.md#association-failed-on-every-connect).
 
 ## Step 3: register once at startup
 
@@ -121,7 +106,7 @@ registerSeekerConnect({
     uri: window.location.origin,
     icon: '/icon.png', // resolved relative to uri; shown in the wallet's consent UI
   },
-  relayDomain: 'relay.primal.net', // verified public default; Step 2 covers overriding it
+  relayDomain: 'relay.solanamobile.com', // requires accepting Solana Mobile's terms — Step 2
 });
 ```
 
@@ -131,12 +116,12 @@ Configuration:
 | --- | --- | --- |
 | `associationTimeoutMs` | no | How long a launch may take before `association-failed`. Default 30s |
 | `chain` | no | Chain requested at authorization. Default `solana:mainnet` |
-| `firstConnectWalletBaseUri` | no | **Leave unset** unless Solana Mobile publishes a value to paste. Unset, first connects use the generic `solana-wallet:` scheme; set, the page navigates to that host — see [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-connect/references/troubleshooting.md#first-connect-opens-a-generic-wallet-chooser) |
+| `firstConnectWalletBaseUri` | no | **Leave unset** unless Solana Mobile publishes a value to paste. Unset, first connects use the generic `solana-wallet:` scheme; set, the page navigates to that host — see [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-connect/references/troubleshooting.md#first-connect-opens-a-generic-wallet-chooser) |
 | `identity` | yes | `name`, `uri`, optional `icon`. Shown in the wallet's consent UI |
-| `relayDomain` | yes | Nostr relay that carries the session traffic. Default to `relay.primal.net` — Step 2 |
+| `relayDomain` | yes | Nostr relay that carries the session traffic. Use `relay.solanamobile.com` — Step 2 |
 
 `registerSeekerConnect` also accepts `seekerLink`, `authorizationCache`, and `presenter`
-overrides — see [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-connect/references/imperative-api.md).
+overrides — see [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-connect/references/imperative-api.md).
 
 ## Step 4: use it like any other wallet
 
@@ -265,10 +250,10 @@ connect or sign-in call yourself — the button is presentation only.
 
 ## Reference material
 
-- [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-connect/references/imperative-api.md) — the non-Wallet-Standard
+- [references/imperative-api.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-connect/references/imperative-api.md) — the non-Wallet-Standard
   path via `createNostrSeekerLink().transact`, and the `seekerLink` /
   `authorizationCache` / `presenter` overrides
-- [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-connect/references/troubleshooting.md) — association failures,
+- [references/troubleshooting.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-connect/references/troubleshooting.md) — association failures,
   desktop testing, capability-derived features, cache behavior
 
 ## Related skills

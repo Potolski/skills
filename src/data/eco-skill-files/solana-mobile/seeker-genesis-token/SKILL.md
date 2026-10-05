@@ -4,7 +4,7 @@ description: Verify Seeker device ownership by checking for the Seeker Genesis T
 ---
 
 <!--
-  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-genesis-token/SKILL.md hosted by skills.solana.com.
+  Mirror of https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-genesis-token/SKILL.md hosted by skills.solana.com.
   Relative links were rewritten to GitHub URLs pinned to the mirrored commit —
   companion files are not hosted here; the upstream repo is the source of truth.
 -->
@@ -169,7 +169,7 @@ value off the request.
 
 ## Step 4: check the wallet for an SGT
 
-See [references/sgt-verification.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-genesis-token/references/sgt-verification.md) for the full
+See [references/sgt-verification.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-genesis-token/references/sgt-verification.md) for the full
 implementation. It confirms two properties of a Token-2022 mint — metadata pointer and token
 group membership — and both must match.
 
@@ -250,7 +250,7 @@ the reference file.
 
 ## Reference material
 
-- [references/sgt-verification.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/4c38c11620c73ac8125ca6fb6be94ad263ee774e/skills/seeker-genesis-token/references/sgt-verification.md) — full verification
+- [references/sgt-verification.md](https://github.com/solana-mobile/solana-mobile-dev-skill/blob/cb22465fc4954f9b1a3ca0ce5cd57fd8f2c51171/skills/seeker-genesis-token/references/sgt-verification.md) — full verification
   implementation, SGT constants, standard-RPC and Helius variants
 
 ## Related skills
